@@ -1,11 +1,13 @@
-﻿using SadConsole.Configuration;
+﻿using LuckNGold.Screens;
+using SadConsole.Configuration;
 
-Settings.WindowTitle = "My SadConsole Game";
+Settings.WindowTitle = "Luck N' Gold";
 
 Builder
     .GetBuilder()
     .SetWindowSizeInCells(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT)
-    .SetStartingScreen<LuckNGold.Scenes.RootScreen>()
+    .SetStartingScreen<RootScreen>()
     .IsStartingScreenFocused(true)
     .ConfigureFonts(true)
+    .SetDefaultFontSize(IFont.Sizes.Two)
     .Run();
