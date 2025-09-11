@@ -1,55 +1,52 @@
 ﻿using SadConsole.Configuration;
 
-namespace LuckNGold
+namespace LuckNGold;
+
+/// <summary>
+/// The provided code is a simple template to demonstrate some integration library features 
+/// and set up some boilerplate for you. Feel free to use or delete any of it that you want; 
+/// it shows one way of doing things, not the only way!
+///
+/// The code contains a few comments beginning with "CUSTOMIZATION:", which show you some common points 
+/// to modify in order to accomplish some common tasks. The tags by no means represent a comprehensive guide 
+/// to cover everything you might want to modify; they're simply designed to provide a "quick-start" guide 
+/// that can help you accomplish some common tasks.
+/// </summary>
+static class Program
 {
-    /// <summary>
-    /// ***********README***********
-    ///
-    /// The provided code is a simple template to demonstrate some integration library features and set up some boilerplate
-    /// for you.  Feel free to use, or delete, any of it that you want; it shows one way of doing things, not the only way!
-    ///
-    /// The code contains a few comments beginning with "CUSTOMIZATION:", which show you some common points to modify in
-    /// order to accomplish some common tasks.  The tags by no means represent a comprehensive guide to everything you
-    /// might want to modify; they're simply designed to provide a "quick-start" guide that can help you accomplish some
-    /// common tasks.
-    /// </summary>
-    internal static class Program
+    public const int Width = 39;
+    public const int Height = 39; 
+
+    public static RootScreen? RootScreen;
+
+    static void Main()
     {
-        // Window width/height
-        public const int Width = 80;
-        public const int Height = 25;
+        Settings.WindowTitle = "Luck N' Gold";
+        Settings.ResizeMode = Settings.WindowResizeOptions.Fit;
 
-        // Map width/height
-        private const int MapWidth = 100;
-        private const int MapHeight = 60;
+        // Configure how SadConsole starts up
+        Builder builder = new Builder()
+                .SetScreenSize(Width, Height)
+                .ConfigureFonts(FontLoader)
+                .OnStart(Init);
 
-        public static MapScreen? GameScreen;
+        // Setup the engine and start the game
+        Game.Create(builder);
+        Game.Instance.Run();
+        Game.Instance.Dispose();
+    }
 
-        private static void Main()
-        {
-            Settings.WindowTitle = "My SadConsole Game";
+    static void Init(object? s, GameHost host)
+    {
+        RootScreen = new RootScreen();
+        host.Screen = RootScreen;
+    }
 
-            // Configure how SadConsole starts up
-            Builder startup = new Builder()
-                    .SetScreenSize(Width, Height)
-                    .OnStart(Init)
-                    .ConfigureFonts(true)
-                ;
-
-            // Setup the engine and start the game
-            Game.Create(startup);
-            Game.Instance.Run();
-            Game.Instance.Dispose();
-        }
-
-        private static void Init(object? s, GameHost host)
-        {
-            // Generate a dungeon map
-            var map = MapFactory.GenerateDungeonMap(MapWidth, MapHeight);
-
-            // Create a MapScreen and set it as the active screen so that it processes input and renders itself.
-            GameScreen = new MapScreen(map);
-            host.Screen = GameScreen;
-        }
+    static void FontLoader(FontConfig fontConfig, GameHost host)
+    {
+        string C64Path = Path.Combine("Resources", "Fonts", "C64.font");
+        string PixelDungeonPath = Path.Combine("Resources", "Fonts", "PixelDungeon.font");
+        fontConfig.UseCustomFont(C64Path);
+        fontConfig.AddExtraFonts([PixelDungeonPath]);
     }
 }

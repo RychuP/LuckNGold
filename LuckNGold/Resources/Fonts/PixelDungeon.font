@@ -1,0 +1,59 @@
+{
+    "$type": "SadConsole.SadFont, SadConsole",
+    "FilePath": "PixelDungeon.png",
+    "GlyphHeight": 16,
+    "GlyphPadding": 1,
+    "GlyphWidth": 16,
+    "Name": "PixelDungeon",
+    "SolidGlyphIndex": 1,
+    "GlyphDefinitions": {
+	"Unknown": {
+			"Glyph": 2,
+			"Mirror": 0
+        },
+	"Floor": {
+			"Glyph": 1,
+			"Mirror": 0
+        },
+	"Wall": {
+			"Glyph": 1,
+			"Mirror": 0
+        },
+	"LeftWall": {
+            "Glyph": 30,
+            "Mirror": 0
+        },
+	"RightWall": {
+            "Glyph": 30,
+            "Mirror": 2
+        },
+	"TopWall": {
+            "Glyph": 10,
+            "Mirror": 0
+        },
+	"BottomWall1": {
+            "Glyph": 22,
+            "Mirror": 0
+        },
+	"BottomWall2": {
+            "Glyph": 23,
+            "Mirror": 0
+        },
+	"LeftCorner": {
+            "Glyph": 3,
+            "Mirror": 0
+        },
+	"RightCorner": {
+            "Glyph": 3,
+            "Mirror": 2
+        },
+	"BottomRightInnerCorner": {
+            "Glyph": 41,
+            "Mirror": 0
+        },
+	"BottomLeftInnerCorner": {
+            "Glyph": 41,
+            "Mirror": 2
+        },
+    }
+}

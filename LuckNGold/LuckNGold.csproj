@@ -20,4 +20,14 @@
     <PackageReference Include="TheSadRogue.Integration" Version="1.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\Fonts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
