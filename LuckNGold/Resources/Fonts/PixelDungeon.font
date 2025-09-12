@@ -7,53 +7,27 @@
     "Name": "PixelDungeon",
     "SolidGlyphIndex": 1,
     "GlyphDefinitions": {
-	"Unknown": {
-			"Glyph": 2,
-			"Mirror": 0
-        },
-	"Floor": {
-			"Glyph": 1,
-			"Mirror": 0
-        },
-	"Wall": {
-			"Glyph": 1,
-			"Mirror": 0
-        },
-	"LeftWall": {
-            "Glyph": 30,
-            "Mirror": 0
-        },
-	"RightWall": {
-            "Glyph": 30,
-            "Mirror": 2
-        },
-	"TopWall": {
-            "Glyph": 10,
-            "Mirror": 0
-        },
-	"BottomWall1": {
-            "Glyph": 22,
-            "Mirror": 0
-        },
-	"BottomWall2": {
-            "Glyph": 23,
-            "Mirror": 0
-        },
-	"LeftCorner": {
-            "Glyph": 3,
-            "Mirror": 0
-        },
-	"RightCorner": {
-            "Glyph": 3,
-            "Mirror": 2
-        },
-	"BottomRightInnerCorner": {
-            "Glyph": 41,
-            "Mirror": 0
-        },
-	"BottomLeftInnerCorner": {
-            "Glyph": 41,
-            "Mirror": 2
-        },
-    }
+	"Unknown": {"Glyph": 2, "Mirror": 0},
+	"Floor": {"Glyph": 0, "Mirror": 0},
+	"Wall": {"Glyph": 0, "Mirror": 0},
+	"LeftWall": {"Glyph": 30, "Mirror": 0},
+	"RightWall": {"Glyph": 30, "Mirror": 2},
+	"TopWall": {"Glyph": 10, "Mirror": 0},
+	"BottomWall": {"Glyph": 20, "Mirror": 0},
+	"BottomWallDecal1": {"Glyph": 21, "Mirror": 0},
+	"BottomWallDecal2": {"Glyph": 22, "Mirror": 0},
+	"BottomWallDecal3": {"Glyph": 23, "Mirror": 0},
+	"LeftCorner": {"Glyph": 3, "Mirror": 0},
+	"RightCorner": {"Glyph": 3, "Mirror": 2},
+	"BottomRightInnerCorner": {"Glyph": 41, "Mirror": 0},
+	"BottomLeftInnerCorner": {"Glyph": 41, "Mirror": 2},
+    "BrickDividerTop1": {"Glyph": 11, "Mirror": 0},
+    "BrickDividerTop2": {"Glyph": 12, "Mirror": 0},
+    "BrickDividerBottom1": {"Glyph": 13, "Mirror": 0},
+    "BrickDividerBottom2": {"Glyph": 14, "Mirror": 0},
+    "WallSpiderWeb1": {"Glyph": 24, "Mirror": 0},
+    "WallSpiderWeb2": {"Glyph": 25, "Mirror": 0},
+    "WallSpiderWeb3": {"Glyph": 15, "Mirror": 0},
+    "WallSpiderWeb4": {"Glyph": 35, "Mirror": 0},
+	}
 }

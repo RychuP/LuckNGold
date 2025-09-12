@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="World\" />
     <Folder Include="Resources\Fonts\" />
   </ItemGroup>
 

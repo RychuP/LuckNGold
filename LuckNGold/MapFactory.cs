@@ -34,6 +34,7 @@ static class MapFactory
             .ConfigAndGenerateSafe(gen =>
             {
                 gen.AddSteps(DefaultAlgorithms.RectangleMapSteps());
+                //gen.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps());
             });
 
         var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
@@ -61,7 +62,7 @@ static class MapFactory
         {
             var enemy = MapObjectFactory.Enemy();
             enemy.Position = GlobalRandom.DefaultRNG.RandomPosition(map.WalkabilityView, true);
-            map.AddEntity(enemy);
+            //map.AddEntity(enemy);
         }
 
         return map;

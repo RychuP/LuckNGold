@@ -1,11 +1,15 @@
-﻿using LuckNGold.Visuals;
+﻿using GoRogue.Random;
+using LuckNGold.Visuals;
 using SadRogue.Primitives.GridViews;
+using ShaiRandom.Generators;
 
 namespace LuckNGold;
 
 class PixelFontTest : ScreenSurface
 {
     readonly Grid _grid = new();
+    readonly Rectangle _floorDecals = new(6, 0, 4, 4);
+    string _lastBrickDividerSide = "Top";
 
     public PixelFontTest() : base(13, 13)
     {
@@ -16,19 +20,19 @@ class PixelFontTest : ScreenSurface
         for (int i = 0; i < _grid.Count; i++)
         {
             Point position = Point.FromIndex(i, _grid.Width);
-            SetTerrainAppearance(position);
+            DrawTerrain(position);
         }
     }
 
-    void SetTerrainAppearance(Point position)
+    void DrawTerrain(Point position)
     {
-        Color solidGlyphColor = Color.White;
+        (int x, int y) = position;
         GlyphDefinition glyphDefinition = Font.GetGlyphDefinition("Unknown");
 
         if (IsFloor(position))
         {
-            solidGlyphColor = Colors.Floor;
-            glyphDefinition = Font.GetGlyphDefinition("Floor");
+            Surface.SetBackground(x, y, Colors.Floor);
+            DecorateFloor(x, y);
         }
 
         // cell is wall
@@ -39,32 +43,68 @@ class PixelFontTest : ScreenSurface
             // wall is completely surrounded by other walls
             if (wallFlags == byte.MaxValue)
             {
-                solidGlyphColor = Colors.Wall;
+                Surface.SetBackground(x, y, Colors.Wall);
                 glyphDefinition = Font.GetGlyphDefinition("Wall");
             }
             else
             {
                 glyphDefinition = GetWallAppearance(wallFlags);
+
+                // set surface appearance
+                Surface.SetGlyph(x, y, glyphDefinition.Glyph);
+                Surface.SetMirror(x, y, glyphDefinition.Mirror);
+
+                if (glyphDefinition.Glyph == Font.GetGlyphDefinition("TopWall").Glyph)
+                    DecorateTopWall(x, y);
+                else if (glyphDefinition.Glyph == Font.GetGlyphDefinition("BottomWall").Glyph)
+                    DecorateBottomWall(x, y);
             }
         }
-
-        // set surface appearance
-        (int x, int y) = position;
-        Surface.SetGlyph(x, y, glyphDefinition.Glyph);
-        Surface.SetMirror(x, y, glyphDefinition.Mirror);
-        if (solidGlyphColor != Color.White)
-            Surface.SetForeground(x, y, solidGlyphColor);
-
-        if (glyphDefinition.Glyph == Font.GetGlyphDefinition("TopWall").Glyph)
-            DecorateTopWall(x, y);
     }
 
+    void DecorateFloor(int x, int y)
+    {
+        var glyphPos = GlobalRandom.DefaultRNG.RandomPosition(_floorDecals);
+        int glyph = glyphPos.ToIndex(10);
+        Surface.SetGlyph(x, y, glyph);
+        
+    }
+
+    // adds brick dividers and occasional spider webs
     void DecorateTopWall(int x, int y)
     {
+        string brickDividerSide = _lastBrickDividerSide == "Top" ? "Bottom" : "Top";
+        string brickDividerName = $"BrickDivider{brickDividerSide}";
+        GlyphDefinition brickDivider = GetRandGlyphDefinitionWithName(brickDividerName);
+        AddDecoratorToCell(x, y, brickDivider);
 
+        bool addSpiderWeb = Game.Instance.Random.NextDouble() < 0.35;
+        if (addSpiderWeb)
+        {
+            GlyphDefinition spiderWeb = GetRandGlyphDefinitionWithName("WallSpiderWeb");
+            AddDecoratorToCell(x, y, spiderWeb);
+        }
+
+        _lastBrickDividerSide = brickDividerSide;
     }
 
-    // get wall appearance based on the flags set
+    void DecorateBottomWall(int x, int y)
+    {
+        GlyphDefinition decal = GetRandGlyphDefinitionWithName("BottomWallDecal");
+        AddDecoratorToCell(x, y, decal);
+    }
+
+    void AddDecoratorToCell(int x, int y, GlyphDefinition glyphDefinition, bool randomizeMirror = true)
+    {
+        var mirror = randomizeMirror ? 
+            (Game.Instance.Random.NextDouble() < 0.5 ? Mirror.None : Mirror.Horizontal) 
+            : glyphDefinition.Mirror;
+        CellDecorator decorator = new(Color.White, glyphDefinition.Glyph, mirror);
+        ColoredGlyphBase cell = Surface[x, y];
+        CellDecoratorHelpers.AddDecorator(decorator, cell);
+    }
+
+    // returns wall appearance based on the flags set
     GlyphDefinition GetWallAppearance(byte wallFlags)
     {
         // TODO: compact it when all options are implemented
@@ -75,10 +115,10 @@ class PixelFontTest : ScreenSurface
             63 => Font.GetGlyphDefinition("TopWall"),       // 255-64-128
             191 => Font.GetGlyphDefinition("TopWall"),      // 255-64
 
-            248 => GetBottomWallAppearance(),   // 255-1-2-4
-            252 => GetBottomWallAppearance(),   // 255-1-2
-            249 => GetBottomWallAppearance(),   // 255-2-4
-            253 => GetBottomWallAppearance(),   // 255-2
+            248 => Font.GetGlyphDefinition("BottomWall"),   // 255-1-2-4
+            252 => Font.GetGlyphDefinition("BottomWall"),   // 255-1-2
+            249 => Font.GetGlyphDefinition("BottomWall"),   // 255-2-4
+            253 => Font.GetGlyphDefinition("BottomWall"),   // 255-2
 
             107 => Font.GetGlyphDefinition("LeftWall"),     // 255-4-16-128
             235 => Font.GetGlyphDefinition("LeftWall"),     // 255-4-16
@@ -119,19 +159,8 @@ class PixelFontTest : ScreenSurface
         };
     }
 
-    GlyphDefinition GetBottomWallAppearance()
-    {
-        var appearance = GetRandomGlyphWithName("BottomWall");
-
-        // reduce the chance of getting the split bottom wall appearance
-        if (appearance.Glyph == Font.GetGlyphDefinition("BottomWall2").Glyph)
-            appearance = GetRandomGlyphWithName("BottomWall");
-
-        return appearance;
-    }
-
     // get a random glyph definition that starts with the given name
-    GlyphDefinition GetRandomGlyphWithName(string name)
+    GlyphDefinition GetRandGlyphDefinitionWithName(string name)
     {
         var definitions = Font.GlyphDefinitions
             .Where(g => g.Key.StartsWith(name))

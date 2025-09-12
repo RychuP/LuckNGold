@@ -36,7 +36,7 @@ internal class RootScreen : ScreenObject
         //Children.Add(Map);
 
         // Make sure the map is focused so that it and the entities can receive keyboard input
-        //Map.IsFocused = true;
+        Map.IsFocused = true;
 
         // Generate player, add to map at a random walkable position, and calculate initial FOV
         Player = MapObjectFactory.Player();
