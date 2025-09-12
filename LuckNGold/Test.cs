@@ -27,7 +27,6 @@ class PixelFontTest : ScreenSurface
     void DrawTerrain(Point position)
     {
         (int x, int y) = position;
-        GlyphDefinition glyphDefinition = Font.GetGlyphDefinition("Unknown");
 
         if (IsFloor(position))
         {
@@ -44,11 +43,10 @@ class PixelFontTest : ScreenSurface
             if (wallFlags == byte.MaxValue)
             {
                 Surface.SetBackground(x, y, Colors.Wall);
-                glyphDefinition = Font.GetGlyphDefinition("Wall");
             }
             else
             {
-                glyphDefinition = GetWallAppearance(wallFlags);
+                GlyphDefinition glyphDefinition = GetWallAppearance(wallFlags);
 
                 // set surface appearance
                 Surface.SetGlyph(x, y, glyphDefinition.Glyph);
@@ -62,12 +60,12 @@ class PixelFontTest : ScreenSurface
         }
     }
 
+    // draws floor decals
     void DecorateFloor(int x, int y)
     {
         var glyphPos = GlobalRandom.DefaultRNG.RandomPosition(_floorDecals);
         int glyph = glyphPos.ToIndex(10);
         Surface.SetGlyph(x, y, glyph);
-        
     }
 
     // adds brick dividers and occasional spider webs
@@ -88,6 +86,7 @@ class PixelFontTest : ScreenSurface
         _lastBrickDividerSide = brickDividerSide;
     }
 
+    // adds bottom wall decals
     void DecorateBottomWall(int x, int y)
     {
         GlyphDefinition decal = GetRandGlyphDefinitionWithName("BottomWallDecal");

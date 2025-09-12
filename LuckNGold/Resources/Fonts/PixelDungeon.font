@@ -8,8 +8,6 @@
     "SolidGlyphIndex": 1,
     "GlyphDefinitions": {
 	"Unknown": {"Glyph": 2, "Mirror": 0},
-	"Floor": {"Glyph": 0, "Mirror": 0},
-	"Wall": {"Glyph": 0, "Mirror": 0},
 	"LeftWall": {"Glyph": 30, "Mirror": 0},
 	"RightWall": {"Glyph": 30, "Mirror": 2},
 	"TopWall": {"Glyph": 10, "Mirror": 0},
