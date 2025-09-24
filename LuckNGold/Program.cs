@@ -45,6 +45,7 @@ static class Program
     {
         RootScreen = new RootScreen();
         host.Screen = RootScreen;
+        //host.Screen = new ProbeTest();
     }
 
     static void FontLoader(FontConfig fontConfig, GameHost host)
@@ -54,6 +55,4 @@ static class Program
         fontConfig.UseCustomFont(C64Path);
         fontConfig.AddExtraFonts([PixelDungeonPath]);
     }
-
-    
 }

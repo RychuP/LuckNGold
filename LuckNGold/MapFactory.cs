@@ -60,7 +60,8 @@ static class MapFactory
         // one of the other classes in the FieldOfView namespace, or create your own
         // by inheriting from FieldOfViewHandlerBase
         //map.AllComponents.Add(new DimmingMemoryFieldOfViewHandler(0.6f));
-        map.AllComponents.Add(new BasicFieldOfViewHandler(tintGlyph: 1));
+        var tintColor = new Color(0.05f, 0.05f, 0.05f, 0.5f);
+        map.AllComponents.Add(new BasicFieldOfViewHandler(tintColor, 1));
 
 
         // Translate GoRogue's terrain data into actual integration library objects. Our terrain must be of type

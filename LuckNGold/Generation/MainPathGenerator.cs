@@ -58,7 +58,8 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
         var rnd = GlobalRandom.DefaultRNG;
         int width = Room.GetRandomSize();
         int height = Room.GetRandomOddSize();
-        Rectangle searchArea = new(0, 0, bounds.Width - width, bounds.Height - height);
+        // extra 2 for walls on each side
+        Rectangle searchArea = new(0, 0, bounds.Width - width + 2, bounds.Height - height + 2);
         var pos = rnd.RandomPosition(searchArea);
         return new Room(pos, width, height);
     }

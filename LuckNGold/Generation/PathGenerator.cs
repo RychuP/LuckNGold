@@ -167,28 +167,6 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
 
         // add room path to context
         var pathContext = GetPaths(context);
-        var rooms = GetRooms(context);
-
-        // TODO: delete this section at some point
-        // debug check
-        int badRoomCount = 0;
-        foreach ( var element in pathContext )
-        {
-            foreach ( var room in element.Item.Rooms)
-            {
-                foreach (var oldRoom in rooms)
-                {
-                    if (oldRoom.Area.Intersects(room.Area))
-                        badRoomCount++;
-                }
-            }
-        }
-        if (badRoomCount > 0)
-        {
-            int bad = 0;
-            //throw new ArgumentException("Some rooms in the new path intersect old rooms.");
-        }
-
         pathContext.Add(roomPath, Name);
 
         // set all room area positions in the wallFloorContext to true (walkable)

@@ -79,11 +79,43 @@ internal class Probe
     /// <param name="rooms">List of all the rooms created so far.</param>
     /// <param name="mapBounds">Bounds of the map.</param>
     /// <exception cref="ProbeException">Thrown when the area gets too small.</exception>
+    /// <returns>True if the probe has enough Area to place a new room.</returns>
     public bool CheckArea(List<Room> rooms, Rectangle mapBounds)
     {
         // check area is within bounds and reduce it if not
-        if (!mapBounds.Contains(_bounds))
-            Area = Rectangle.GetIntersection(mapBounds, _bounds).Expand(-1, -1);
+        while (!mapBounds.Contains(_bounds))
+        {
+            // this intersection will not be centered with the room on occasions
+            // especially if the room that sent the probe is close to the map boundary
+            var boundsIntersection = Rectangle.GetIntersection(mapBounds, _bounds);
+            var trimmedArea = boundsIntersection.Expand(-1, -1);
+
+            // check what got trimmed and calculate new area width and height
+            // taking into account direction the probe got sent
+            int widthDiff = Area.Width - trimmedArea.Width;
+            int heightDiff = Area.Height - trimmedArea.Height;
+            int width = _direction.IsHorizontal() ? trimmedArea.Width :
+                trimmedArea.Width - widthDiff;
+            int height = _direction.IsVertical() ? trimmedArea.Height :
+                trimmedArea.Height - heightDiff;
+
+            // calculate change in position
+            int deltaY = 0;
+            if (height != trimmedArea.Height && boundsIntersection.Y != 0)
+            {
+                 deltaY = heightDiff;
+            }
+
+            int deltaX = 0;
+            if (width != trimmedArea.Width && boundsIntersection.X != 0)
+            {
+                deltaX = widthDiff;
+            }
+
+            // create a new area and check out of bounds again
+            (int x, int y) = trimmedArea.Position + (deltaX, deltaY);
+            Area = new(x, y, width, height);
+        }
 
         // check for overlap with other rooms
         foreach (var room in rooms)
@@ -111,7 +143,7 @@ internal class Probe
                 Rectangle areaReducedOnOuterEdge = Rectangle.Empty;
                 try
                 {
-                    ShrinkAreaOnOuterEdgeOnly(room.Bounds);
+                    ShrinkAreaOnOuterEdge_Room(room.Bounds);
                     areaReducedOnOuterEdge = Area;
                 }
                 catch (ProbeException) { }
@@ -120,7 +152,7 @@ internal class Probe
                 Rectangle areaReducedOnSideEdges = Rectangle.Empty;
                 try
                 {
-                    ShrinkAreaOnSideEdgesOnly(room.Bounds);
+                    ShrinkAreaOnSideEdges_Room(room.Bounds);
                     areaReducedOnSideEdges = Area;
                 }
                 catch (ProbeException) { }
@@ -142,9 +174,9 @@ internal class Probe
             {
                 // shrink area from the intersecting edge only
                 if (outerEdgeIntersects)
-                    ShrinkAreaOnOuterEdgeOnly(room.Bounds);
+                    ShrinkAreaOnOuterEdge_Room(room.Bounds);
                 else
-                    ShrinkAreaOnSideEdgesOnly(room.Bounds);
+                    ShrinkAreaOnSideEdges_Room(room.Bounds);
             }
         }
 
@@ -167,7 +199,8 @@ internal class Probe
 
     // keeps moving the side edges inwards until no more intersections are found
     // or the exception is thrown
-    void ShrinkAreaOnSideEdgesOnly(Rectangle roomBounds)
+    // this method take room bounds into account
+    void ShrinkAreaOnSideEdges_Room(Rectangle roomBounds)
     {
         while (roomBounds.Intersects(_bounds))
             MoveSideEdgesInwards();
@@ -175,7 +208,8 @@ internal class Probe
 
     // keeps moving the outer edge inwards until no more intersections are found
     // or the exception is thrown
-    void ShrinkAreaOnOuterEdgeOnly(Rectangle roomBounds)
+    // this method take room bounds into account
+    void ShrinkAreaOnOuterEdge_Room(Rectangle roomBounds)
     {
         while (roomBounds.Intersects((_bounds)))
             MoveOuterEdgeInwards();

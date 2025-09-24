@@ -42,7 +42,7 @@ internal class ProbeTest : SimpleSurface
         _dummyRoomBorderShapeParams = ShapeParameters.CreateFilled(borderStyle, dummyStyle);
         _probeBorderShapeParams = ShapeParameters.CreateBorder(_probeBorderAppearance);
 
-        _room = new Room(10, 10, 9, 7);
+        _room = new Room(10, 10, 7, 5);
         _probe = new Probe(_room, _probeDirection, CorridorLength);
 
         // dummy rooms
