@@ -1,7 +1,6 @@
 ﻿using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
-using LuckNGold.Components;
 using LuckNGold.Generation;
 using LuckNGold.Visuals;
 using LuckNGold.World;
