@@ -1,6 +1,10 @@
-﻿using SadRogue.Integration;
+﻿using GoRogue.Random;
+using LuckNGold.Visuals;
+using SadConsole;
+using SadRogue.Integration;
 using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Integration.Keybindings;
+using SadRogue.Primitives.GridViews;
 
 namespace LuckNGold;
 
@@ -23,16 +27,10 @@ namespace LuckNGold;
 /// </remarks>
 static class MapObjectFactory
 {
-    public static MemoryAwareRogueLikeCell Floor(Point position)
-        => new(position, Color.White, Color.Black, '.', (int)GameMap.Layer.Terrain);
-
-    public static MemoryAwareRogueLikeCell Wall(Point position)
-        => new(position, Color.White, Color.Black, '#', (int)GameMap.Layer.Terrain, false, false);
-
     public static RogueLikeEntity Player()
     {
         // Create entity with appropriate attributes
-        var player = new RogueLikeEntity('@', false, layer: (int)GameMap.Layer.Monsters);
+        var player = new RogueLikeEntity(2, false, layer: (int)GameMap.Layer.Monsters);
 
         // Add component for controlling player movement via keyboard. Other (non-movement) keybindings can be
         // added as well

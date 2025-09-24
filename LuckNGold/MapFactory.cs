@@ -1,5 +1,9 @@
 ﻿using GoRogue.MapGeneration;
+using GoRogue.MapGeneration.Steps;
 using GoRogue.Random;
+using LuckNGold.Generation;
+using LuckNGold.World;
+using SadRogue.Integration.FieldOfView;
 using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
@@ -33,14 +37,19 @@ static class MapFactory
         var generator = new Generator(width, height)
             .ConfigAndGenerateSafe(gen =>
             {
-                gen.AddSteps(DefaultAlgorithms.RectangleMapSteps());
+                //gen.AddSteps(DefaultAlgorithms.RectangleMapSteps());
                 //gen.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps());
+                //gen.AddSteps(DefaultAlgorithms.CellularAutomataGenerationSteps());
+                //gen.AddSteps(DefaultAlgorithms.BasicRandomRoomsMapSteps(null, 8, 20, 5, 11));
+                gen.AddStep(new MainPathGenerator(15));
+                gen.AddStep(new SidePathGenerator());
             });
 
         var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
+        generator.Context.Remove("WallFloor");
 
         // Create actual integration library map.
-        var map = new GameMap(generator.Context.Width, generator.Context.Height, null);
+        var map = new GameMap(generator.Context, null);
 
         // Add a component that will implement a character "memory" system, where tiles will be dimmed
         // when they aren't seen by the player, and remain visible exactly as they were when
@@ -50,20 +59,25 @@ static class MapFactory
         // CUSTOMIZATION: If you want to handle FOV visibility differently, you can create an instance of
         // one of the other classes in the FieldOfView namespace, or create your own
         // by inheriting from FieldOfViewHandlerBase
-        map.AllComponents.Add(new DimmingMemoryFieldOfViewHandler(0.6f));
+        //map.AllComponents.Add(new DimmingMemoryFieldOfViewHandler(0.6f));
+        map.AllComponents.Add(new BasicFieldOfViewHandler(tintGlyph: 1));
+
 
         // Translate GoRogue's terrain data into actual integration library objects. Our terrain must be of type
         // MemoryAwareRogueLikeCells because we are using the integration library's "memory-based"
         // fov visibility system.
-        map.ApplyTerrainOverlay(generatedMap, (pos, val) => val ? MapObjectFactory.Floor(pos) : MapObjectFactory.Wall(pos));
+        map.ApplyTerrainOverlay(generatedMap, (pos, val) => val ?
+            new Floor(pos) : new Wall(pos, generatedMap));
+            //new MemoryAwareRogueLikeCell(pos, Color.White, Color.Transparent, 
+            //    10, (int)GameMap.Layer.Terrain, false, false));
 
         // Generate 10 enemies, placing them in random walkable locations for demo purposes.
-        for (int i = 0; i < 10; i++)
-        {
-            var enemy = MapObjectFactory.Enemy();
-            enemy.Position = GlobalRandom.DefaultRNG.RandomPosition(map.WalkabilityView, true);
-            //map.AddEntity(enemy);
-        }
+        //for (int i = 0; i < 10; i++)
+        //{
+        //    var enemy = MapObjectFactory.Enemy();
+        //    enemy.Position = GlobalRandom.DefaultRNG.RandomPosition(map.WalkabilityView, true);
+        //    map.AddEntity(enemy);
+        //}
 
         return map;
     }

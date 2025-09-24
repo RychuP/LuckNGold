@@ -3,15 +3,15 @@ using LuckNGold.Visuals;
 using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
 
-namespace LuckNGold;
+namespace LuckNGold.Tests;
 
-class PixelFontTest : ScreenSurface
+class TerrainDrawingTest : ScreenSurface
 {
     readonly Grid _grid = new();
     readonly Rectangle _floorDecals = new(6, 0, 4, 4);
     string _lastBrickDividerSide = "Top";
 
-    public PixelFontTest() : base(13, 13)
+    public TerrainDrawingTest() : base(13, 13)
     {
         Font = Game.Instance.Fonts["PixelDungeon"];
         FontSize *= 3;
@@ -96,7 +96,7 @@ class PixelFontTest : ScreenSurface
     void AddDecoratorToCell(int x, int y, GlyphDefinition glyphDefinition, bool randomizeMirror = true)
     {
         var mirror = randomizeMirror ? 
-            (Game.Instance.Random.NextDouble() < 0.5 ? Mirror.None : Mirror.Horizontal) 
+            Game.Instance.Random.NextDouble() < 0.5 ? Mirror.None : Mirror.Horizontal 
             : glyphDefinition.Mirror;
         CellDecorator decorator = new(Color.White, glyphDefinition.Glyph, mirror);
         ColoredGlyphBase cell = Surface[x, y];

@@ -1,4 +1,5 @@
-﻿using SadConsole.Configuration;
+﻿using LuckNGold.Tests;
+using SadConsole.Configuration;
 
 namespace LuckNGold;
 
@@ -14,10 +15,14 @@ namespace LuckNGold;
 /// </summary>
 static class Program
 {
-    public const int Width = 39;
-    public const int Height = 39; 
+    public const int Width = 60;
+    public const int Height = 50;
 
     public static RootScreen? RootScreen;
+    public static IFont MainFont = Game.Instance.Fonts["PixelDungeon"];
+
+    public static Color RandomColor =>
+        Color.White.GetRandomColor(Game.Instance.Random);
 
     static void Main()
     {
@@ -49,4 +54,6 @@ static class Program
         fontConfig.UseCustomFont(C64Path);
         fontConfig.AddExtraFonts([PixelDungeonPath]);
     }
+
+    
 }
