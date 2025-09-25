@@ -5,7 +5,7 @@ using GoRogue.Random;
 
 namespace LuckNGold.Generation;
 
-internal class SidePathGenerator() : PathGenerator("SidePath", 
+internal class MinorPathGenerator() : PathGenerator("MinorPath",
     new ComponentTypeTagPair(typeof(ItemList<RoomPath>), "Paths"))
 {
     // min length of the initial side path
@@ -30,12 +30,24 @@ internal class SidePathGenerator() : PathGenerator("SidePath",
         // list of corridors created in this step
         List<Corridor> corridors = [];
 
-        // keep adding side paths until all space is blocked around main path
-        List<Room> roomsWithFreeConnections;
-        for (int i = 0; i < 100; i++)
+        // list of rooms with free connections (can accept new exits)
+        List<Room> roomsWithFreeConnections = [];
+
+        // keep trying adding more rooms until all space is filled
+        int attemptCount = 0;
+        do
         {
-            // update the list of rooms with free connections
-            roomsWithFreeConnections = GetRoomsWithFreeConnections(mainPath);
+            roomsWithFreeConnections.Clear();
+
+            // update the list of rooms with free connections from all paths
+            foreach (var bucket in pathContext)
+            {
+                RoomPath path = bucket.Item;
+                var pathRoomsWithFreeConnections = GetRoomsWithFreeConnections(path);
+                roomsWithFreeConnections.AddRange(pathRoomsWithFreeConnections);
+            }
+
+            // mission complete
             if (roomsWithFreeConnections.Count == 0)
                 break;
 
@@ -44,19 +56,37 @@ internal class SidePathGenerator() : PathGenerator("SidePath",
             var startRoom = roomsWithFreeConnections[index];
 
             // create a new path
-            var sidePath = new RoomPath(Name, mainPath, startRoom);
+            var minorPath = new RoomPath(Name, startRoom.Path, startRoom);
 
             // random number of rooms in the path
             var roomCount = rnd.NextInt(MinPathLength, MaxPathLength + 1);
 
-            CreateRooms(ref sidePath, ref corridors, context, startRoom, roomCount);
+            CreateRooms(ref minorPath, ref corridors, context, startRoom, roomCount);
 
-            if (sidePath.Count == 0)
+            if (minorPath.Count == 0)
+            {
+                // nothing to add to context
                 continue;
+            }
+
+            // TODO investigate: produces corridors with no end rooms
+            //if (startRoom.Path.LastRoom == startRoom)
+            //{
+            //    while (minorPath.Count > 0)
+            //    {
+            //        var room = minorPath.FirstRoom;
+            //        if (!room.TransferToPath(startRoom.Path))
+            //            throw new InvalidOperationException("Room transfer between paths failed.");
+            //    }
+
+            //    // skip adding minor path to the context as it has been emptied
+            //    continue;
+            //}
 
             // update context
-            AddRoomPathsToContext(context, sidePath);
+            AddRoomPathsToContext(context, minorPath);
         }
+        while (roomsWithFreeConnections.Count > 0 && attemptCount++ < 100);
 
         AddCorridorsToContext(context, corridors);
 

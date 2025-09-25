@@ -17,6 +17,15 @@ internal class Corridor
         End = end;
     }
 
+    public bool IsHorizontal() =>
+        Start.Position.Y == End.Position.Y;
+
+    public bool IsVertical() =>
+        Start.Position.X == End.Position.X;
+
+    public bool HasExit(Exit exit) =>
+        Start == exit || End == exit;
+
     public List<Point> GetPositions()
     {
         List<Point> positions = [];

@@ -1,5 +1,6 @@
 ﻿using GoRogue.MapGeneration;
 using GoRogue.Random;
+using SadConsole.EasingFunctions;
 using ShaiRandom.Generators;
 
 namespace LuckNGold.Generation;
@@ -12,31 +13,30 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
         Rectangle mapBounds = new(0, 0, context.Width, context.Height);
 
         // list of rooms in the chain
-        RoomPath roomPath = new(Name);
+        RoomPath mainPath = new(Name);
 
         // list of corridors between the rooms in the chain
         List<Corridor> corridors = [];
 
-        while (roomPath.Count < roomCount)
+        while (mainPath.Count < roomCount)
         {
-            roomPath.Clear();
+            mainPath.Clear();
             corridors.Clear();
 
-            var firstRoom = GetFirstRoom(mapBounds);
-            var rooms = GetRooms(context);
-            roomPath.Add(firstRoom);
-            rooms.Add(firstRoom);
+            var area = GetFirstRoom(mapBounds);
+            var firstRoom = new Room(area.Position, area.Width, area.Height, mainPath);
+            mainPath.Add(firstRoom);
 
-            CreateRooms(ref roomPath, ref corridors, rooms, firstRoom, roomCount, mapBounds);
+            CreateRooms(ref mainPath, ref corridors, context, firstRoom, roomCount);
         }
 
         // add dead ends to first and last room, so that they won't
-        // accepty any further connections
-        AddDeadEnds(roomPath.FirstRoom);
-        AddDeadEnds(roomPath.LastRoom);
+        // accept any further connections
+        AddDeadEnds(mainPath.FirstRoom);
+        AddDeadEnds(mainPath.LastRoom);
 
         // update context
-        AddRoomsToContext(context, roomPath);
+        AddRoomPathsToContext(context, mainPath);
         AddCorridorsToContext(context, corridors);
 
         yield break;
@@ -53,14 +53,30 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
         }
     }
 
-    static Room GetFirstRoom(Rectangle bounds)
+    static Rectangle GetFirstRoom(Rectangle bounds)
     {
         var rnd = GlobalRandom.DefaultRNG;
-        int width = Room.GetRandomSize();
-        int height = Room.GetRandomOddSize();
-        // extra 2 for walls on each side
-        Rectangle searchArea = new(0, 0, bounds.Width - width + 2, bounds.Height - height + 2);
+        int width = 0, height = 0;
+        double sizeRatio = 0;
+
+        // try to make the rooms less elongated
+        while (sizeRatio < Room.MinSizeRatio)
+        {
+            width = Room.GetRandomOddSize(max: 7);
+            height = Room.GetRandomOddSize(max: 5);
+
+            // calculate width/height ratio
+            double i = Math.Min(height, width);
+            double j = Math.Max(height, width);
+            sizeRatio = i / j;
+        }
+
+        // extra 2 cells for walls on each side
+        Rectangle searchArea = new(0, 0, bounds.Width - width - 2, bounds.Height - height - 2);
+
+        // random position that will allow the room to fully fit within the map bounds
         var pos = rnd.RandomPosition(searchArea);
-        return new Room(pos, width, height);
+        
+        return new Rectangle(pos.X, pos.Y, width, height);
     }
 }

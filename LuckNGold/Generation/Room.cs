@@ -1,5 +1,6 @@
 ﻿using GoRogue.Random;
 using SadRogue.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LuckNGold.Generation;
 
@@ -14,6 +15,11 @@ class Room
     public const int MinEvenSize = MinOddSize + 1;
 
     public const int MaxEvenSize = MaxOddSize + 1;
+
+    /// <summary>
+    /// Minimum ratio of shorter length to longer length. 
+    /// </summary>
+    public const double MinSizeRatio = 0.65d;
     
     // inner area of the room
     public Rectangle Area { get; }
@@ -33,14 +39,17 @@ class Room
     // list of exits and dead ends
     public List<IWallConnection> Connections { get; } = new(4);
 
-    public Room(int x, int y, int width, int height)
+    public RoomPath Path { get; private set; }
+
+    public Room(int x, int y, int width, int height, RoomPath parent)
     {
         Area = new Rectangle(x, y, width, height);
         Bounds = Area.Expand(1, 1);
+        Path = parent;
     }
 
-    public Room(Point position, int width, int height) :
-        this(position.X, position.Y, width, height) { }
+    public Room(Point position, int width, int height, RoomPath parent) :
+        this(position.X, position.Y, width, height, parent) { }
 
     /// <summary>
     /// Creates a new <see cref="Exit"/> in the given direction.
@@ -64,6 +73,23 @@ class Room
     /// </summary>
     public bool HasAvailableConnections() =>
         Connections.Count < 4;
+
+    public bool IsConnectedTo(Room room)
+    {
+        foreach (var connection in Connections)
+        {
+            if (connection is Exit exit && exit.End?.Room == room) return true;
+        }
+        return false;
+    }
+
+
+    public bool TryGetExit(Direction direction, [NotNullWhen(true)] out Exit? exit)
+    {
+        var connection = Connections.Find(c => c.Direction == direction);
+        exit = connection is Exit e ? e : null;
+        return exit is not null;
+    }
 
     /// <summary>
     /// Returns the direction to a random wall available to add a connection.
@@ -150,6 +176,25 @@ class Room
             Direction.Types.Left => (Position.X - 1, verticalWallMiddleY),
             _ => (Area.MaxExtentX + 1, verticalWallMiddleY)
         };
+    }
+
+    public bool TransferToPath(RoomPath newPath)
+    {
+        if (newPath == Path)
+            return true;
+
+        if (newPath.Count == 0)
+            newPath.Add(this);
+        
+        else if (newPath.LastRoom.IsConnectedTo(this))
+        {
+            Path.Remove(this);
+            newPath.Add(this);
+            Path = newPath;
+            return true;
+        }
+
+        return false;
     }
 
     #region Static Members

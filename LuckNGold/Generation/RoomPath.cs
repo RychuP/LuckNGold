@@ -27,4 +27,5 @@ internal class RoomPath(string name, RoomPath? parent = null, Room? startRoom = 
     public int Count => Rooms.Count;
     public void Clear() => Rooms.Clear();
     public void Add(Room room) => Rooms.Add(room);
+    public bool Remove(Room room) => Rooms.Remove(room);
 }

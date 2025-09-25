@@ -15,6 +15,7 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
     // as above but for the rooms with double path where doors can be placed
     const int MaxRoomsWithDoorInLine = 3;
 
+    // min max corrid length between rooms
     const int MinCorridorLength = 2;
     const int MaxCorridorLength = 4;
 
@@ -23,28 +24,19 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
     /// </summary>
     /// <param name="roomPath"><see cref="RoomPath"/> which will store the rooms.</param>
     /// <param name="corridors"><see cref="Corridor"/>s created between the rooms in the path.</param>
-    /// <param name="rooms">List of all rooms from the context used as a local copy.</param>
-    /// <param name="startRoom">First <see cref="Room"/> where the path starts.</param>
+    /// <param name="room">First <see cref="Room"/> where the path starts.</param>
     /// <param name="roomCount">Number of rooms to create for the path.</param>
-    /// <param name="mapBounds">Bounds of the map where all the rooms need to fit.</param>
     protected static void CreateRooms(ref RoomPath roomPath, ref List<Corridor> corridors,
-        List<Room> rooms, Room startRoom, int roomCount, Rectangle mapBounds)
+        GenerationContext context, Room room, int roomCount)
     {
+        var rooms = GetRooms(context);
+        if (rooms.Count == 0) 
+            rooms = [room];
+
+        var mapBounds = new Rectangle(0, 0, context.Width, context.Height);
+
         // handles random number gen
         var rnd = GlobalRandom.DefaultRNG;
-
-        // current node
-        var room = startRoom;
-
-        // direction for probing available space to place a room
-        Direction direction = Direction.None;
-
-        // keeps track of creating rooms in the same direction
-        Direction lastCorridorDirection = direction;
-
-        // it starts off as one but as the gen goes on it defaults to two
-        // every change of direction results in the last two rooms being in the same line
-        int roomsInLine = 1;
 
         // create a chain of rooms
         while (roomPath.Count < roomCount)
@@ -53,29 +45,25 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
             if (!room.HasAvailableConnections())
                 break;
 
-            // establish delimiters for maximum number of rooms in one line
-            // prefer not to line up many rooms with wide corridors
-            // lining up vertically in one chain
-            bool roomsWithDoorsLinedUpVertically = room.Width.IsEven() &&
-                lastCorridorDirection.IsVertical();
-            var maxRoomsInLine = roomsWithDoorsLinedUpVertically ?
+            // desired direction in which to continue adding rooms
+            Direction direction = room.GetRandomAvailableConnection();
+
+            // establish how many rooms max in this type of line
+            var maxRoomsInLine = direction.IsVertical() ?
                 MaxRoomsWithDoorInLine : MaxRoomsInLine;
 
-            // get random available direction for an exit from the room
-            Direction tempDirection;
-            do
+            // opposite direction to check how many rooms there are already in line
+            var oppositeDirection = direction.GetOpposite();
+            int roomsInLine = GetRoomsInLine(oppositeDirection, room);
+
+            // max rooms in line reached -> mark this connection as dead end
+            if (roomsInLine >= maxRoomsInLine)
             {
-                tempDirection = room.GetRandomAvailableConnection();
+                room.AddDeadEnd(direction);
 
-                // if there is only one remaining connection available
-                // break out as there is no point trying over and over
-                if (room.Connections.Count == 3)
-                    break;
+                // come back to checking if there any more available connections
+                continue;
             }
-            while (lastCorridorDirection == tempDirection &&
-                roomsInLine >= maxRoomsInLine);
-
-            direction = tempDirection;
 
             // create a probe with the given room and direction
             int corridorLength = rnd.NextInt(MinCorridorLength, MaxCorridorLength + 1);
@@ -85,7 +73,7 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
                 // check if there is enough space to place a new room
                 if (probe.CheckArea(rooms, mapBounds))
                 {
-                    int height, width = 0, attemptCount = 0;
+                    int height, width = 0, attemptCount = 0, maxAttempts = 100;
                     double sizeRatio;
                     do
                     {
@@ -107,14 +95,17 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
                     }
                     // try to make the rooms less elongated
                     while ((room.Width == width || room.Height == height 
-                        || sizeRatio < 0.65d) && attemptCount < 100);
+                        || sizeRatio < 0.65d) && attemptCount <= maxAttempts);
+
+                    if (attemptCount > maxAttempts)
+                        throw new ProbeException("Possibly an awkward shape room created.");
 
                     // get position for the new room
                     var pos = room.GetAdjacentAreaPosition(direction,
                         probe.PathLength, width, height);
 
                     // create the new room
-                    Room newRoom = new(pos, width, height);
+                    Room newRoom = new(pos, width, height, roomPath);
 
                     // add room to the list of rooms in the path
                     roomPath.Add(newRoom);
@@ -122,18 +113,6 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
 
                     // create exits and corridor
                     CreatePassage(room, newRoom, direction, corridors);
-
-                    // check if the latest path direction is the same as the prev one
-                    if (direction == lastCorridorDirection)
-                        roomsInLine++;
-
-                    // reset the counter if the direction has changed
-                    // after the direction change there are now 2 rooms in the new line
-                    else
-                        roomsInLine = 2;
-
-                    // remember the last corridor direction
-                    lastCorridorDirection = direction;
 
                     // save the new room as the current node
                     room = newRoom;
@@ -147,20 +126,23 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
         }
     }
 
-
     static void CreatePassage(Room firstRoom, Room secondRoom, Direction direction,
         List<Corridor> corridors)
     {
         // create exits
         var start = firstRoom.AddExit(direction);
         var end = secondRoom.AddExit(direction.GetOpposite());
-
+        
         // create corridor
         var corridor = new Corridor(start, end);
         corridors.Add(corridor);
+
+        // add corridor to exits
+        start.Corridor = corridor;
+        end.Corridor = corridor;
     }
 
-    protected void AddRoomsToContext(GenerationContext context, RoomPath roomPath)
+    protected void AddRoomPathsToContext(GenerationContext context, RoomPath roomPath)
     {
         if (roomPath.Count == 0)
             throw new ArgumentException("Paths with zero lengths are not allowed.");
@@ -210,5 +192,22 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
         foreach (var element in paths)
             rooms.AddRange(element.Item.Rooms);
         return rooms;
+    }
+
+    // returns rooms connected in the same line vertically or horizontally
+    static int GetRoomsInLine(Direction direction, Room room)
+    {
+        int count = 1;
+        while (true)
+        {
+            if (!room.TryGetExit(direction, out Exit? exit))
+                break;
+            Exit? end = exit.End;
+            if (end is null)
+                break;
+            room = end.Room;
+            count++;
+        }
+        return count;
     }
 }

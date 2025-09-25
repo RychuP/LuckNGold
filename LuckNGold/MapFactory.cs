@@ -1,6 +1,7 @@
 ﻿using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.Steps;
 using GoRogue.Random;
+using LuckNGold.Components;
 using LuckNGold.Generation;
 using LuckNGold.World;
 using SadRogue.Integration.FieldOfView;
@@ -43,6 +44,7 @@ static class MapFactory
                 //gen.AddSteps(DefaultAlgorithms.BasicRandomRoomsMapSteps(null, 8, 20, 5, 11));
                 gen.AddStep(new MainPathGenerator(15));
                 gen.AddStep(new SidePathGenerator());
+                gen.AddStep(new MinorPathGenerator());
             });
 
         var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
@@ -51,17 +53,8 @@ static class MapFactory
         // Create actual integration library map.
         var map = new GameMap(generator.Context, null);
 
-        // Add a component that will implement a character "memory" system, where tiles will be dimmed
-        // when they aren't seen by the player, and remain visible exactly as they were when
-        // the player last saw them regardless of changes to their actual appearance,
-        // until the player sees them again.
-        //
-        // CUSTOMIZATION: If you want to handle FOV visibility differently, you can create an instance of
-        // one of the other classes in the FieldOfView namespace, or create your own
-        // by inheriting from FieldOfViewHandlerBase
-        //map.AllComponents.Add(new DimmingMemoryFieldOfViewHandler(0.6f));
-        var tintColor = new Color(0.05f, 0.05f, 0.05f, 0.5f);
-        map.AllComponents.Add(new BasicFieldOfViewHandler(tintColor, 1));
+        // for handling
+        map.AllComponents.Add(new FOVHandler());
 
 
         // Translate GoRogue's terrain data into actual integration library objects. Our terrain must be of type

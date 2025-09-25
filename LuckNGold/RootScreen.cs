@@ -21,11 +21,18 @@ internal class RootScreen : ScreenObject
         // Generate player, add to map at a random walkable position, and calculate initial FOV
         Player = MapObjectFactory.Player();
         //Player.Position = GlobalRandom.DefaultRNG.RandomPosition(Map.WalkabilityView, true);
-        Player.Position = Map.Paths[0].FirstRoom.Area.Center;
+        var firstRoom = Map.Paths[0].FirstRoom;
+        Player.Position = firstRoom.Area.Center;
         Map.AddEntity(Player);
         Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
-
         //Player.PositionChanged += Player_OnPositionChanged;
+
+        // sample decor
+        int y = firstRoom.TryGetExit(Direction.Up, out _) ? 
+            firstRoom.Area.MaxExtentY + 1 : firstRoom.Area.Y - 1;
+        var pos = (Player.Position.X, y);
+        var decor = new AnimatedRogueLikeEntity(pos);
+        Map.AddEntity(decor);
 
         // Center view on player as they move
         var followTargetComponent = new SurfaceComponentFollowTarget { Target = Player };

@@ -27,5 +27,9 @@
     "WallSpiderWeb2": {"Glyph": 25, "Mirror": 0},
     "WallSpiderWeb3": {"Glyph": 15, "Mirror": 0},
     "WallSpiderWeb4": {"Glyph": 35, "Mirror": 0},
+    "Flag1": {"Glyph": 40, "Mirror": 0},
+    "Flag2": {"Glyph": 41, "Mirror": 0},
+    "Flag3": {"Glyph": 42, "Mirror": 0},
+    "Flag4": {"Glyph": 43, "Mirror": 0},
 	}
 }

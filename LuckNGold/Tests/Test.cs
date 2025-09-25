@@ -1,17 +1,16 @@
-﻿namespace LuckNGold.Tests;
+﻿using LuckNGold.World;
+
+namespace LuckNGold.Tests;
 
 internal class Test : SimpleSurface
 {
+    //ColoredGlyph _rectAppearance = new(Color.CornflowerBlue, Color.Black, 178);
+    //ShapeParameters _shapeParams = ShapeParameters.CreateBorder(appearance);
+
     public Test()
     {
-        Rectangle one = new(1, 1, 8, 8);
-        var appearance = new ColoredGlyph(Color.CornflowerBlue, Color.Black, 178);
-        var shapeParams = ShapeParameters.CreateBorder(appearance);
-        Surface.DrawBox(one, shapeParams);
-
-        Rectangle two = one.Expand(-1, -2);
-        appearance = new ColoredGlyph(Color.LightGreen, Color.Black, 177);
-        shapeParams = ShapeParameters.CreateBorder(appearance);
-        Surface.DrawBox(two, shapeParams);
+        var pos = (1, 1);
+        var decor = new AnimatedRogueLikeEntity(pos);
+        Surface.Print(1, 3, decor.IsSingleCell.ToString());
     }
 }

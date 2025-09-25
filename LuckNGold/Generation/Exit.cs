@@ -17,6 +17,31 @@ internal class Exit : IWallConnection
     /// </summary>
     public Direction Direction { get; }
 
+    public Exit? End
+    {
+        get
+        {
+            if (Corridor is not null)
+            {
+                return Corridor.Start == this ? Corridor.End : Corridor.Start;
+            }
+            return null;
+        }
+    }
+
+    Corridor? _corridor = null;
+    public Corridor? Corridor
+    {
+        get => _corridor;
+        set
+        {
+            if (value is not null && !value.HasExit(this))
+                throw new ArgumentException("Given corridor does not start or end with this exit.");
+            
+            _corridor = value;
+        }
+    }
+
     /// <summary>
     /// Whether the width of the exit is double (can accommodate a door) or single tile
     /// </summary>

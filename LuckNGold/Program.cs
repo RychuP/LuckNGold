@@ -19,7 +19,7 @@ static class Program
     public const int Height = 50;
 
     public static RootScreen? RootScreen;
-    public static IFont MainFont = Game.Instance.Fonts["PixelDungeon"];
+    public static IFont Font = Game.Instance.Fonts["PixelDungeon"];
 
     public static Color RandomColor =>
         Color.White.GetRandomColor(Game.Instance.Random);
@@ -45,7 +45,7 @@ static class Program
     {
         RootScreen = new RootScreen();
         host.Screen = RootScreen;
-        //host.Screen = new ProbeTest();
+        //host.Screen = new Test();
     }
 
     static void FontLoader(FontConfig fontConfig, GameHost host)

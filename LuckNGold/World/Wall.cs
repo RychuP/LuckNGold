@@ -38,7 +38,7 @@ internal class Wall : MemoryAwareRogueLikeCell
             Appearance.Glyph = glyphDefinition.Glyph;
             Appearance.Mirror = glyphDefinition.Mirror;
 
-            var font = Program.MainFont;
+            var font = Program.Font;
             if (glyphDefinition.Glyph == font.GetGlyphDefinition("TopWall").Glyph)
                 DecorateTopWall();
             else if (glyphDefinition.Glyph == font.GetGlyphDefinition("BottomWall").Glyph)
@@ -87,7 +87,7 @@ internal class Wall : MemoryAwareRogueLikeCell
     // returns wall appearance based on the flags set
     static GlyphDefinition GetWallAppearance(byte wallFlags)
     {
-        var font = Program.MainFont;
+        var font = Program.Font;
 
         // 1, 2, 4
         // 8, x, 16
@@ -147,7 +147,7 @@ internal class Wall : MemoryAwareRogueLikeCell
     // get a random glyph definition that starts with the given name
     static GlyphDefinition GetRandGlyphDefinitionWithName(string name)
     {
-        var definitions = Program.MainFont.GlyphDefinitions
+        var definitions = Program.Font.GlyphDefinitions
             .Where(g => g.Key.StartsWith(name))
             .Select(g => g.Value)
             .ToArray();

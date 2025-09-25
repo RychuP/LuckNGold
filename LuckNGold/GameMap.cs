@@ -41,6 +41,7 @@ internal class GameMap : RogueLikeMap
     public enum Layer
     {
         Terrain = 0,
+        Decor,
         Monsters,
         Items
     }
@@ -64,7 +65,7 @@ internal class GameMap : RogueLikeMap
         Point viewSize = new(Program.Width / _fontSizeMultiplier,
             Program.Height / _fontSizeMultiplier);
         DefaultRenderer = CreateRenderer(viewSize);
-        DefaultRenderer.Font = Program.MainFont;
+        DefaultRenderer.Font = Program.Font;
         DefaultRenderer.FontSize *= _fontSizeMultiplier;
 
         // change default bg color to match wall color

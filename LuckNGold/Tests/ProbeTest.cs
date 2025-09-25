@@ -12,6 +12,7 @@ internal class ProbeTest : SimpleSurface
     readonly ShapeParameters _dummyRoomBorderShapeParams;
     readonly ShapeParameters _probeBorderShapeParams;
     readonly List<Room> _roomList;
+    readonly RoomPath _path;
 
     ColoredGlyph _probeBorderAppearance;
     Direction _probeDirection = Direction.Right;
@@ -42,11 +43,13 @@ internal class ProbeTest : SimpleSurface
         _dummyRoomBorderShapeParams = ShapeParameters.CreateFilled(borderStyle, dummyStyle);
         _probeBorderShapeParams = ShapeParameters.CreateBorder(_probeBorderAppearance);
 
-        _room = new Room(10, 10, 7, 5);
+        _path = new RoomPath("Dummy");
+
+        _room = new Room(10, 10, 7, 5, _path);
         _probe = new Probe(_room, _probeDirection, CorridorLength);
 
         // dummy rooms
-        _dummy = new Room(30, 20, 7, 5);
+        _dummy = new Room(30, 20, 7, 5, _path);
         _roomList = [_dummy];
 
         DrawAll();
@@ -79,7 +82,7 @@ internal class ProbeTest : SimpleSurface
             else if (keyboard.IsKeyDown(Keys.LeftControl))
             {
                 var pos = _dummy.Position + (direction.DeltaX, direction.DeltaY);
-                _dummy = new(pos, _dummy.Width, _dummy.Height);
+                _dummy = new(pos, _dummy.Width, _dummy.Height, _path);
                 _roomList.Clear();
                 _roomList.Add(_dummy);
             }
@@ -87,7 +90,7 @@ internal class ProbeTest : SimpleSurface
             else
             {
                 var pos = Room.Position + (direction.DeltaX, direction.DeltaY);
-                Room = new(pos, Room.Width, Room.Height);
+                Room = new(pos, Room.Width, Room.Height, _path);
             }
 
             // do the probing business
