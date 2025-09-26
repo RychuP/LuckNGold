@@ -25,6 +25,8 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
 
             var area = GetFirstRoom(mapBounds);
             var firstRoom = new Room(area.Position, area.Width, area.Height, mainPath);
+            firstRoom.AddDeadEnd(Direction.Up);
+            firstRoom.AddDeadEnd(Direction.Down);
             mainPath.Add(firstRoom);
 
             CreateRooms(ref mainPath, ref corridors, context, firstRoom, roomCount);
@@ -62,7 +64,7 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
         // try to make the rooms less elongated
         while (sizeRatio < Room.MinSizeRatio)
         {
-            width = Room.GetRandomOddSize(max: 7);
+            width = Room.GetRandomOddSize(max: 5);
             height = Room.GetRandomOddSize(max: 5);
 
             // calculate width/height ratio
@@ -72,7 +74,7 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
         }
 
         // extra 2 cells for walls on each side
-        Rectangle searchArea = new(0, 0, bounds.Width - width - 2, bounds.Height - height - 2);
+        Rectangle searchArea = new(1, 1, bounds.Width - width - 2, bounds.Height - height - 2);
 
         // random position that will allow the room to fully fit within the map bounds
         var pos = rnd.RandomPosition(searchArea);

@@ -1,4 +1,4 @@
 ﻿namespace LuckNGold.Tests;
 
-internal class SimpleSurface() : ScreenSurface(Program.Width, Program.Height)
+internal class SimpleSurface() : ScreenSurface(50, 40)
 { }

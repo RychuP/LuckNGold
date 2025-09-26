@@ -2,7 +2,7 @@
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
-namespace LuckNGold;
+namespace LuckNGold.World.Monsters.Components;
 
 /// <summary>
 /// Simple component that moves its parent toward the player if the player is visible. It demonstrates the basic

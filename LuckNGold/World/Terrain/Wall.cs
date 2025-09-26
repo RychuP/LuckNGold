@@ -1,11 +1,11 @@
 ﻿using GoRogue.Random;
 using LuckNGold.Visuals;
-using SadRogue.Integration.FieldOfView.Memory;
+using SadRogue.Integration;
 using SadRogue.Primitives.GridViews;
 
-namespace LuckNGold.World;
+namespace LuckNGold.World.Terrain;
 
-internal class Wall : MemoryAwareRogueLikeCell
+internal class Wall : RogueLikeCell
 {
     static string _lastBrickDividerSide = "Top";
 
@@ -75,7 +75,7 @@ internal class Wall : MemoryAwareRogueLikeCell
     void AddDecorator(GlyphDefinition glyphDefinition, bool randomizeMirror = true)
     {
         var mirror = randomizeMirror ?
-            (GlobalRandom.DefaultRNG.NextBool() ? Mirror.None : Mirror.Horizontal)
+            GlobalRandom.DefaultRNG.NextBool() ? Mirror.None : Mirror.Horizontal
             : glyphDefinition.Mirror;
         CellDecorator decorator = new(Color.White, glyphDefinition.Glyph, mirror);
 
@@ -92,55 +92,34 @@ internal class Wall : MemoryAwareRogueLikeCell
         // 1, 2, 4
         // 8, x, 16
         // 32,64,128
-        // TODO: compact it when all options are implemented
         return wallFlags switch
         {
-            31 => font.GetGlyphDefinition("TopWall"),       // 255-32-64-128
-            159 => font.GetGlyphDefinition("TopWall"),      // 255-32-64
-            63 => font.GetGlyphDefinition("TopWall"),       // 255-64-128
-            191 => font.GetGlyphDefinition("TopWall"),      // 255-64
+            11 or 15 or 22 or 23 or 31 or 43 or 47 or 63 or 150 or 151 or 159 or 191 =>
+                font.GetGlyphDefinition("TopWall"),
 
-            248 => font.GetGlyphDefinition("BottomWall"),   // 255-1-2-4
-            252 => font.GetGlyphDefinition("BottomWall"),   // 255-1-2
-            249 => font.GetGlyphDefinition("BottomWall"),   // 255-2-4
-            253 => font.GetGlyphDefinition("BottomWall"),   // 255-2
+            248 or 249 or 252 or 253 =>
+                font.GetGlyphDefinition("BottomWall"),
 
-            107 => font.GetGlyphDefinition("LeftWall"),     // 255-4-16-128
-            235 => font.GetGlyphDefinition("LeftWall"),     // 255-4-16
-            111 => font.GetGlyphDefinition("LeftWall"),     // 255-16-128
-            239 => font.GetGlyphDefinition("LeftWall"),     // 255-16
+            107 or 111 or 127 or 235 or 239 =>
+                font.GetGlyphDefinition("LeftWall"),
 
-            214 => font.GetGlyphDefinition("RightWall"),    // 255-1-8-32
-            246 => font.GetGlyphDefinition("RightWall"),    // 255-1-8
-            215 => font.GetGlyphDefinition("RightWall"),    // 255-8-32
-            247 => font.GetGlyphDefinition("RightWall"),    // 255-8
+            214 or 215 or 223 or 246 or 247 =>
+                font.GetGlyphDefinition("RightWall"),
 
-            127 => font.GetGlyphDefinition("LeftWall"),     // 255-128  top left corner
-            223 => font.GetGlyphDefinition("RightWall"),    // 255-32   top right corner
-            251 => font.GetGlyphDefinition("LeftCorner"),   // 255-4    bottom left corner
-            254 => font.GetGlyphDefinition("RightCorner"),  // 255-1    bottom right corner
+            104 or 105 or 232 or 237 =>
+                font.GetGlyphDefinition("BottomLeftInnerCorner"),
 
-            11 => font.GetGlyphDefinition("TopWall"),       // 1+2+8    top left inner corner
-            15 => font.GetGlyphDefinition("TopWall"),       // 11+4
-            43 => font.GetGlyphDefinition("TopWall"),       // 11+32
-            47 => font.GetGlyphDefinition("TopWall"),       // 11+4+32
+            208 or 212 or 240 or 244 =>
+                font.GetGlyphDefinition("BottomRightInnerCorner"),
 
-            22 => font.GetGlyphDefinition("TopWall"),       // 2+4+16   top right inner corner
-            23 => font.GetGlyphDefinition("TopWall"),       // 22+1
-            150 => font.GetGlyphDefinition("TopWall"),      // 22+128
-            151 => font.GetGlyphDefinition("TopWall"),      // 22+1+128
+            251 =>
+                font.GetGlyphDefinition("LeftCorner"),
 
-            104 => font.GetGlyphDefinition("BottomLeftInnerCorner"), // 8+32+64
-            105 => font.GetGlyphDefinition("BottomLeftInnerCorner"), // 104+1
-            232 => font.GetGlyphDefinition("BottomLeftInnerCorner"), // 104+128
-            237 => font.GetGlyphDefinition("BottomLeftInnerCorner"), // 104+1+128
+            254 =>
+                font.GetGlyphDefinition("RightCorner"),
 
-            208 => font.GetGlyphDefinition("BottomRightInnerCorner"), // 16+64+128
-            212 => font.GetGlyphDefinition("BottomRightInnerCorner"), // 208+4
-            240 => font.GetGlyphDefinition("BottomRightInnerCorner"), // 208+32
-            244 => font.GetGlyphDefinition("BottomRightInnerCorner"), // 208+4+32
-
-            _ => font.GetGlyphDefinition("Unknown")
+            _ => 
+                font.GetGlyphDefinition("Unknown")
         };
     }
 

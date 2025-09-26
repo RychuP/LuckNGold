@@ -1,8 +1,7 @@
-﻿using GoRogue.GameFramework;
-using LuckNGold.Generation;
-using System.Diagnostics;
+﻿using LuckNGold.Generation;
+using LuckNGold.World;
 
-namespace LuckNGold;
+namespace LuckNGold.Tests;
 
 internal class DebugSurface : ScreenSurface
 {
@@ -21,8 +20,6 @@ internal class DebugSurface : ScreenSurface
         DrawPath(map.Paths[0]);
         foreach (var path in map.Paths)
         {
-
-
             // draw connections of each room
             foreach (var room in path.Rooms)
                 DrawConnections(room);

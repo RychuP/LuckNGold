@@ -6,7 +6,7 @@ using SadConsole.Input;
 using SadRogue.Integration.Keybindings;
 using SadRogue.Integration.Maps;
 
-namespace LuckNGold;
+namespace LuckNGold.World;
 
 /// <summary>
 /// RogueLikeMap class that simplifies constructor and wraps map layers into a convenient, type-safe, 
@@ -40,16 +40,26 @@ internal class GameMap : RogueLikeMap
     // definition of the terrain layer.
     public enum Layer
     {
+        // The basic structure of the level (walls, floors, corridors). 
         Terrain = 0,
+
+        // Non-interactive visual elements like rubble, flags, torches and other env details. 
         Decor,
-        Monsters,
-        Items
+
+        // Visual elements that can be interacted with like doors, chests, levers, etc
+        Furniture,
+
+        // Loot, tools, and other collectibles that can be picked up. Also projectiles ??
+        Items,
+
+        // Non-player characters, enemies, and the player itself. 
+        Monsters
     }
 
     // CUSTOMIZATION: Change the distance from Distance.Chebyshev to whatever is desired for your game. By default,
     // this will affect the FOV shape as well as the distance calculation used for AStar pathfinding on the Map.
-    public GameMap(GenerationContext context, DefaultRendererParams? defaultRendererParams)
-        : base(context.Width, context.Height, defaultRendererParams, Enum.GetValues<Layer>().Length - 1, Distance.Chebyshev)
+    public GameMap(GenerationContext context) : base(context.Width, context.Height, 
+        null, Enum.GetValues<Layer>().Length - 1, Distance.Chebyshev)
     {
         IsFocused = true;
 
@@ -77,6 +87,9 @@ internal class GameMap : RogueLikeMap
         actionHandler.SetAction(Keys.C, ZoomViewIn);
         actionHandler.SetAction(Keys.Z, ZoomViewOut);
         AllComponents.Add(actionHandler);
+
+        // fov handler
+        AllComponents.Add(new MapFOVHandler());
     }
 
     public void ResizeView(int fontSizeMultiplier)

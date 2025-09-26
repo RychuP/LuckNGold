@@ -1,6 +1,4 @@
-﻿using GoRogue.Random;
-
-namespace LuckNGold;
+﻿namespace LuckNGold;
 
 static class DirectionExtensions
 {
@@ -43,7 +41,8 @@ static class IntExtensions
         !value.IsEven();
 }
 
-static class ColorExtensions
+static class GlyphDefinitionExtensions
 {
-    
+    public static ColoredGlyph CreateColoredGlyph(this GlyphDefinition glyphDefinition) =>
+        new(Color.White, Color.Transparent, glyphDefinition.Glyph, glyphDefinition.Mirror);
 }

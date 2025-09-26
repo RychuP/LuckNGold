@@ -1,15 +1,9 @@
 ﻿using GoRogue.MapGeneration;
-using GoRogue.MapGeneration.Steps;
-using GoRogue.Random;
-using LuckNGold.Components;
 using LuckNGold.Generation;
-using LuckNGold.World;
-using SadRogue.Integration.FieldOfView;
-using SadRogue.Integration.FieldOfView.Memory;
+using LuckNGold.World.Terrain;
 using SadRogue.Primitives.GridViews;
-using ShaiRandom.Generators;
 
-namespace LuckNGold;
+namespace LuckNGold.World;
 
 /// <summary>
 /// Similar to <see cref="MapObjectFactory"/>, but for producing various types of maps. The functions here
@@ -30,40 +24,26 @@ namespace LuckNGold;
 /// </remarks>
 static class MapFactory
 {
-    public static GameMap GenerateDungeonMap(int width, int height)
+    public static GameMap GenerateMap(int width, int height)
     {
-        // Generate a rectangular map for the sake of testing with GoRogue's map generation system.
-        //
-        // CUSTOMIZATION: Use a different set steps in AddSteps to generate a different type of map.
         var generator = new Generator(width, height)
             .ConfigAndGenerateSafe(gen =>
             {
-                //gen.AddSteps(DefaultAlgorithms.RectangleMapSteps());
-                //gen.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps());
-                //gen.AddSteps(DefaultAlgorithms.CellularAutomataGenerationSteps());
-                //gen.AddSteps(DefaultAlgorithms.BasicRandomRoomsMapSteps(null, 8, 20, 5, 11));
                 gen.AddStep(new MainPathGenerator(15));
                 gen.AddStep(new SidePathGenerator());
                 gen.AddStep(new MinorPathGenerator());
             });
 
+        // Create actual integration library map.
+        var map = new GameMap(generator.Context);
+
+        // get gridview of the terrain
         var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
         generator.Context.Remove("WallFloor");
 
-        // Create actual integration library map.
-        var map = new GameMap(generator.Context, null);
-
-        // for handling
-        map.AllComponents.Add(new FOVHandler());
-
-
-        // Translate GoRogue's terrain data into actual integration library objects. Our terrain must be of type
-        // MemoryAwareRogueLikeCells because we are using the integration library's "memory-based"
-        // fov visibility system.
+        // translate gridview into terrain
         map.ApplyTerrainOverlay(generatedMap, (pos, val) => val ?
             new Floor(pos) : new Wall(pos, generatedMap));
-            //new MemoryAwareRogueLikeCell(pos, Color.White, Color.Transparent, 
-            //    10, (int)GameMap.Layer.Terrain, false, false));
 
         // Generate 10 enemies, placing them in random walkable locations for demo purposes.
         //for (int i = 0; i < 10; i++)

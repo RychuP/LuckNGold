@@ -140,38 +140,6 @@ internal class NeighbourIsWallTest : SimpleSurface
     bool NeighbourIsWall(Point position) =>
         !_testArea.Contains(position) || Surface[position].Glyph == '#';
 
-    byte GetNeighbours(Point position)
-    {
-        // 1, 2, 4
-        // 8, x, 16
-        // 32,64,128
-
-        byte wallFlags = 0;
-        if (NeighbourIsWall(position + Direction.Up))
-            wallFlags |= 2;
-        if (NeighbourIsWall(position + Direction.Right))
-            wallFlags |= 16;
-        if (NeighbourIsWall(position + Direction.Down))
-            wallFlags |= 64;
-        if (NeighbourIsWall(position + Direction.Left))
-            wallFlags |= 8;
-        if (NeighbourIsWall(position + Direction.UpLeft))
-            wallFlags |= 1;
-        if (NeighbourIsWall(position + Direction.UpRight))
-            wallFlags |= 4;
-        if (NeighbourIsWall(position + Direction.DownRight))
-            wallFlags |= 128;
-        if (NeighbourIsWall(position + Direction.DownLeft))
-            wallFlags |= 32;
-        return wallFlags;
-
-        
-
-        // Check if the position is a floor
-        bool NeighbourIsWall(Point position) =>
-            !_testArea.Contains(position) || Surface[position].Glyph == '#';
-    }
-
     class Player(Point position)
     {
         public Point Position = position;

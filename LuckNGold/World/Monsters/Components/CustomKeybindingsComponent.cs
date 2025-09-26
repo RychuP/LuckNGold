@@ -2,7 +2,7 @@
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
 
-namespace LuckNGold;
+namespace LuckNGold.World.Monsters.Components;
 
 /// <summary>
 /// Subclass of the integration library's keybindings component that handles player movement 

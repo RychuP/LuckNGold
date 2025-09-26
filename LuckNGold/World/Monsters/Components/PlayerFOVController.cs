@@ -2,7 +2,7 @@
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
-namespace LuckNGold;
+namespace LuckNGold.World.Monsters.Components;
 
 /// <summary>
 /// Component that you can attach to your player object to ensure that it re-calculates the map's FOV whenever 

@@ -1,4 +1,4 @@
-﻿using LuckNGold.World;
+﻿using LuckNGold.Visuals;
 
 namespace LuckNGold.Tests;
 
@@ -9,8 +9,6 @@ internal class Test : SimpleSurface
 
     public Test()
     {
-        var pos = (1, 1);
-        var decor = new AnimatedRogueLikeEntity(pos);
-        Surface.Print(1, 3, decor.IsSingleCell.ToString());
+        
     }
 }

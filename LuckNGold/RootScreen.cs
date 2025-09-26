@@ -1,4 +1,11 @@
-﻿using LuckNGold.World;
+﻿using LuckNGold.Generation;
+using LuckNGold.Visuals.Screens;
+using LuckNGold.World;
+using LuckNGold.World.Decor.Wall;
+using LuckNGold.World.Furniture;
+using LuckNGold.World.Items;
+using LuckNGold.World.Monsters;
+using LuckNGold.World.Monsters.Components;
 using SadConsole.Components;
 using SadRogue.Integration;
 
@@ -10,29 +17,50 @@ internal class RootScreen : ScreenObject
     public readonly GameMap Map;
     public readonly RogueLikeEntity Player;
     public readonly MessageLogConsole MessageLog;
-    ScreenSurface _infoSurface;
+
+    // TODO debug stuff to be deleted at some point
+    readonly ScreenSurface _infoSurface;
 
     public RootScreen()
     {
         // Generate a dungeon map
-        Map = MapFactory.GenerateDungeonMap(GameMap.DefaultWidth, GameMap.DefaultHeight);
+        Map = MapFactory.GenerateMap(GameMap.DefaultWidth, GameMap.DefaultHeight);
         Children.Add(Map);
 
-        // Generate player, add to map at a random walkable position, and calculate initial FOV
-        Player = MapObjectFactory.Player();
-        //Player.Position = GlobalRandom.DefaultRNG.RandomPosition(Map.WalkabilityView, true);
+        // Generate player and place them in first room of the main path
+        Player = new Player();
         var firstRoom = Map.Paths[0].FirstRoom;
         Player.Position = firstRoom.Area.Center;
         Map.AddEntity(Player);
-        Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
+        
         //Player.PositionChanged += Player_OnPositionChanged;
 
         // sample decor
-        int y = firstRoom.TryGetExit(Direction.Up, out _) ? 
-            firstRoom.Area.MaxExtentY + 1 : firstRoom.Area.Y - 1;
-        var pos = (Player.Position.X, y);
-        var decor = new AnimatedRogueLikeEntity(pos);
+        var pos = (Player.Position.X, firstRoom.Area.Y - 1);
+        var decor = new Flag(pos, "Red");
         Map.AddEntity(decor);
+
+        // sample key
+        pos = (Player.Position.X, Player.Position.Y - 1);
+        var key = new Key(pos, "Silver");
+        Map.AddEntity(key);
+
+        // sample door
+        if (firstRoom.Connections.Find(c => c is Exit) is Exit exit)
+        {
+            pos = exit.Position;
+            var definition = Program.Font.GetGlyphDefinition("Door");
+            var closed = definition.CreateColoredGlyph();
+            var door = new Door(pos, closed, closed)
+            {
+                IsWalkable = true,
+                IsTransparent = true,
+            };
+            Map.AddEntity(door);
+        }
+
+        // Calculate initial FOV.
+        Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
 
         // Center view on player as they move
         var followTargetComponent = new SurfaceComponentFollowTarget { Target = Player };
@@ -51,11 +79,6 @@ internal class RootScreen : ScreenObject
         MessageLog = new MessageLogConsole(Program.Width, MessageLogConsole.DefaultHeight);
         //MessageLog.Position = new(0, Program.Height - MessageLogConsole.DefaultHeight);
         //Children.Add(MessageLog);
-
-        //Children.Add(new TerrainDrawingTest());
-        //Children.Add(new GridViewTests());
-        //Children.Add(new Test());
-
     }
 
     private void Player_OnPositionChanged(object? sender, ValueChangedEventArgs<Point> e)

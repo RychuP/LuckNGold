@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace LuckNGold;
+namespace LuckNGold.Visuals.Screens;
 
 /// <summary>
 /// A very basic SadConsole Console subclass that acts as a game message log.
