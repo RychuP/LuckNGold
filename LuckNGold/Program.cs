@@ -15,8 +15,8 @@ namespace LuckNGold;
 /// </summary>
 static class Program
 {
-    public const int Width = 60;
-    public const int Height = 50;
+    public const int Width = 84;
+    public const int Height = 60;
 
     public static RootScreen? RootScreen;
     public static IFont Font = Game.Instance.Fonts["PixelDungeon"];
@@ -27,7 +27,8 @@ static class Program
     static void Main()
     {
         Settings.WindowTitle = "Luck N' Gold";
-        Settings.ResizeMode = Settings.WindowResizeOptions.Fit;
+        //Settings.ResizeMode = Settings.WindowResizeOptions.Fit;
+        Settings.AllowWindowResize = false;
 
         // Configure how SadConsole starts up
         Builder builder = new Builder()

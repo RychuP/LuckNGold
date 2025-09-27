@@ -13,8 +13,10 @@ internal class EnemyAI() : RogueLikeComponentBase<RogueLikeEntity>(false, false,
     public void TakeTurn()
     {
         if (Parent == null) return;
+
         var map = Parent.CurrentMap;
         if (map == null) return;
+
         if (!map.PlayerFOV.CurrentFOV.Contains(Parent.Position)) return;
 
         var path = map.AStar.ShortestPath(Parent.Position, Program.RootScreen!.Player.Position);

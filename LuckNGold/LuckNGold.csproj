@@ -23,7 +23,6 @@
   <ItemGroup>
     <Folder Include="Resources\Fonts\" />
     <Folder Include="World\Decor\Floor\" />
-    <Folder Include="World\Items\Components\" />
   </ItemGroup>
 
   <ItemGroup>

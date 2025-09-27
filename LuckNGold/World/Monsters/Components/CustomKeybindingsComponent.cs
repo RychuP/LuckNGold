@@ -1,4 +1,5 @@
 ﻿using GoRogue.GameFramework;
+using SadConsole.Input;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
 
@@ -21,6 +22,18 @@ namespace LuckNGold.World.Monsters.Components;
 /// </remarks>
 internal class CustomKeybindingsComponent : KeybindingsComponent<RogueLikeEntity>
 {
+    public static readonly IEnumerable<(InputKey binding, Direction direction)> ViMotions =
+    [
+        ((InputKey)Keys.K, Direction.Up),
+        (Keys.L, Direction.Right),
+        (Keys.J, Direction.Down),
+        (Keys.H, Direction.Left),
+        (Keys.U, Direction.UpRight),
+        (Keys.N, Direction.DownRight),
+        (Keys.B, Direction.DownLeft),
+        (Keys.Y, Direction.UpLeft)
+    ];
+
     protected override void MotionHandler(Direction direction)
     {
         if (!Parent!.CanMoveIn(direction)) return;

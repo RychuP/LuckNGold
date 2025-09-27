@@ -17,7 +17,16 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
     // component that plays the animations
     readonly AnimationComponent _animationComponent;
 
+    /// <summary>
+    /// Default animation will play forwards and than backwards if true.
+    /// </summary>
     public bool DefaultAnimationIsReversable { get; set; }
+
+    /// <summary>
+    /// Appearance of the entity for the purpose of displaying it in various information windows.
+    /// </summary>
+    public ColoredGlyphBase StaticAppearance =>
+        _animations[_defaultAnimation][0];
 
     /// <summary>
     /// Name of the animation currently being played.
@@ -48,18 +57,35 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
     /// Entity that has an animatied appearance. Several animations can be defined.<br></br>
     /// This constructor creates an instance with a single animation.
     /// </summary>
-    /// <param name="position">The initial position of the entity on the game map.</param>
-    /// <param name="defaultAnimation">The name of the default animation to be used for the entity.</param>
-    /// <param name="layer">The layer of the game map where the entity resides.</param>
-    /// <param name="walkable">A value indicating whether the entity can be walked over.
-    /// The default value is <see langword="true"/>.</param>
-    /// <param name="transparent">A value indicating whether the entity is transparent, 
-    /// allowing visibility through it. The default value is <see langword="true"/>.</param>
-    public AnimatedRogueLikeEntity(Point position, string defaultAnimation, bool defaultAnimIsReversable,
+    public AnimatedRogueLikeEntity(string defaultAnimation, bool defaultAnimIsReversable,
         GameMap.Layer layer, bool walkable = true, bool transparent = true)
-        : this(position, [defaultAnimation], defaultAnimation, defaultAnimIsReversable, 
+        : this([defaultAnimation], defaultAnimation, defaultAnimIsReversable, 
               layer, walkable, transparent)
     { }
+
+    /// <summary>
+    /// Entity that has an animatied appearance. Several animations can be defined.<br></br>
+    /// This constructor creates an instance with a single animation.
+    /// </summary>
+    public AnimatedRogueLikeEntity(Point position, string defaultAnimation,
+        bool defaultAnimIsReversable, GameMap.Layer layer, 
+        bool walkable = true, bool transparent = true)
+        : this([defaultAnimation], defaultAnimation, defaultAnimIsReversable,
+              layer, walkable, transparent)
+    {
+        Position = position;
+    }
+
+    /// <summary>
+    /// Entity that has an animatied appearance. Several animations can be defined.
+    /// </summary>
+    public AnimatedRogueLikeEntity(Point position, string[] animations, string defaultAnimation,
+        bool defaultAnimIsReversable, GameMap.Layer layer, 
+        bool walkable = true, bool transparent = true)
+        : this(animations, defaultAnimation, defaultAnimIsReversable, layer, walkable, transparent)
+    {
+        Position = position;
+    }
 
     /// <summary>
     /// Entity that has an animatied appearance. Several animations can be defined.
@@ -73,15 +99,15 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
     /// The default value is <see langword="true"/>.</param>
     /// <param name="transparent">A value indicating whether the entity is transparent, 
     /// allowing visibility through it. The default value is <see langword="true"/>.</param>
-    public AnimatedRogueLikeEntity(Point position, string[] animations, string defaultAnimation,
+    public AnimatedRogueLikeEntity(string[] animations, string defaultAnimation,
         bool defaultAnimIsReversable, GameMap.Layer layer, bool walkable = true, bool transparent = true) 
-        : base(position, new ColoredGlyph(Color.White, Color.Transparent, 2), 
+        : base(new ColoredGlyph(Color.White, Color.Transparent, 2), 
             walkable, transparent, (int) layer)
     {
         _defaultAnimation = defaultAnimation;
         DefaultAnimationIsReversable = defaultAnimIsReversable;
 
-        // get all the animations for future reference
+        // Get all the animations for future reference
         _animations = [];
         foreach (var animation in animations)
         {
@@ -89,12 +115,12 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
             _animations[animation] = frames;
         }
 
-        // create the component to play the animations
+        // Create the component to play the animations
         _animationComponent = new AnimationComponent();
         _animationComponent.Finished += (o, e) => PlayDefaultAnimation();
         AllComponents.Add(_animationComponent);
 
-        // start animating
+        // Start animating
         PlayDefaultAnimation();
     }
 

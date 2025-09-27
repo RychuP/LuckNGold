@@ -7,4 +7,14 @@ static class Colors
 
     // tint of the explored area out of fov
     public static readonly Color Tint = new(0.05f, 0.05f, 0.05f, 0.5f);
+
+    /// <summary>
+    /// Color of the border around items in the inventory window.
+    /// </summary>
+    public static readonly Color SelectorBorder = Color.DarkGray;
+
+    /// <summary>
+    /// Color of the item selector number in the inventory window.
+    /// </summary>
+    public static readonly Color SelectorNumber = Color.LightBlue;
 }

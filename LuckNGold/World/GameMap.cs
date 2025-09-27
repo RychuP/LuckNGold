@@ -23,7 +23,7 @@ internal class GameMap : RogueLikeMap
     const int MaxFontSizeMultiplier = 4;
 
     // effectively current view zoom level
-    int _fontSizeMultiplier = 2;
+    int _fontSizeMultiplier = 3;
 
     // list of all rooms from generator
     public IReadOnlyList<Room> Rooms { get; init; }
