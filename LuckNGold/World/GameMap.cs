@@ -43,10 +43,10 @@ internal class GameMap : RogueLikeMap
         // The basic structure of the level (walls, floors, corridors). 
         Terrain = 0,
 
-        // Non-interactive visual elements like rubble, flags, torches and other env details. 
+        // Non-interactive entities like rubble, flags, torches and other env details. 
         Decor,
 
-        // Visual elements that can be interacted with like doors, chests, levers, etc
+        // Entities that can be interacted with like doors, chests, levers, etc
         Furniture,
 
         // Loot, tools, and other collectibles that can be picked up. Also projectiles ??

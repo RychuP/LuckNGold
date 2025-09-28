@@ -1,10 +1,11 @@
 ﻿using SadRogue.Integration;
 
-namespace LuckNGold.World.Items.Components;
+namespace LuckNGold.World.Items.Interfaces;
 
 /// <summary>
-/// Interface for items that can be consumed.
+/// Interface for components that can be consumed or otherwise used once and removed from game after.
 /// </summary>
+/// <remarks>Should not be combined with <see cref="IUsable"/>.</remarks>
 internal interface IConsumable : ICarryable
 {
     /// <summary>

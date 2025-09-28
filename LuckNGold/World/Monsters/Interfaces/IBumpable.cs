@@ -1,6 +1,6 @@
 ﻿using SadRogue.Integration;
 
-namespace LuckNGold.World.Monsters.Components;
+namespace LuckNGold.World.Monsters.Interfaces;
 
 /// <summary>
 /// Interface implemented by any components that react to bumps.

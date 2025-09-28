@@ -27,8 +27,7 @@ static class Program
     static void Main()
     {
         Settings.WindowTitle = "Luck N' Gold";
-        //Settings.ResizeMode = Settings.WindowResizeOptions.Fit;
-        Settings.AllowWindowResize = false;
+        Settings.ResizeMode = Settings.WindowResizeOptions.Fit;
 
         // Configure how SadConsole starts up
         Builder builder = new Builder()

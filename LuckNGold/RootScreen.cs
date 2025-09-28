@@ -5,6 +5,7 @@ using LuckNGold.World;
 using LuckNGold.World.Decor.Wall;
 using LuckNGold.World.Furniture;
 using LuckNGold.World.Items;
+using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Monsters;
 using LuckNGold.World.Monsters.Components;
 using SadConsole.Components;
@@ -44,27 +45,19 @@ internal class RootScreen : ScreenObject
         Map.AddEntity(decor);
 
         // sample key
-        var key = ItemFactory.SilverKey();
+        var key = ItemFactory.BronzeKey();
         key.Position = (Player.Position.X, Player.Position.Y - 1);
         Map.AddEntity(key);
 
-        key = ItemFactory.SilverKey();
+        key = ItemFactory.BronzeKey();
         key.Position = (Player.Position.X + 1, Player.Position.Y - 1);
         Map.AddEntity(key);
 
         // sample door
-        if (firstRoom.Connections.Find(c => c is Exit) is Exit exit)
-        {
-            pos = exit.Position;
-            var definition = Program.Font.GetGlyphDefinition("Door");
-            var closed = definition.CreateColoredGlyph();
-            var door = new Door(pos, closed, closed)
-            {
-                IsWalkable = true,
-                IsTransparent = true,
-            };
-            Map.AddEntity(door);
-        }
+        var door = FurnitureFactory.Door(true, KeyColor.Bronze);
+        door.Position = firstRoom.Connections.Find(c => c is Exit) is Exit exit ? 
+            exit.Position : Point.None;
+        Map.AddEntity(door);
 
         // Calculate initial FOV.
         Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
