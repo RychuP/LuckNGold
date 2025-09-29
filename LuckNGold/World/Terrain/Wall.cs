@@ -1,5 +1,6 @@
 ﻿using GoRogue.Random;
 using LuckNGold.Visuals;
+using LuckNGold.World.Map;
 using SadRogue.Integration;
 using SadRogue.Primitives.GridViews;
 

@@ -6,7 +6,7 @@ namespace LuckNGold.World.Items.Interfaces;
 /// <summary>
 /// Interface for components that can unlock entities with <see cref="ILockable"/> components.
 /// </summary>
-internal interface IKey : IConsumable
+internal interface IKey : IUsable
 {
     /// <summary>
     /// Color of this key.

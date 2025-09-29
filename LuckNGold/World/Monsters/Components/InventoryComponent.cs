@@ -1,4 +1,6 @@
 ﻿using LuckNGold.World.Items.Interfaces;
+using LuckNGold.World.Map;
+using LuckNGold.World.Monsters.Interfaces;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
@@ -8,14 +10,14 @@ namespace LuckNGold.World.Monsters.Components;
 /// Component representing an inventory which can hold a given number of items.
 /// </summary>
 internal class InventoryComponent(int capacity) 
-    : RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false)
+    : RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IInventory
 {
-    public event EventHandler<InventoryItemEventArgs>? ItemAdded;
-    public event EventHandler<InventoryItemEventArgs>? ItemRemoved;
+    public event EventHandler<InventoryEventArgs>? ItemAdded;
+    public event EventHandler<InventoryEventArgs>? ItemRemoved;
 
     public int Capacity { get; } = capacity;
 
-    public readonly List<RogueLikeEntity> Items = new(capacity);
+    public List<RogueLikeEntity> Items { get; } = new(capacity);
 
     /// <summary>
     /// Drops the given item from this inventory.
@@ -44,11 +46,10 @@ internal class InventoryComponent(int capacity)
     public bool PickUp()
     {
         if (Parent == null)
-            throw new InvalidOperationException("Can't pick up an item into an inventory " +
-                "that's not connected to an object.");
+            throw new InvalidOperationException("Component needs to be attached to an entity.");
 
         if (Parent.CurrentMap == null)
-            throw new InvalidOperationException("Entity must be part of a map to pick up items.");
+            throw new InvalidOperationException("Parent must be part of a map to pick up items.");
 
         foreach (var entity in Parent.CurrentMap.GetEntitiesAt<RogueLikeEntity>(Parent.Position))
         {
@@ -67,21 +68,31 @@ internal class InventoryComponent(int capacity)
     }
 
     /// <summary>
-    /// Causes the parent to consume the given consumable item. 
-    /// The given entity must have some component implementing IConsumable.
+    /// Tries to use the item.
     /// </summary>
-    public bool Consume(RogueLikeEntity item)
+    public bool Use(RogueLikeEntity item)
     {
         if (Parent == null)
-            throw new InvalidOperationException("Cannot consume item from an inventory " +
-                "not attached to an object.");
+            throw new InvalidOperationException("Component needs to be attached to an entity.");
 
-        var consumable = item.AllComponents.GetFirst<IConsumable>();
+        if (Parent.Layer != (int)GameMap.Layer.Monsters)
+            throw new InvalidOperationException("Only entities from Monsters layer can use items.");
 
-        if (!consumable.Consume(Parent)) 
+        if (Parent.CurrentMap == null)
+            throw new InvalidOperationException("Entity needs to be on the map to use items.");
+
+        if (!Items.Contains(item))
+            throw new InvalidOperationException("Item needs to be in the inventory to be used.");
+
+        // Parent is a monster, on the map and has the item in their inventory. 
+        // Let's try to use it. First check if it can be used.
+        var usable = item.AllComponents.GetFirstOrDefault<IUsable>();
+        if (usable == null)
             return false;
 
-        Remove(item);
+        if (!usable.Activate(Parent)) 
+            return false;
+
         return true;
     }
 
@@ -90,7 +101,7 @@ internal class InventoryComponent(int capacity)
     /// </summary>
     /// <param name="item">Item to be added.</param>
     /// <returns>True if success, false otherwise.</returns>
-    bool Add(RogueLikeEntity item)
+    public bool Add(RogueLikeEntity item)
     {
         if (Items.Count >= Capacity || Items.Contains(item))
             return false;
@@ -105,7 +116,7 @@ internal class InventoryComponent(int capacity)
     /// </summary>
     /// <param name="item">Item to be removed.</param>
     /// <returns>True if success, false otherwise.</returns>
-    bool Remove(RogueLikeEntity item)
+    public bool Remove(RogueLikeEntity item)
     {
         if (!Items.Contains(item))
             return false;
@@ -116,13 +127,13 @@ internal class InventoryComponent(int capacity)
 
     void OnItemAdded(RogueLikeEntity item)
     {
-        var args = new InventoryItemEventArgs(item);
+        var args = new InventoryEventArgs(item);
         ItemAdded?.Invoke(this, args);
     }
 
     void OnItemRemoved(RogueLikeEntity item)
     {
-        var args = new InventoryItemEventArgs(item);
+        var args = new InventoryEventArgs(item);
         ItemRemoved?.Invoke(this, args);
     }
 }

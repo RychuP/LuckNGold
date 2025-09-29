@@ -1,6 +1,7 @@
 ﻿using LuckNGold.World.Furniture.Interfaces;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Items.Interfaces;
+using SadConsole.Entities;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
@@ -31,9 +32,14 @@ internal class LockComponent : RogueLikeComponentBase<RogueLikeEntity>, ILockabl
     /// <inheritdoc>/>
     public bool Unlock(IKey key)
     {
+        if (Parent == null)
+            throw new InvalidOperationException("Component needs to be attached to an entity.");
+
         if (IsLocked && key.KeyColor == KeyColor)
         {
             IsLocked = false;
+            CellDecoratorHelpers.RemoveDecorator(_lockDecorator, Parent.AppearanceSingle!.Appearance);
+            Parent.AllComponents.Remove(this);
             return true;
         }
         return false;
@@ -43,11 +49,5 @@ internal class LockComponent : RogueLikeComponentBase<RogueLikeEntity>, ILockabl
     {
         if (host is RogueLikeEntity entity)
             CellDecoratorHelpers.AddDecorator(_lockDecorator, entity.AppearanceSingle!.Appearance);
-    }
-
-    public override void OnRemoved(IScreenObject host)
-    {
-        if (host is RogueLikeEntity entity)
-            CellDecoratorHelpers.RemoveDecorator(_lockDecorator, entity.AppearanceSingle!.Appearance);
     }
 }

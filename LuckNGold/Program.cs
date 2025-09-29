@@ -1,5 +1,7 @@
 ﻿using LuckNGold.Tests;
+using LuckNGold.Visuals;
 using SadConsole.Configuration;
+using SadRogue.Integration.Keybindings;
 
 namespace LuckNGold;
 
@@ -18,8 +20,8 @@ static class Program
     public const int Width = 84;
     public const int Height = 60;
 
-    public static RootScreen? RootScreen;
-    public static IFont Font = Game.Instance.Fonts["PixelDungeon"];
+    public static RootScreen? RootScreen { get; private set; }
+    public static IFont Font { get; } = Game.Instance.Fonts["PixelDungeon"];
 
     public static Color RandomColor =>
         Color.White.GetRandomColor(Game.Instance.Random);

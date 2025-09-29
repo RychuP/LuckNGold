@@ -1,6 +1,7 @@
 ﻿using LuckNGold.Visuals;
 using LuckNGold.World.Items.Components;
 using LuckNGold.World.Items.Enums;
+using LuckNGold.World.Map;
 
 namespace LuckNGold.World.Items;
 

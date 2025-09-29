@@ -1,5 +1,5 @@
 ﻿using LuckNGold.Generation;
-using LuckNGold.World;
+using LuckNGold.World.Map;
 
 namespace LuckNGold.Tests;
 

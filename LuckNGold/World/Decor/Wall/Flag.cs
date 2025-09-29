@@ -1,4 +1,5 @@
 ﻿using LuckNGold.Visuals;
+using LuckNGold.World.Map;
 
 namespace LuckNGold.World.Decor.Wall;
 

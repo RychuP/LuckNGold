@@ -2,7 +2,7 @@
 using SadRogue.Integration;
 using SadRogue.Integration.FieldOfView;
 
-namespace LuckNGold.World;
+namespace LuckNGold.World.Map.Components;
 
 /// <summary>
 /// Controls visibility and tint of terrain and entities dependind on 

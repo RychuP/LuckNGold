@@ -1,5 +1,6 @@
 ﻿using LuckNGold.World.Furniture.Components;
 using LuckNGold.World.Items.Enums;
+using LuckNGold.World.Map;
 using SadRogue.Integration;
 
 namespace LuckNGold.World.Furniture;

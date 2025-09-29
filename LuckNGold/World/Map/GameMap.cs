@@ -2,42 +2,42 @@
 using GoRogue.MapGeneration.ContextComponents;
 using LuckNGold.Generation;
 using LuckNGold.Visuals;
+using LuckNGold.World.Map.Components;
 using SadConsole.Input;
 using SadRogue.Integration.Keybindings;
 using SadRogue.Integration.Maps;
 
-namespace LuckNGold.World;
+namespace LuckNGold.World.Map;
 
 /// <summary>
-/// RogueLikeMap class that simplifies constructor and wraps map layers into a convenient, type-safe, 
-/// customizable enumeration. Add/remove values from the enum as you like; 
-/// the map will update accordingly to reflect number and order.
+/// Map handles everything that happens inside the game world.
 /// </summary>
-internal class GameMap : RogueLikeMap
+class GameMap : RogueLikeMap
 {
     // Map width/height
     public const int DefaultWidth = 100;
     public const int DefaultHeight = 60;
 
-    // effectively max view zoom level
+    // Effectively max view zoom level
     const int MaxFontSizeMultiplier = 4;
 
-    // effectively current view zoom level
+    // Effectively current view zoom level
     int _fontSizeMultiplier = 3;
 
-    // list of all rooms from generator
+    // List of all rooms from generator for testing/debugging
     public IReadOnlyList<Room> Rooms { get; init; }
 
-    // list of all paths from generator
-    // path connects many rooms in a logical path
+    // List of all paths from generator for testing/debugging
+    // (path connects many rooms in a logical, linear way)
     public IReadOnlyList<RoomPath> Paths { get; init; }
 
-    // list of all corridors from generator
-    // corridor connects two rooms
+    // list of all corridors from generator for testing/debugging
+    // (corridor connects two rooms)
     public IReadOnlyList<Corridor> Corridors { get; init; }
 
-    // CUSTOMIZATION: Edit map layers here as desired; however ensure that Terrain stays as 0 to match GoRogue's
-    // definition of the terrain layer.
+    /// <summary>
+    /// Layers available for entities in the game
+    /// </summary>
     public enum Layer
     {
         // The basic structure of the level (walls, floors, corridors). 
@@ -61,9 +61,8 @@ internal class GameMap : RogueLikeMap
     public GameMap(GenerationContext context) : base(context.Width, context.Height, 
         null, Enum.GetValues<Layer>().Length - 1, Distance.Chebyshev)
     {
-        IsFocused = true;
-
-        // save generated data for ease of use
+        // TODO Delete this in the future when generation is sorted.
+        // Generated data saved mainly for testing and debugging purposes.
         Paths = context.GetFirst<ItemList<RoomPath>>().Items;
         Corridors = context.GetFirst<ItemList<Corridor>>().Items;
         var temp = new List<Room>();
@@ -71,22 +70,16 @@ internal class GameMap : RogueLikeMap
             temp.AddRange(path.Rooms);
         Rooms = temp;
 
-        // create renderer
+        // Create renderer
         Point viewSize = new(Program.Width / _fontSizeMultiplier,
             Program.Height / _fontSizeMultiplier);
         DefaultRenderer = CreateRenderer(viewSize);
         DefaultRenderer.Font = Program.Font;
         DefaultRenderer.FontSize *= _fontSizeMultiplier;
 
-        // change default bg color to match wall color
+        // Change default bg color to match wall color
         DefaultRenderer.Surface.DefaultBackground = Colors.Wall;
         DefaultRenderer.Surface.Clear();
-
-        // keyboard handler
-        var actionHandler = new KeybindingsComponent<GameMap>();
-        actionHandler.SetAction(Keys.C, ZoomViewIn);
-        actionHandler.SetAction(Keys.Z, ZoomViewOut);
-        AllComponents.Add(actionHandler);
 
         // fov handler
         AllComponents.Add(new MapFOVHandler());

@@ -19,14 +19,14 @@ internal class EnemyAI() : RogueLikeComponentBase<RogueLikeEntity>(false, false,
 
         if (!map.PlayerFOV.CurrentFOV.Contains(Parent.Position)) return;
 
-        var path = map.AStar.ShortestPath(Parent.Position, Program.RootScreen!.Player.Position);
-        if (path == null) return;
-        var firstPoint = path.GetStep(0);
-        if (Parent.CanMove(firstPoint))
-        {
-            var direction = Direction.GetDirection(Parent.Position, firstPoint);
-            Program.RootScreen.MessageLog.AddMessage($"An enemy moves {direction}!");
-            Parent.Position = firstPoint;
-        }
+        //var path = map.AStar.ShortestPath(Parent.Position, Program.RootScreen!.Player.Position);
+        //if (path == null) return;
+        //var firstPoint = path.GetStep(0);
+        //if (Parent.CanMove(firstPoint))
+        //{
+        //    var direction = Direction.GetDirection(Parent.Position, firstPoint);
+        //    Program.RootScreen.MessageLog.AddMessage($"An enemy moves {direction}!");
+        //    Parent.Position = firstPoint;
+        //}
     }
 }

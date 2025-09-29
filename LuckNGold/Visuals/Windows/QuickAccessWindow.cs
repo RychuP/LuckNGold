@@ -3,19 +3,10 @@ using SadRogue.Integration;
 
 namespace LuckNGold.Visuals.Windows;
 
-internal class InventoryWindow : ScreenSurface
+internal class QuickAccessWindow : ScreenSurface
 {
     // Size of the square that forms a border around an item when keyboard shortcut is pressed
     const int SelectorBoxSize = 5;
-
-    // Max number of items that can be displayed in the window
-    const int MaxItemsCount = 10;
-
-    // Inventory component that has its contents displayed in this window
-    readonly InventoryComponent _inventory;
-
-    // Cache of the inventory items for the purpose of not loosing indices when inventory changes
-    readonly RogueLikeEntity?[] _items = new RogueLikeEntity[MaxItemsCount];
 
     // Parameters for the border of the selected item
     readonly ShapeParameters _shapeParameters;
@@ -23,16 +14,14 @@ internal class InventoryWindow : ScreenSurface
     // Surface set to the graphical font used in the game that displays items from inventory
     readonly ScreenSurface _itemDisplay;
 
-    public InventoryWindow(InventoryComponent inventory) : 
-        base(MaxItemsCount * SelectorBoxSize + MaxItemsCount - 1, SelectorBoxSize)
+    public QuickAccessWindow(QuickAccessComponent quickAccess) : 
+        base(QuickAccessComponent.MaxItemsCount * SelectorBoxSize +
+        QuickAccessComponent.MaxItemsCount - 1, SelectorBoxSize)
     {
         _shapeParameters = ShapeParameters.CreateStyledBoxThin(Colors.SelectorBorder);
-        UseKeyboard = true;
 
-        // Subscribe to inventory events
-        _inventory = inventory;
-        _inventory.ItemAdded += Inventory_OnItemAdded;
-        _inventory.ItemRemoved += Inventory_OnItemRemoved;
+        // Subscribe to quick action events
+        quickAccess.SlotChanged += QuickAccess_OnSlotChanged;
 
         // Draw slots for the inventory items
         DrawSlots();
@@ -42,15 +31,12 @@ internal class InventoryWindow : ScreenSurface
         Children.Add(_itemDisplay);
     }
 
-    public RogueLikeEntity? GetItem(int index) =>
-        _items[index];
-
     /// <summary>
     /// Draws borders around inventory slots and displays keyboard shortcut for each.
     /// </summary>
     void DrawSlots()
     {
-        for (int i = 0; i < MaxItemsCount; i++)
+        for (int i = 0; i < QuickAccessComponent.MaxItemsCount; i++)
         {
             int x = i * SelectorBoxSize + i;
             var itemBorder = new Rectangle(x, 0, SelectorBoxSize, SelectorBoxSize);
@@ -63,7 +49,7 @@ internal class InventoryWindow : ScreenSurface
 
     ScreenSurface CreateItemSurface()
     {
-        var itemSurface = new ScreenSurface(MaxItemsCount * 2 - 1, 1)
+        var itemSurface = new ScreenSurface(QuickAccessComponent.MaxItemsCount * 2 - 1, 1)
         {
             Font = Program.Font,
             UsePixelPositioning = true
@@ -82,8 +68,9 @@ internal class InventoryWindow : ScreenSurface
     /// outside the bounds of the inventory.</exception>
     public void Select(int index)
     {
-        if (index < 0 || index >= MaxItemsCount || index >= _inventory.Items.Count) 
-            throw new ArgumentOutOfRangeException(nameof(index));
+        //if (index < 0 || index >= QuickAccessComponent.MaxItemsCount ||
+        //    index >= _inventory.Items.Count) 
+        //    throw new ArgumentOutOfRangeException(nameof(index));
     }
 
     /// <summary>
@@ -102,33 +89,15 @@ internal class InventoryWindow : ScreenSurface
         _itemDisplay.Surface.SetGlyph(index * 2, 0, 0);
     }
 
-    int GetNextEmptySlot()
+    void QuickAccess_OnSlotChanged(object? _, QuickAccessEventArgs e)
     {
-        for (int i = 0; i < _items.Length; i++)
-        {
-            if (_items[i] is null)
-                return i;
-        }
-        return -1;
-    }
+        if (e.Index < 0 || e.Index >= QuickAccessComponent.MaxItemsCount)
+            throw new IndexOutOfRangeException("Index passed in the event args is " +
+                "out of bounds.");
 
-    void Inventory_OnItemAdded(object? sender, InventoryItemEventArgs e)
-    {
-        int index = GetNextEmptySlot();
-        if (index < 0)
-            throw new InvalidOperationException("Item was added to the inventory " +
-                "but all slots in the window are already taken.");
-        _items[index] = e.Item;
-        DisplayItem(e.Item, index);
-    }
-
-    void Inventory_OnItemRemoved(object? sender, InventoryItemEventArgs e)
-    {
-        int index = Array.IndexOf(_items, e.Item);
-        if (index < 0)
-            throw new InvalidOperationException("Item removed from the inventory " +
-                "could not be found in the window.");
-        _items[index] = null;
-        EraseItem(index);
+        if (e.NewItem is null)
+            EraseItem(e.Index);
+        else
+            DisplayItem(e.NewItem, e.Index);
     }
 }

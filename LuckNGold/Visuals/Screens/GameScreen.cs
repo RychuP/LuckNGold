@@ -1,22 +1,24 @@
 ﻿using LuckNGold.Generation;
-using LuckNGold.Visuals.Screens;
+using LuckNGold.Visuals.Components;
 using LuckNGold.Visuals.Windows;
-using LuckNGold.World;
 using LuckNGold.World.Decor.Wall;
 using LuckNGold.World.Furniture;
 using LuckNGold.World.Items;
 using LuckNGold.World.Items.Enums;
+using LuckNGold.World.Map;
 using LuckNGold.World.Monsters;
 using LuckNGold.World.Monsters.Components;
 using SadConsole.Components;
-using SadConsole.Input;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
 
-namespace LuckNGold;
+namespace LuckNGold.Visuals.Screens;
 
-// The "RootScreen" represents the visible screen with a map and message log parts.
-internal class RootScreen : ScreenObject
+/// <summary>
+/// Screen that is displayed once the generation is complete.
+/// It contains the map and various information windows.
+/// </summary>
+internal class GameScreen : ScreenObject
 {
     public readonly GameMap Map;
     public readonly RogueLikeEntity Player;
@@ -25,10 +27,14 @@ internal class RootScreen : ScreenObject
     // TODO debug stuff to be deleted at some point
     readonly ScreenSurface _infoSurface;
 
-    readonly InventoryWindow _inventoryWindow;
+    readonly QuickAccessWindow _quickAccessWindow;
 
-    public RootScreen()
+    readonly KeybindingsComponent _keybindingsComponent;
+
+    public GameScreen()
     {
+        IsFocused = true;
+
         // Generate a dungeon map
         Map = MapFactory.GenerateMap(GameMap.DefaultWidth, GameMap.DefaultHeight);
         Children.Add(Map);
@@ -38,6 +44,10 @@ internal class RootScreen : ScreenObject
         var firstRoom = Map.Paths[0].FirstRoom;
         Player.Position = firstRoom.Area.Center;
         Map.AddEntity(Player);
+
+        // Create keyboard handler
+        _keybindingsComponent = new CustomKeybindingsComponent(Map, Player);
+        SadComponents.Add(_keybindingsComponent);
 
         // sample decor
         var pos = (Player.Position.X, firstRoom.Area.Y - 1);
@@ -55,11 +65,11 @@ internal class RootScreen : ScreenObject
 
         // sample door
         var door = FurnitureFactory.Door(true, KeyColor.Bronze);
-        door.Position = firstRoom.Connections.Find(c => c is Exit) is Exit exit ? 
+        door.Position = firstRoom.Connections.Find(c => c is Exit) is Exit exit ?
             exit.Position : Point.None;
         Map.AddEntity(door);
 
-        // Calculate initial FOV.
+        // Calculate initial FOV
         Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
 
         // Center view on player as they move
@@ -75,28 +85,14 @@ internal class RootScreen : ScreenObject
         _infoSurface = new ScreenSurface(20, 10);
         Children.Add(_infoSurface);
 
-        // Create a window to display player's inventory.
-        var inventory = Player.AllComponents.GetFirstOrDefault<InventoryComponent>() ??
-            throw new InvalidOperationException("Player is missing inventory.");
-        _inventoryWindow = new InventoryWindow(inventory);
-        int x = (Program.Width - _inventoryWindow.Width) / 2;
-        int y = Program.Height - _inventoryWindow.Height - 1;
-        _inventoryWindow.Position = (x, y);
-        Children.Add(_inventoryWindow);
-
-        // Add inventory keyboard shortcuts to map's keyboard controller
-        var controller = Map.AllComponents.GetFirstOrDefault<KeybindingsComponent<GameMap>>() ??
-            throw new InvalidOperationException("Map is missing keyboard controller.");
-        controller.SetAction(Keys.D1, () => DropItem(0));
-        controller.SetAction(Keys.D2, () => DropItem(1));
-        controller.SetAction(Keys.D3, () => DropItem(2));
-        controller.SetAction(Keys.D4, () => DropItem(3));
-        controller.SetAction(Keys.D5, () => DropItem(4));
-        controller.SetAction(Keys.D6, () => DropItem(5));
-        controller.SetAction(Keys.D7, () => DropItem(6));
-        controller.SetAction(Keys.D8, () => DropItem(7));
-        controller.SetAction(Keys.D9, () => DropItem(8));
-        controller.SetAction(Keys.D0, () => DropItem(9));
+        // Create a window to display player's inventory
+        var quickAccess = Player.AllComponents.GetFirstOrDefault<QuickAccessComponent>() ??
+            throw new InvalidOperationException("Player is missing quick access component.");
+        _quickAccessWindow = new QuickAccessWindow(quickAccess);
+        int x = (Program.Width - _quickAccessWindow.Width) / 2;
+        int y = Program.Height - _quickAccessWindow.Height - 1;
+        _quickAccessWindow.Position = (x, y);
+        Children.Add(_quickAccessWindow);
 
         // Create message log
         MessageLog = new MessageLogConsole(Program.Width, MessageLogConsole.DefaultHeight);
@@ -104,12 +100,5 @@ internal class RootScreen : ScreenObject
         //Children.Add(MessageLog);
     }
 
-    void DropItem(int index)
-    {
-        var inventory = Player.AllComponents.GetFirstOrDefault<InventoryComponent>() ?? 
-            throw new InvalidOperationException("Player is missing inventory.");
-        var item = _inventoryWindow.GetItem(index);
-        if (item is not null)
-            inventory.Drop(item);
-    }
+    
 }

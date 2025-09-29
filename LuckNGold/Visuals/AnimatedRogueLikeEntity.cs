@@ -1,5 +1,5 @@
 ﻿using LuckNGold.Visuals.Components;
-using LuckNGold.World;
+using LuckNGold.World.Map;
 using SadRogue.Integration;
 
 namespace LuckNGold.Visuals;

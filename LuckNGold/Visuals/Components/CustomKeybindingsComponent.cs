@@ -1,0 +1,119 @@
+﻿using GoRogue.GameFramework;
+using LuckNGold.Visuals.Windows;
+using LuckNGold.World.Map;
+using LuckNGold.World.Monsters.Components;
+using SadConsole.Input;
+using SadRogue.Integration;
+using SadRogue.Integration.Keybindings;
+
+namespace LuckNGold.Visuals.Components;
+
+/// <summary>
+/// Subclass of the integration library's keybindings component that handles player movement 
+/// and other game world activities.
+/// </summary>
+internal class CustomKeybindingsComponent : KeybindingsComponent
+{
+    readonly GameMap _map;
+    readonly RogueLikeEntity _player;
+    readonly QuickAccessComponent _quickAccess;
+    readonly InventoryComponent _inventory;
+
+    readonly static IEnumerable<(InputKey binding, Direction direction)> ViMotions =
+    [
+        ((InputKey)Keys.K, Direction.Up),
+        (Keys.L, Direction.Right),
+        (Keys.J, Direction.Down),
+        (Keys.H, Direction.Left),
+        (Keys.U, Direction.UpRight),
+        (Keys.N, Direction.DownRight),
+        (Keys.B, Direction.DownLeft),
+        (Keys.Y, Direction.UpLeft)
+    ];
+
+    readonly static Keys[] QuickAccessKeys = [Keys.D0, Keys.D1, Keys.D2, Keys.D3, Keys.D4,
+        Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9];
+
+    public CustomKeybindingsComponent(GameMap map, RogueLikeEntity player)
+    {
+        _player = player;
+        _map = map;
+
+        _inventory = _player.AllComponents.GetFirst<InventoryComponent>() ??
+            throw new InvalidOperationException("Player is missing inventory.");
+
+        _quickAccess = _player.AllComponents.GetFirst<QuickAccessComponent>() ??
+            throw new InvalidOperationException("Player is missing quick access.");
+
+        AddMapControls();
+        AddPlayerControls();
+    }
+
+    void AddPlayerControls()
+    {
+        // Add player motions
+        SetMotions(ViMotions);
+        SetMotions(ArrowMotions);
+        SetMotions(NumPadAllMotions);
+        SetMotions(WasdMotions);
+
+        // Add quick access actions
+        foreach (var key in QuickAccessKeys)
+        {
+            AddDropItemAction(key);
+            AddUseAction(key);
+        }
+
+        // Add pick up action
+        SetAction(Keys.G, () => _inventory.PickUp());
+    }
+
+    // Adds action that will use the item on pressing the given key
+    void AddUseAction(Keys key)
+    {
+        int slotIndex = GetSlotIndex(key);
+        SetAction(key, () => UseItem(slotIndex));
+    }
+    
+    // Adds action that will drop the item on pressing the given key with shift as modifier
+    void AddDropItemAction(Keys key)
+    {
+        int slotIndex = GetSlotIndex(key);
+        InputKey inputKey = new(key, KeyModifiers.Shift);
+        SetAction(inputKey, () => DropItem(slotIndex));
+    }
+
+    // Converts shortcut keyboard key to 0 based slot index of the quick access
+    static int GetSlotIndex(Keys key) =>
+        key == Keys.D0 ? 9 : (int) key - 49;
+
+    // Adds zoom in and out keyboard shortcuts
+    void AddMapControls()
+    {
+        SetAction(Keys.C, _map.ZoomViewIn);
+        SetAction(Keys.Z, _map.ZoomViewOut);
+    }
+
+    // Pulls the item from the quick access slot and sends it to inventory to be used
+    void UseItem(int slotIndex)
+    {
+        var item = _quickAccess.GetItem(slotIndex);
+        if (item is not null)
+            _inventory.Use(item);
+    }
+
+    // Pulls the item from the quick access slot and sends it to inventory to be dropped
+    void DropItem(int slotIndex)
+    {
+        var item = _quickAccess.GetItem(slotIndex);
+        if (item is not null)
+            _inventory.Drop(item);
+    }
+
+    // Motion handler for the player movement
+    protected override void MotionHandler(Direction direction)
+    {
+        if (!_player.CanMoveIn(direction)) return;
+        _player.Position += direction;
+    }
+}

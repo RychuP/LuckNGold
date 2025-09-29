@@ -3,7 +3,7 @@ using LuckNGold.Generation;
 using LuckNGold.World.Terrain;
 using SadRogue.Primitives.GridViews;
 
-namespace LuckNGold.World;
+namespace LuckNGold.World.Map;
 
 /// <summary>
 /// Similar to <see cref="MapObjectFactory"/>, but for producing various types of maps. The functions here
