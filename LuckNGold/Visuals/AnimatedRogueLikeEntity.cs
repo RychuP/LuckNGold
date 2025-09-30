@@ -92,7 +92,6 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
     /// </summary>
     /// <param name="animations">Collection of names for animations to be extracted 
     /// from the Font for the entity.</param>
-    /// <param name="position">The initial position of the entity on the game map.</param>
     /// <param name="defaultAnimation">The name of the default animation to be used for the entity.</param>
     /// <param name="layer">The layer of the game map where the entity resides.</param>
     /// <param name="walkable">A value indicating whether the entity can be walked over.
@@ -123,6 +122,9 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
         // Start animating
         PlayDefaultAnimation();
     }
+
+    public bool HasAnimation(string animation) =>
+        _animations.ContainsKey(animation);
 
     /// <summary>
     /// Pauses animating the entity without changing current animation or frame played.

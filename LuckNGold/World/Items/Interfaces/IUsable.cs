@@ -8,7 +8,8 @@ namespace LuckNGold.World.Items.Interfaces;
 internal interface IUsable : ICarryable
 {
     /// <summary>
-    /// Item is consumed and removed from the game if true, otherwise can be used again.
+    /// True if <see cref="IUsable"/> can be activated more than once 
+    /// or false when it is removed from the game after use.
     /// </summary>
     bool IsSingleUse { get; }
 

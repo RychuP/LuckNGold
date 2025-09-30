@@ -3,8 +3,6 @@ using GoRogue.MapGeneration.ContextComponents;
 using LuckNGold.Generation;
 using LuckNGold.Visuals;
 using LuckNGold.World.Map.Components;
-using SadConsole.Input;
-using SadRogue.Integration.Keybindings;
 using SadRogue.Integration.Maps;
 
 namespace LuckNGold.World.Map;

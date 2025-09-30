@@ -1,44 +1,45 @@
 ﻿using LuckNGold.World.Furniture.Interfaces;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Items.Interfaces;
-using SadConsole.Entities;
+using LuckNGold.World.Map;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
 namespace LuckNGold.World.Furniture.Components;
 
 /// <summary>
-/// Component for entities that can be locked/unlocked.
+/// Component for entities that need to be unlocked before access is granted.
 /// </summary>
 internal class LockComponent : RogueLikeComponentBase<RogueLikeEntity>, ILockable
 {
     readonly CellDecorator _lockDecorator;
 
     /// <inheritdoc/>
-    public KeyColor KeyColor { get; }
+    public Difficulty Difficulty { get; }
 
-    /// <inheritdoc/>
-    public bool IsLocked { get; private set; } = true;
-
-    public LockComponent(KeyColor keyColor) : base(false, false, false, false)
+    public LockComponent(Difficulty difficulty) : base(false, false, false, false)
     {
-        KeyColor = keyColor;
+        Difficulty = difficulty;
 
-        // Create decorator that will be added to the appearance of the host
-        var glyphDef = Program.Font.GetGlyphDefinition($"{KeyColor}Lock");
+        // Create a decorator that will be added to the appearance of the host
+        var glyphDef = Program.Font.GetGlyphDefinition($"{Difficulty}Lock");
         _lockDecorator = new CellDecorator(Color.White, glyphDef.Glyph, glyphDef.Mirror);
     }
 
-    /// <inheritdoc>/>
-    public bool Unlock(IKey key)
+    /// <inheritdoc/>
+    public bool Unlock(IUnlocker unlocker)
     {
-        if (Parent == null)
+        if (Parent is null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
-        if (IsLocked && key.KeyColor == KeyColor)
+        // Anything static and big (ie door, chest) must be present on the map to be unlocked.
+        if (Parent.Layer <= (int)GameMap.Layer.Furniture && Parent.CurrentMap is null)
+            throw new InvalidOperationException("Furniture and below needs to be on the map.");
+
+        if ((int)unlocker.Quality == (int)Difficulty)
         {
-            IsLocked = false;
-            CellDecoratorHelpers.RemoveDecorator(_lockDecorator, Parent.AppearanceSingle!.Appearance);
+            CellDecoratorHelpers.RemoveDecorator(_lockDecorator, 
+                Parent.AppearanceSingle!.Appearance);
             Parent.AllComponents.Remove(this);
             return true;
         }
@@ -48,6 +49,7 @@ internal class LockComponent : RogueLikeComponentBase<RogueLikeEntity>, ILockabl
     public override void OnAdded(IScreenObject host)
     {
         if (host is RogueLikeEntity entity)
-            CellDecoratorHelpers.AddDecorator(_lockDecorator, entity.AppearanceSingle!.Appearance);
+            CellDecoratorHelpers.AddDecorator(_lockDecorator, 
+                entity.AppearanceSingle!.Appearance);
     }
 }

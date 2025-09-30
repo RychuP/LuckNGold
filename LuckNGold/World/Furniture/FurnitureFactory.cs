@@ -1,4 +1,5 @@
 ﻿using LuckNGold.World.Furniture.Components;
+using LuckNGold.World.Furniture.Enums;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
@@ -11,20 +12,52 @@ namespace LuckNGold.World.Furniture;
 /// </summary>
 internal class FurnitureFactory
 {
-    public static RogueLikeEntity Door(bool locked = false, KeyColor keyColor = KeyColor.None)
+    public static RogueLikeEntity Door(DoorOrientation orientation,
+        bool locked = false, Difficulty lockDifficulty = Difficulty.None)
     {
-        var glyphDef = Program.Font.GetGlyphDefinition("Door");
-        var appearance = glyphDef.CreateColoredGlyph();
+        if (orientation == DoorOrientation.None)
+            throw new ArgumentException("Door requires an orientation.", nameof(orientation));
 
-        var door = new RogueLikeEntity(appearance, !locked, !locked, (int)GameMap.Layer.Furniture);
+        // Get appearances
+        var glyphDef = Program.Font.GetGlyphDefinition($"ClosedDoor{orientation}");
+        var closedAppearance = glyphDef.CreateColoredGlyph();
+        var appearance = glyphDef.CreateColoredGlyph();
+        glyphDef = Program.Font.GetGlyphDefinition($"OpenDoor{orientation}");
+        var openAppearance = glyphDef.CreateColoredGlyph();
+
+        // Create container
+        var door = new RogueLikeEntity(appearance, !locked, !locked, 
+            (int)GameMap.Layer.Furniture);
+
+        // Add opening component
+        var opening = new OpeningComponent();
+        opening.Closed += (o, e) =>
+        {
+            closedAppearance.CopyAppearanceTo(door.AppearanceSingle!.Appearance);
+            door.IsWalkable = false;
+            door.IsTransparent = false;
+        };
+        opening.Opened += (o, e) =>
+        {
+            openAppearance.CopyAppearanceTo(door.AppearanceSingle!.Appearance);
+            door.IsWalkable = true;
+            door.IsTransparent = true;
+        };
+        door.AllComponents.Add(opening);
+
+        // Add lock component if marked as locked
         if (locked)
         {
-            if (keyColor == KeyColor.None)
+            if (lockDifficulty == Difficulty.None)
                 throw new ArgumentException("Locked door requires a key color.");
 
-            var lockComp = new LockComponent(keyColor);
+            var lockComp = new LockComponent(lockDifficulty);
             door.AllComponents.Add(lockComp);
         }
+
+        // Add interactable component
+        door.AllComponents.Add(new InteractableComponent());
+
         return door;
     }
 }

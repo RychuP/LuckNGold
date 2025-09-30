@@ -1,10 +1,11 @@
 ﻿namespace LuckNGold.World.Items.Enums;
 
-enum KeyColor
+enum Quality
 {
     None = 0,
+    Wood,
     Bronze,
+    Iron,
     Silver,
-    Golden,
-    Skull
+    Gold
 }

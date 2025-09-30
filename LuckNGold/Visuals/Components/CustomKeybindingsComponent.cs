@@ -1,5 +1,5 @@
 ﻿using GoRogue.GameFramework;
-using LuckNGold.Visuals.Windows;
+using LuckNGold.World.Furniture.Interfaces;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
 using SadConsole.Input;
@@ -66,6 +66,7 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
 
         // Add pick up action
         SetAction(Keys.G, () => _inventory.PickUp());
+        SetAction(Keys.F, Interact);
     }
 
     // Adds action that will use the item on pressing the given key
@@ -100,6 +101,27 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
         var item = _quickAccess.GetItem(slotIndex);
         if (item is not null)
             _inventory.Use(item);
+    }
+
+    void Interact()
+    {
+        var neighbours = AdjacencyRule.EightWay.Neighbors(_player.Position);
+        foreach (var point in neighbours)
+        {
+            var entities = _map.GetEntitiesAt<RogueLikeEntity>(point);
+            foreach (var entity in entities)
+            {
+                if (entity.AllComponents.GetFirstOrDefault<IInteractable>()
+                    is IInteractable interactable)
+                {
+                    if (interactable.Interact(_player))
+                    {
+                        //_player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     // Pulls the item from the quick access slot and sends it to inventory to be dropped

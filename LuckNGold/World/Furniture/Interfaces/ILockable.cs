@@ -4,24 +4,20 @@ using LuckNGold.World.Items.Interfaces;
 namespace LuckNGold.World.Furniture.Interfaces;
 
 /// <summary>
-/// Interface for components that can be locked/unlocked.
+/// Interface for components that need to be unlocked before access is granted.
 /// </summary>
 internal interface ILockable
 {
     /// <summary>
-    /// Color of the key that unlocks this lock.
+    /// Difficulty of the <see cref="ILockable"/>.
+    /// Requires a matching index of <see cref="IUnlocker.Quality"/> to unlock.
     /// </summary>
-    KeyColor KeyColor { get; }
+    Difficulty Difficulty { get; }
 
     /// <summary>
-    /// Whether the component is locked or open.
+    /// Tries to unlock the <see cref="ILockable"/> with the given <see cref="IUnlocker"/>.
     /// </summary>
-    bool IsLocked { get; }
-
-    /// <summary>
-    /// Check the key for <see cref="KeyColor"/> and unlocks the component if there is a match.
-    /// </summary>
-    /// <param name="key">Key trying to open the lock.</param>
-    /// <returns>True if the key managed to open the lock, false otherwise.</returns>
-    bool Unlock(IKey key);
+    /// <param name="unlocker"><see cref="IUnlocker"/> being 
+    /// used to unlock the <see cref="ILockable"/></param>
+    bool Unlock(IUnlocker unlocker);
 }

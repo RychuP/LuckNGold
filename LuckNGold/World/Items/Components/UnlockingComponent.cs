@@ -11,11 +11,11 @@ namespace LuckNGold.World.Items.Components;
 /// <summary>
 /// Component for entities that can be used to open locked entities.
 /// </summary>
-internal class KeyComponent(KeyColor keyColor)
-    : RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IKey
+internal class UnlockingComponent(Quality quality)
+    : RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IUnlocker
 {
     /// <inheritdoc/>
-    public KeyColor KeyColor { get; } = keyColor;
+    public Quality Quality { get; } = quality;
 
     /// <inheritdoc/>
     public bool IsSingleUse { get; } = true;
@@ -35,17 +35,16 @@ internal class KeyComponent(KeyColor keyColor)
 
     bool TryUnlock(ILockable lockable)
     {
-        if (lockable.IsLocked && lockable.Unlock(this))
+        if (lockable.Unlock(this))
             return true;
         return false;
     }
 
     /// <summary>
-    /// The entity with the key component will search for nearby entities 
-    /// like doors, chests, etc that can be unlocked.
+    /// Searches for nearby entities with <see cref="ILockable"/> that can be unlocked.
     /// </summary>
-    /// <param name="user">Entity that is using the key.</param>
-    /// <returns>True if key managed to unlock something, false otherwise.</returns>
+    /// <param name="user">Entity that is using the component.</param>
+    /// <returns>True if managed to unlock something, false otherwise.</returns>
     public bool Activate(RogueLikeEntity user)
     {
         if (Parent == null)
@@ -67,10 +66,10 @@ internal class KeyComponent(KeyColor keyColor)
             {
                 if (EntityHasLockable(entity, out ILockable? lockable) && TryUnlock(lockable))
                 {
-                    // Matching lock was found and unlocked using this key
+                    // Check if can be reused
                     if (IsSingleUse)
                     {
-                        // Key was used and is removed from the game
+                        // Remove from the game if not
                         inventory.Remove(Parent);
                     }
                     return true;
