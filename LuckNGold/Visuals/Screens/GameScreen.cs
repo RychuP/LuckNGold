@@ -126,6 +126,7 @@ internal class GameScreen : ScreenObject
 
     void Door_OnWalkabilityChanged(object? o, EventArgs e)
     {
+        Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
         _infoSurface.Surface.Print(0, 0, $"Walk Door: {_door.IsWalkable}   ");
         _infoSurface.Surface.Print(0, 1, $"Walk Map: {Map.WalkabilityView[_door.Position]} ");
         
@@ -133,6 +134,7 @@ internal class GameScreen : ScreenObject
 
     void Door_OnTransparencyChanged(object? o, EventArgs e)
     {
+        Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
         _infoSurface.Surface.Print(0, 2, $"Transp Door: {_door.IsTransparent}   ");
         _infoSurface.Surface.Print(0, 3, $"Transp Map: {Map.TransparencyView[_door.Position]}   ");
     }
