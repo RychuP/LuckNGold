@@ -12,5 +12,5 @@ Dungeon exploration game in very early stages of development. I don't think this
 ## Screenshots:
 
 <p align="center" style="margin-bottom: 0px !important;">
-  <img width="800" src="/ScreenShots/Gameplay.png" alt="Gameplay" align="center">
+  <img width="800" src="/Screenshots/Gameplay.png" alt="Gameplay" align="center">
 </p>
