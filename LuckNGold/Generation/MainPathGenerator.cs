@@ -1,6 +1,5 @@
 ﻿using GoRogue.MapGeneration;
 using GoRogue.Random;
-using SadConsole.EasingFunctions;
 using ShaiRandom.Generators;
 
 namespace LuckNGold.Generation;
@@ -58,20 +57,21 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
     static Rectangle GetFirstRoom(Rectangle bounds)
     {
         var rnd = GlobalRandom.DefaultRNG;
-        int width = 0, height = 0;
-        double sizeRatio = 0;
+        //int width = 0, height = 0;
+        //double sizeRatio = 0;
+        int width = 5, height = 5;
 
         // try to make the rooms less elongated
-        while (sizeRatio < Room.MinSizeRatio)
-        {
-            width = Room.GetRandomOddSize(max: 5);
-            height = Room.GetRandomOddSize(max: 5);
+        //while (sizeRatio < Room.MinSizeRatio)
+        //{
+        //    width = Room.GetRandomOddSize(max: 5);
+        //    height = Room.GetRandomOddSize(max: 5);
 
-            // calculate width/height ratio
-            double i = Math.Min(height, width);
-            double j = Math.Max(height, width);
-            sizeRatio = i / j;
-        }
+        //    // calculate width/height ratio
+        //    double i = Math.Min(height, width);
+        //    double j = Math.Max(height, width);
+        //    sizeRatio = i / j;
+        //}
 
         // extra 2 cells for walls on each side
         Rectangle searchArea = new(1, 1, bounds.Width - width - 2, bounds.Height - height - 2);

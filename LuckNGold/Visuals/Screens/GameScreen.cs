@@ -1,7 +1,8 @@
-﻿using LuckNGold.Generation;
+﻿using GoRogue.GameFramework;
+using LuckNGold.Generation;
 using LuckNGold.Visuals.Components;
 using LuckNGold.Visuals.Windows;
-using LuckNGold.World.Decor.Wall;
+using LuckNGold.World.Decor;
 using LuckNGold.World.Furniture;
 using LuckNGold.World.Furniture.Enums;
 using LuckNGold.World.Items;
@@ -10,30 +11,37 @@ using LuckNGold.World.Map;
 using LuckNGold.World.Monsters;
 using LuckNGold.World.Monsters.Components;
 using SadConsole.Components;
-using SadConsole.Input;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
+using SadRogue.Primitives.SpatialMaps;
 
 namespace LuckNGold.Visuals.Screens;
 
 /// <summary>
 /// Screen that is displayed once the generation is complete.
-/// It contains the map and various information windows.
+/// It contains the map and various information windows. 
+/// Actual gameplay happens here.
 /// </summary>
 internal class GameScreen : ScreenObject
 {
+    // Map that displays the game world
     public readonly GameMap Map;
+
+    // Player entity
     public readonly RogueLikeEntity Player;
+
+    // TODO probably not needed -> delete at some point ?
+    // Message log from the SadRogue template
     public readonly MessageLogConsole MessageLog;
 
     // TODO debug stuff to be deleted at some point
     readonly ScreenSurface _infoSurface;
 
+    // Window that shows player's quick access inventory
     readonly QuickAccessWindow _quickAccessWindow;
 
+    // Keyboard handler for the map and player
     readonly KeybindingsComponent _keybindingsComponent;
-
-    readonly RogueLikeEntity _door;
 
     public GameScreen()
     {
@@ -43,32 +51,55 @@ internal class GameScreen : ScreenObject
         Map = MapFactory.GenerateMap(GameMap.DefaultWidth, GameMap.DefaultHeight);
         Children.Add(Map);
 
-        // Generate player and place them in first room of the main path
+        // Just in case, add event handlers after adding map to gamescreen
+        Map.ObjectAdded += Map_OnObjectAdded;
+        Map.ObjectRemoved += Map_OnObjectRemoved;
+
+        // Create a player entity and place it in the first room of the main path
         Player = MonsterFactory.Player();
         var firstRoom = Map.Paths[0].FirstRoom;
         Player.Position = firstRoom.Area.Center;
         Map.AddEntity(Player);
         //Player.PositionChanged += Player_OnPositionChanged;
 
-        // Create keyboard handler
+        // Add keyboard handler component
         _keybindingsComponent = new CustomKeybindingsComponent(Map, Player);
         SadComponents.Add(_keybindingsComponent);
 
-        // sample decor
-        var pos = (Player.Position.X, firstRoom.Area.Y - 1);
-        var decor = new Flag(pos, "Red");
-        Map.AddEntity(decor);
+        // Add sample decor
+        var flag = DecorFactory.Flag(Crystal.Bronzite);
+        flag.Position = (Player.Position.X, firstRoom.Area.Y - 1);
+        Map.AddEntity(flag);
 
-        // sample key
-        var key = ItemFactory.Key(Quality.Wood);
+        // Add sample keys
+        var key = ItemFactory.Key(Crystal.Bronzite);
         key.Position = (Player.Position.X, Player.Position.Y - 1);
         Map.AddEntity(key);
-
-        key = ItemFactory.Key(Quality.Wood);
+        key = ItemFactory.Key(Crystal.Ruby);
         key.Position = (Player.Position.X + 1, Player.Position.Y - 1);
         Map.AddEntity(key);
+        key = ItemFactory.Key(Crystal.Emerald);
+        key.Position = (Player.Position.X - 1, Player.Position.Y - 1);
+        Map.AddEntity(key);
 
-        // sample door
+        // Add sample candles
+        var topSideOfRoom = firstRoom.Area.PositionsOnSide(Direction.Up);
+        var candle = DecorFactory.Candle(Size.Small);
+        candle.Position = topSideOfRoom.First();
+        Map.AddEntity(candle);
+        candle = DecorFactory.Candle(Size.Small);
+        candle.Position = topSideOfRoom.Last();
+        Map.AddEntity(candle);
+
+        // Add sample torches
+        var torch = DecorFactory.Torch();
+        torch.Position = flag.Position + Direction.Right;
+        Map.AddEntity(torch);
+        torch = DecorFactory.Torch();
+        torch.Position = flag.Position + Direction.Left;
+        Map.AddEntity(torch);
+
+        // Get an exit from the first room for the sample door
         if (firstRoom.Connections.Find(c => c is Exit) is not Exit exit)
             throw new Exception("First room has to have a usable exit.");
 
@@ -86,12 +117,10 @@ internal class GameScreen : ScreenObject
                 DoorOrientation.TopLeft : DoorOrientation.BottomLeft;
         }
 
+        // Create the sample door
         var door = FurnitureFactory.Door(doorOrientation, true, Difficulty.Trivial);
         door.Position = exit.Position;
         Map.AddEntity(door);
-        _door = door;
-        door.WalkabilityChanged += Door_OnWalkabilityChanged;
-        door.TransparencyChanged += Door_OnTransparencyChanged;
 
         // Calculate initial FOV
         Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
@@ -100,12 +129,12 @@ internal class GameScreen : ScreenObject
         var followTargetComponent = new SurfaceComponentFollowTarget { Target = Player };
         Map.DefaultRenderer!.SadComponents.Add(followTargetComponent);
 
-        // debug layer
+        // Debug layer
         //var debug = new DebugSurface(Map);
         //debug.SadComponents.Add(followTargetComponent);
         //Children.Add(debug);
 
-        // small static info screen to display information from debugging methods
+        // Small static info screen to display information from debugging methods
         _infoSurface = new ScreenSurface(20, 10);
         Children.Add(_infoSurface);
 
@@ -124,18 +153,29 @@ internal class GameScreen : ScreenObject
         //Children.Add(MessageLog);
     }
 
-    void Door_OnWalkabilityChanged(object? o, EventArgs e)
+    // Adds event handler to entities that have the ability to change their transparency
+    void Map_OnObjectAdded(object? o, ItemEventArgs<IGameObject> e)
     {
-        Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
-        _infoSurface.Surface.Print(0, 0, $"Walk Door: {_door.IsWalkable}   ");
-        _infoSurface.Surface.Print(0, 1, $"Walk Map: {Map.WalkabilityView[_door.Position]} ");
-        
+        // Look for any known entities that can change their transparency
+        // so that fov can be recalculated if in view range of the player
+        if (e.Item is RogueLikeEntity entity && entity.Name == "Door")
+            entity.TransparencyChanged += RogueLikeEntity_OnTransparencyChanged;
     }
 
-    void Door_OnTransparencyChanged(object? o, EventArgs e)
+    void Map_OnObjectRemoved(object? o, ItemEventArgs<IGameObject> e)
     {
-        Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
-        _infoSurface.Surface.Print(0, 2, $"Transp Door: {_door.IsTransparent}   ");
-        _infoSurface.Surface.Print(0, 3, $"Transp Map: {Map.TransparencyView[_door.Position]}   ");
+        if (e.Item is RogueLikeEntity entity && entity.Name == "Door")
+            entity.TransparencyChanged -= RogueLikeEntity_OnTransparencyChanged;
+    }
+
+    // Recalculates player FOV if an entity that changed its transparency is in view
+    void RogueLikeEntity_OnTransparencyChanged(object? o, ValueChangedEventArgs<bool> e)
+    {
+        if (o is not RogueLikeEntity door || door.Name != "Door")
+            return;
+
+        var playerFOV = Player.AllComponents.GetFirst<PlayerFOVController>();
+        if (Map.PlayerFOV.CurrentFOV.Contains(door.Position))
+            playerFOV.CalculateFOV();
     }
 }

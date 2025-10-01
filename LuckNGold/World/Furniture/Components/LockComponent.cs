@@ -36,7 +36,7 @@ internal class LockComponent : RogueLikeComponentBase<RogueLikeEntity>, ILockabl
         if (Parent.Layer <= (int)GameMap.Layer.Furniture && Parent.CurrentMap is null)
             throw new InvalidOperationException("Furniture and below needs to be on the map.");
 
-        if ((int)unlocker.Quality == (int)Difficulty)
+        if (Difficulty == (Difficulty)unlocker.Quality)
         {
             CellDecoratorHelpers.RemoveDecorator(_lockDecorator, 
                 Parent.AppearanceSingle!.Appearance);

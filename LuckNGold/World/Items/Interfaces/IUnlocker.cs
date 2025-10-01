@@ -10,7 +10,7 @@ internal interface IUnlocker : IUsable
 {
     /// <summary>
     /// Quality of the <see cref="IUnlocker"/>. 
-    /// Will open <see cref="ILockable"/> with matched <see cref="ILockable.Difficulty"/>.
+    /// Will open <see cref="ILockable"/> with a matched <see cref="ILockable.Difficulty"/>.
     /// </summary>
     Quality Quality { get; }
 }

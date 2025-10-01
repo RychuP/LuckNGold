@@ -1,5 +1,16 @@
 # Luck N' Gold
-Basic map generation done. Terrain displayed using graphical font.
-Keyboard shortcuts: wasd, vi, numerical or arrow keys to move, 
-C to zoom in, Z to zoom out, G to pick up, 1-0 use, shift + 1-0 drop,
-G to pick up, F to interact.
+Dungeon exploration game in very early stages of development. I don't think this will be an overly serious RogueLike with lots of complexity. I am aiming for something easy to pick up and pleasant to play. There should be plenty of skeletons to smash and gold to collect. Time will tell what it will actually become.
+
+## Controls:
+1. Arrow keys, numerical, wasd or vi = move
+2. C, Z = zoom in and out
+3. G = pick up
+4. 1 to 0 = use item
+5. Shift + 1 to 0 = drop item
+6. F = interact
+
+## Screenshots:
+
+<p align="center" style="margin-bottom: 0px !important;">
+  <img width="800" src="/ScreenShots/Gameplay.png" alt="Gameplay" align="center">
+</p>

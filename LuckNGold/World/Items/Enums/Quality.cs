@@ -3,9 +3,9 @@
 enum Quality
 {
     None = 0,
-    Wood,
-    Bronze,
-    Iron,
-    Silver,
-    Gold
+    Poor,
+    Acceptable,
+    Good,
+    High,
+    Excellent,
 }

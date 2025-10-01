@@ -6,7 +6,6 @@ using SadRogue.Integration;
 
 namespace LuckNGold.World.Furniture;
 
-
 /// <summary>
 /// Factory of entities that can be interacted with like doors, chests, levers, etc
 /// </summary>
@@ -26,8 +25,10 @@ internal class FurnitureFactory
         var openAppearance = glyphDef.CreateColoredGlyph();
 
         // Create container
-        var door = new RogueLikeEntity(appearance, !locked, !locked, 
-            (int)GameMap.Layer.Furniture);
+        var door = new RogueLikeEntity(appearance, !locked, !locked, (int)GameMap.Layer.Furniture)
+        {
+            Name = "Door"
+        };
 
         // Add opening component
         var opening = new OpeningComponent();
@@ -49,7 +50,7 @@ internal class FurnitureFactory
         if (locked)
         {
             if (lockDifficulty == Difficulty.None)
-                throw new ArgumentException("Locked door requires a key color.");
+                throw new ArgumentException("Locked door requires a lock difficulty level.");
 
             var lockComp = new LockComponent(lockDifficulty);
             door.AllComponents.Add(lockComp);

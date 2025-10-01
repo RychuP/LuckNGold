@@ -6,16 +6,18 @@ using LuckNGold.World.Map;
 namespace LuckNGold.World.Items;
 
 /// <summary>
-/// Factory of loot, tools, weapons and other collectibles that can be picked up.
+/// Factory of loot, tools, weapons and other collectibles.
 /// </summary>
 static class ItemFactory
 {
-    public static AnimatedRogueLikeEntity Key(Quality quality)
+    public static AnimatedRogueLikeEntity Key(Crystal crystal)
     {
-        var animation = $"{quality}Key";
-        var key = new AnimatedRogueLikeEntity(animation, true, GameMap.Layer.Items);
-        key.AllComponents.Add(new UnlockingComponent(quality));
-        key.Name = $"{quality} Key";
+        var animation = $"{crystal}Key";
+        var key = new AnimatedRogueLikeEntity(animation, true, GameMap.Layer.Items)
+        {
+            Name = $"{crystal} Key"
+        };
+        key.AllComponents.Add(new UnlockingComponent((Quality)crystal));
         return key;
     }
 }

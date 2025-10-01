@@ -39,11 +39,8 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
         _player = player;
         _map = map;
 
-        _inventory = _player.AllComponents.GetFirst<InventoryComponent>() ??
-            throw new InvalidOperationException("Player is missing inventory.");
-
-        _quickAccess = _player.AllComponents.GetFirst<QuickAccessComponent>() ??
-            throw new InvalidOperationException("Player is missing quick access.");
+        _inventory = _player.AllComponents.GetFirst<InventoryComponent>();
+        _quickAccess = _player.AllComponents.GetFirst<QuickAccessComponent>();
 
         AddMapControls();
         AddPlayerControls();
@@ -116,7 +113,6 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
                 {
                     if (interactable.Interact(_player))
                     {
-                        //_player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
                         return;
                     }
                 }

@@ -5,7 +5,6 @@ namespace LuckNGold.Visuals;
 /// <summary>
 /// RootScreen displays an appropriate screen for the current state of the program.
 /// </summary>
-
 internal class RootScreen : ScreenObject
 {
     GameScreen? _gameScreen;
