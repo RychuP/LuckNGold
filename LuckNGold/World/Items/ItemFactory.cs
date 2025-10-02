@@ -10,14 +10,24 @@ namespace LuckNGold.World.Items;
 /// </summary>
 static class ItemFactory
 {
-    public static AnimatedRogueLikeEntity Key(Crystal crystal)
+    public static AnimatedRogueLikeEntity Key(Gemstone gemstone)
     {
-        var animation = $"{crystal}Key";
+        var animation = $"{gemstone}Key";
         var key = new AnimatedRogueLikeEntity(animation, true, GameMap.Layer.Items)
         {
-            Name = $"{crystal} Key"
+            Name = $"{gemstone} Key"
         };
-        key.AllComponents.Add(new UnlockingComponent((Quality)crystal));
+        key.AllComponents.Add(new UnlockingComponent((Quality)gemstone));
         return key;
+    }
+
+    public static AnimatedRogueLikeEntity Coin()
+    {
+        var coin = new AnimatedRogueLikeEntity("Coin", false, GameMap.Layer.Items)
+        {
+            Name = "Coin"
+        };
+        coin.AllComponents.Add(new TreasureComponent(TreasureType.Coin, 1));
+        return coin;
     }
 }

@@ -67,18 +67,18 @@ internal class GameScreen : ScreenObject
         SadComponents.Add(_keybindingsComponent);
 
         // Add sample decor
-        var flag = DecorFactory.Flag(Crystal.Bronzite);
+        var flag = DecorFactory.Flag(Gemstone.Onyx);
         flag.Position = (Player.Position.X, firstRoom.Area.Y - 1);
         Map.AddEntity(flag);
 
         // Add sample keys
-        var key = ItemFactory.Key(Crystal.Bronzite);
+        var key = ItemFactory.Key(Gemstone.Onyx);
         key.Position = (Player.Position.X, Player.Position.Y - 1);
         Map.AddEntity(key);
-        key = ItemFactory.Key(Crystal.Ruby);
+        key = ItemFactory.Key(Gemstone.Ruby);
         key.Position = (Player.Position.X + 1, Player.Position.Y - 1);
         Map.AddEntity(key);
-        key = ItemFactory.Key(Crystal.Emerald);
+        key = ItemFactory.Key(Gemstone.Emerald);
         key.Position = (Player.Position.X - 1, Player.Position.Y - 1);
         Map.AddEntity(key);
 
@@ -98,6 +98,11 @@ internal class GameScreen : ScreenObject
         torch = DecorFactory.Torch();
         torch.Position = flag.Position + Direction.Left;
         Map.AddEntity(torch);
+
+        // Add sample coin
+        var coin = ItemFactory.Coin();
+        coin.Position = Player.Position + Direction.DownLeft;
+        Map.AddEntity(coin);
 
         // Get an exit from the first room for the sample door
         if (firstRoom.Connections.Find(c => c is Exit) is not Exit exit)

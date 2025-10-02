@@ -7,7 +7,7 @@ namespace LuckNGold.World.Decor;
 
 static class DecorFactory
 {
-    public static RogueLikeEntity Flag(Crystal crystal)
+    public static RogueLikeEntity Flag(Gemstone crystal)
     {
         return new AnimatedRogueLikeEntity($"{crystal}Flag", false, GameMap.Layer.Decor)
         {

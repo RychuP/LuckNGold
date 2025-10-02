@@ -4,7 +4,7 @@ using LuckNGold.World.Items.Enums;
 namespace LuckNGold.World.Items.Interfaces;
 
 /// <summary>
-/// Interface for components that can unlock entities with <see cref="ILockable"/> components.
+/// It can unlock entities with <see cref="ILockable"/>.
 /// </summary>
 internal interface IUnlocker : IUsable
 {

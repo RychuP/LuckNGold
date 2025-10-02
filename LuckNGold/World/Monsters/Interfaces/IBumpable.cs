@@ -3,7 +3,7 @@
 namespace LuckNGold.World.Monsters.Interfaces;
 
 /// <summary>
-/// Interface implemented by any components that react to bumps.
+/// It can react to bumps.
 /// </summary>
 public interface IBumpable
 {

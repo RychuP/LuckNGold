@@ -12,6 +12,7 @@ namespace LuckNGold.Visuals.Components;
 /// Subclass of the integration library's keybindings component that handles player movement 
 /// and other game world activities.
 /// </summary>
+// TODO some methods don't really belong here. Move them to more appropriate classes.
 internal class CustomKeybindingsComponent : KeybindingsComponent
 {
     readonly GameMap _map;

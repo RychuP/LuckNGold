@@ -1,9 +1,11 @@
-﻿namespace LuckNGold.World.Items.Interfaces;
+﻿using LuckNGold.World.Monsters.Interfaces;
+
+namespace LuckNGold.World.Items.Interfaces;
 
 /// <summary>
-/// Interface for items that can be picked up.
+/// It can be carried in an <see cref="IInventory"/>.
 /// </summary>
 internal interface ICarryable
-{ 
-
+{
+    
 }

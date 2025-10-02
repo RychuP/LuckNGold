@@ -3,7 +3,7 @@
 namespace LuckNGold.World.Items.Interfaces;
 
 /// <summary>
-/// Interface for components that can be used or consumed.
+/// It can be used or consumed.
 /// </summary>
 internal interface IUsable : ICarryable
 {

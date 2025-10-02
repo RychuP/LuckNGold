@@ -1,11 +1,11 @@
 ﻿namespace LuckNGold.World.Items.Enums;
 
-enum Crystal
+enum Gemstone
 {
     None = 0,
-    Bronzite,
+    Onyx,
+    Amber,
     Emerald,
-    Azurite,
     Ruby,
-    Citrine
+    Diamond,
 }

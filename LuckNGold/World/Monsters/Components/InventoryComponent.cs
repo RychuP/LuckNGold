@@ -14,10 +14,20 @@ internal class InventoryComponent(int capacity)
 {
     public event EventHandler<InventoryEventArgs>? ItemAdded;
     public event EventHandler<InventoryEventArgs>? ItemRemoved;
+    public event EventHandler<InventoryEventArgs>? TreasureAdded;
+    public event EventHandler<InventoryEventArgs>? TreasureRemoved;
 
+    /// <inheritdoc/>
     public int Capacity { get; } = capacity;
 
+    /// <inheritdoc/>
+    public int Value { get; private set; }
+
+    /// <inheritdoc/>
     public List<RogueLikeEntity> Items { get; } = new(capacity);
+
+    /// <inheritdoc/>
+    public List<RogueLikeEntity> Treasure { get; } = [];
 
     /// <summary>
     /// Drops the given item from this inventory.
@@ -96,33 +106,52 @@ internal class InventoryComponent(int capacity)
         return true;
     }
 
-    /// <summary>
-    /// Adds an item to the inventory contents.
-    /// </summary>
-    /// <param name="item">Item to be added.</param>
-    /// <returns>True if success, false otherwise.</returns>
-    public bool Add(RogueLikeEntity item)
+    /// <inheritdoc/>
+    public bool Add(RogueLikeEntity entity)
     {
-        if (Items.Count >= Capacity || Items.Contains(item))
-            return false;
+        // Check item is a treasure
+        if (entity.AllComponents.Contains<ITreasure>())
+        {
+            if (Treasure.Contains(entity))
+                throw new InvalidOperationException("Trying to add a treasure which is already " +
+                    "in the inventory");
 
-        Items.Add(item);
-        OnItemAdded(item);
-        return true;
+            Treasure.Add(entity);
+            OnTreasureAdded(entity);
+            return true;
+        }
+
+        // Regular item
+        else
+        {
+            if (Items.Count >= Capacity)
+                return false;
+
+            if (Items.Contains(entity))
+                throw new InvalidOperationException("Trying to add an item which is already " +
+                    "in the inventory");
+
+            Items.Add(entity);
+            OnItemAdded(entity);
+            return true;
+        }
+        
     }
 
-    /// <summary>
-    /// Removes an item from the inventory contents.
-    /// </summary>
-    /// <param name="item">Item to be removed.</param>
-    /// <returns>True if success, false otherwise.</returns>
-    public bool Remove(RogueLikeEntity item)
+    /// <inheritdoc/>
+    public bool Remove(RogueLikeEntity entity)
     {
-        if (!Items.Contains(item))
-            return false;
-        Items.Remove(item);
-        OnItemRemoved(item);
-        return true;
+        if (Items.Remove(entity))
+        {
+            OnItemRemoved(entity);
+            return true;
+        }
+        else if (Treasure.Remove(entity))
+        {
+            OnTreasureRemoved(entity);
+            return true;
+        }
+        return false;
     }
 
     void OnItemAdded(RogueLikeEntity item)
@@ -135,5 +164,19 @@ internal class InventoryComponent(int capacity)
     {
         var args = new InventoryEventArgs(item);
         ItemRemoved?.Invoke(this, args);
+    }
+
+    void OnTreasureAdded(RogueLikeEntity treasure)
+    {
+        Value += treasure.AllComponents.GetFirst<ITreasure>().Value;
+        var args = new InventoryEventArgs(treasure);
+        TreasureAdded?.Invoke(this, args);
+    }
+
+    void OnTreasureRemoved(RogueLikeEntity treasure)
+    {
+        Value -= treasure.AllComponents.GetFirst<ITreasure>().Value;
+        var args = new InventoryEventArgs(treasure);
+        TreasureRemoved?.Invoke(this, args);
     }
 }
