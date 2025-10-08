@@ -7,5 +7,5 @@ enum Gemstone
     Amber,
     Emerald,
     Ruby,
-    Diamond,
+    Diamond
 }

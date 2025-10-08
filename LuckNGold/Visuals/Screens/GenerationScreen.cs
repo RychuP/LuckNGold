@@ -15,7 +15,7 @@ internal class GenerationScreen : ScreenSurface
 
     public GenerationScreen() : base(Program.Width, Program.Height)
     {
-        int y = Height / 2;
+        int y = (Height - 1) / 2;
         int maxTextWidth = _text.Length + MaxDotCount;
         int x = (Width - maxTextWidth) / 2;
 

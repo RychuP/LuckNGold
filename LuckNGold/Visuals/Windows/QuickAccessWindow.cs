@@ -3,6 +3,9 @@ using SadRogue.Integration;
 
 namespace LuckNGold.Visuals.Windows;
 
+/// <summary>
+/// Window that displays contents of <see cref="QuickAccessComponent"/> attached to the player.
+/// </summary>
 internal class QuickAccessWindow : ScreenSurface
 {
     // Size of the square that forms a border around an item when keyboard shortcut is pressed
@@ -15,13 +18,13 @@ internal class QuickAccessWindow : ScreenSurface
     readonly ScreenSurface _itemDisplay;
 
     public QuickAccessWindow(QuickAccessComponent quickAccess) : 
-        base(QuickAccessComponent.MaxItemsCount * SelectorBoxSize +
-        QuickAccessComponent.MaxItemsCount - 1, SelectorBoxSize)
+        base(QuickAccessComponent.Max * SelectorBoxSize +
+        QuickAccessComponent.Max - 1, SelectorBoxSize)
     {
         _shapeParameters = ShapeParameters.CreateStyledBoxThin(Colors.SelectorBorder);
 
         // Subscribe to quick action events
-        quickAccess.SlotChanged += QuickAccess_OnSlotChanged;
+        quickAccess.Changed += QuickAccess_OnSlotChanged;
 
         // Draw slots for the inventory items
         DrawSlots();
@@ -36,7 +39,7 @@ internal class QuickAccessWindow : ScreenSurface
     /// </summary>
     void DrawSlots()
     {
-        for (int i = 0; i < QuickAccessComponent.MaxItemsCount; i++)
+        for (int i = 0; i < QuickAccessComponent.Max; i++)
         {
             int x = i * SelectorBoxSize + i;
             var itemBorder = new Rectangle(x, 0, SelectorBoxSize, SelectorBoxSize);
@@ -49,7 +52,7 @@ internal class QuickAccessWindow : ScreenSurface
 
     ScreenSurface CreateItemSurface()
     {
-        var itemSurface = new ScreenSurface(QuickAccessComponent.MaxItemsCount * 2 - 1, 1)
+        var itemSurface = new ScreenSurface(QuickAccessComponent.Max * 2 - 1, 1)
         {
             Font = Program.Font,
             UsePixelPositioning = true
@@ -89,11 +92,10 @@ internal class QuickAccessWindow : ScreenSurface
         _itemDisplay.Surface.SetGlyph(index * 2, 0, 0);
     }
 
-    void QuickAccess_OnSlotChanged(object? _, QuickAccessEventArgs e)
+    void QuickAccess_OnSlotChanged(object? _, InventoryChangedEventArgs e)
     {
-        if (e.Index < 0 || e.Index >= QuickAccessComponent.MaxItemsCount)
-            throw new IndexOutOfRangeException("Index passed in the event args is " +
-                "out of bounds.");
+        if (e.Index < 0 || e.Index >= QuickAccessComponent.Max)
+            throw new IndexOutOfRangeException(nameof(e.Index));
 
         if (e.NewItem is null)
             EraseItem(e.Index);

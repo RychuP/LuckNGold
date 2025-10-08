@@ -7,5 +7,5 @@ enum Quality
     Acceptable,
     Good,
     High,
-    Excellent,
+    Excellent
 }

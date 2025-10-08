@@ -16,11 +16,11 @@ static class MonsterFactory
         };
 
         // Add inventory component
-        var inventory = new InventoryComponent(10);
+        var inventory = new InventoryComponent(20);
         player.AllComponents.Add(inventory);
 
-        // Add quick access component
-        var quickAccess = new QuickAccessComponent(inventory);
+        // Add quick access inventory component
+        var quickAccess = new QuickAccessComponent();
         player.AllComponents.Add(quickAccess);
 
         // Add component for updating map's player FOV as they move

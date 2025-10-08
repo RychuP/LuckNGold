@@ -275,3 +275,9 @@ internal class Probe
         _outerEdge.AddRange(_bounds.PositionsOnSide(_direction));
     }
 }
+
+/// <summary>
+/// Raised when a probe area gets too small meaning there is no sufficient space for a new room.
+/// </summary>
+class ProbeException(string msg) : Exception(msg)
+{ }

@@ -18,7 +18,6 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
     readonly GameMap _map;
     readonly RogueLikeEntity _player;
     readonly QuickAccessComponent _quickAccess;
-    readonly InventoryComponent _inventory;
 
     readonly static IEnumerable<(InputKey binding, Direction direction)> ViMotions =
     [
@@ -40,7 +39,6 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
         _player = player;
         _map = map;
 
-        _inventory = _player.AllComponents.GetFirst<InventoryComponent>();
         _quickAccess = _player.AllComponents.GetFirst<QuickAccessComponent>();
 
         AddMapControls();
@@ -63,7 +61,7 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
         }
 
         // Add pick up action
-        SetAction(Keys.G, () => _inventory.PickUp());
+        SetAction(Keys.G, () => _quickAccess.PickUp());
         SetAction(Keys.F, Interact);
     }
 
@@ -71,7 +69,7 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
     void AddUseAction(Keys key)
     {
         int slotIndex = GetSlotIndex(key);
-        SetAction(key, () => UseItem(slotIndex));
+        SetAction(key, () => _quickAccess.Use(slotIndex));
     }
     
     // Adds action that will drop the item on pressing the given key with shift as modifier
@@ -79,7 +77,7 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
     {
         int slotIndex = GetSlotIndex(key);
         InputKey inputKey = new(key, KeyModifiers.Shift);
-        SetAction(inputKey, () => DropItem(slotIndex));
+        SetAction(inputKey, () => _quickAccess.Drop(slotIndex));
     }
 
     // Converts shortcut keyboard key to 0 based slot index of the quick access
@@ -91,14 +89,6 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
     {
         SetAction(Keys.C, _map.ZoomViewIn);
         SetAction(Keys.Z, _map.ZoomViewOut);
-    }
-
-    // Pulls the item from the quick access slot and sends it to inventory to be used
-    void UseItem(int slotIndex)
-    {
-        var item = _quickAccess.GetItem(slotIndex);
-        if (item is not null)
-            _inventory.Use(item);
     }
 
     void Interact()
@@ -119,14 +109,6 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
                 }
             }
         }
-    }
-
-    // Pulls the item from the quick access slot and sends it to inventory to be dropped
-    void DropItem(int slotIndex)
-    {
-        var item = _quickAccess.GetItem(slotIndex);
-        if (item is not null)
-            _inventory.Drop(item);
     }
 
     // Motion handler for the player movement

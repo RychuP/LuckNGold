@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace LuckNGold.World.Items.Components;
 
 /// <summary>
-/// Component for entities that can be used to open locked entities.
+/// Component for an item entity that can be used to open locked entities.
 /// </summary>
 internal class UnlockingComponent(Quality quality)
     : RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IUnlocker
@@ -51,11 +51,21 @@ internal class UnlockingComponent(Quality quality)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
         if (user.CurrentMap == null)
-            throw new InvalidOperationException("Entity needs to be on the map to activate items.");
+            throw new InvalidOperationException("User has to be on the map to activate items.");
 
-        var inventory = user.AllComponents.GetFirst<IInventory>();
-        if (!inventory.Items.Contains(Parent))
-            throw new InvalidOperationException("User needs to have the key in their inventory.");
+        // Find user's inventory holding the parent
+        var inventories = user.AllComponents.GetAll<IInventory>();
+        IInventory? inventory = null;
+        foreach (var inv in inventories)
+        {
+            if (inv.Items.Contains(Parent))
+            {
+                inventory = inv;
+                break;
+            }
+        }
+        if (inventory is null)
+            throw new InvalidOperationException("Unlocker is not in the user's inventory.");
 
         // Start checking user's neighbours looking for locked entities (doors, chests, etc)
         var nearbyPoints = AdjacencyRule.EightWay.Neighbors(user.Position);
