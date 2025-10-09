@@ -1,4 +1,5 @@
-﻿using LuckNGold.World.Monsters.Enums;
+﻿using LuckNGold.World.Map;
+using LuckNGold.World.Monsters.Enums;
 using LuckNGold.World.Monsters.Interfaces;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
@@ -23,5 +24,14 @@ internal class GearComponent() :
     public bool PutAway(RogueLikeEntity wieldable)
     {
         throw new NotImplementedException();
+    }
+
+    public override void OnAdded(IScreenObject host)
+    {
+        base.OnAdded(host);
+
+        if (Parent!.Layer != (int)GameMap.Layer.Monsters)
+            throw new InvalidOperationException("Component is meant to be added " +
+                "to a Monster entity.");
     }
 }

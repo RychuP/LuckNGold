@@ -15,7 +15,7 @@ internal class UnlockingComponent(Quality quality)
     : RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IUnlocker
 {
     /// <inheritdoc/>
-    public Quality Quality { get; } = quality;
+    public Quality Quality => quality;
 
     /// <inheritdoc/>
     public bool IsSingleUse { get; } = true;

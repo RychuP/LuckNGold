@@ -3,6 +3,11 @@
 enum Material
 {
     None = 0,
+    Onyx,
+    Amber,
+    Emerald,
+    Ruby,
+    Diamond,
     Glass,
     Bone,
     Leather,

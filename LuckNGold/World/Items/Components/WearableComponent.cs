@@ -13,6 +13,6 @@ namespace LuckNGold.World.Items.Components;
 internal class WearableComponent(BodyPart bodyPart, ClothingLayer layer) : 
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IWearable
 {
-    public BodyPart BodyPart { get => bodyPart; }
-    public ClothingLayer Layer { get => layer; }
+    public BodyPart BodyPart => bodyPart;
+    public ClothingLayer Layer => layer;
 }

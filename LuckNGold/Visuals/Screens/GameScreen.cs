@@ -99,14 +99,25 @@ internal class GameScreen : ScreenObject
         torch.Position = flag.Position + Direction.Left;
         Map.AddEntity(torch);
 
-        // Add sample coin
-        var coin = ItemFactory.Coin();
-        coin.Position = Player.Position + Direction.DownLeft;
-        Map.AddEntity(coin);
+        // Add sample gemstones
+        var onyx = ItemFactory.Onyx();
+        onyx.Position = Player.Position + Direction.DownLeft;
+        Map.AddEntity(onyx);
+        var amber = ItemFactory.Amber();
+        amber.Position = Player.Position + Direction.Down;
+        Map.AddEntity(amber);
+        var emerald = ItemFactory.Emerald();
+        emerald.Position = Player.Position + Direction.DownRight;
+        Map.AddEntity(emerald);
 
         // Get an exit from the first room for the sample door
         if (firstRoom.Connections.Find(c => c is Exit) is not Exit exit)
             throw new Exception("First room has to have a usable exit.");
+
+        // Add sample coin
+        var coin = ItemFactory.Coin();
+        coin.Position = Player.Position + exit.Direction.GetOpposite();
+        Map.AddEntity(coin);
 
         // Establish orientation of the door
         var direction = exit.Direction;

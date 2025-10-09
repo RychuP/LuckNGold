@@ -12,5 +12,5 @@ namespace LuckNGold.World.Items.Components;
 internal class WieldableComponent(Hand hand) :
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IWieldable
 {
-    public Hand Hand { get => hand; }
+    public Hand Hand => hand;
 }
