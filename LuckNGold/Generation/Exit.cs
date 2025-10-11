@@ -17,6 +17,9 @@ internal class Exit : IWallConnection
     /// </summary>
     public Direction Direction { get; }
 
+    /// <summary>
+    /// Destination <see cref="Exit"/> where this exit leads to.
+    /// </summary>
     public Exit? End
     {
         get

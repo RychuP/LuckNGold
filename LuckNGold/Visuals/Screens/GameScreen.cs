@@ -51,8 +51,9 @@ internal class GameScreen : ScreenObject
         Map = MapFactory.GenerateMap(GameMap.DefaultWidth, GameMap.DefaultHeight);
         Children.Add(Map);
 
-        // Just in case, add event handlers after adding map to gamescreen
-        Map.ObjectAdded += Map_OnObjectAdded;
+        // Add event handlers that monitor entities capable of changing their transparency
+        //Map.ObjectAdded += Map_OnObjectAdded;
+        AddDoorTransparencyChangeHandler();
         Map.ObjectRemoved += Map_OnObjectRemoved;
 
         // Create a player entity and place it in the first room of the main path
@@ -71,17 +72,6 @@ internal class GameScreen : ScreenObject
         flag.Position = (Player.Position.X, firstRoom.Area.Y - 1);
         Map.AddEntity(flag);
 
-        // Add sample keys
-        var key = ItemFactory.Key(Gemstone.Onyx);
-        key.Position = (Player.Position.X, Player.Position.Y - 1);
-        Map.AddEntity(key);
-        key = ItemFactory.Key(Gemstone.Ruby);
-        key.Position = (Player.Position.X + 1, Player.Position.Y - 1);
-        Map.AddEntity(key);
-        key = ItemFactory.Key(Gemstone.Emerald);
-        key.Position = (Player.Position.X - 1, Player.Position.Y - 1);
-        Map.AddEntity(key);
-
         // Add sample candles
         var topSideOfRoom = firstRoom.Area.PositionsOnSide(Direction.Up);
         var candle = DecorFactory.Candle(Size.Small);
@@ -99,44 +89,14 @@ internal class GameScreen : ScreenObject
         torch.Position = flag.Position + Direction.Left;
         Map.AddEntity(torch);
 
-        // Add sample gemstones
-        var onyx = ItemFactory.Onyx();
-        onyx.Position = Player.Position + Direction.DownLeft;
-        Map.AddEntity(onyx);
-        var amber = ItemFactory.Amber();
-        amber.Position = Player.Position + Direction.Down;
-        Map.AddEntity(amber);
-        var emerald = ItemFactory.Emerald();
-        emerald.Position = Player.Position + Direction.DownRight;
-        Map.AddEntity(emerald);
-
         // Get an exit from the first room for the sample door
         if (firstRoom.Connections.Find(c => c is Exit) is not Exit exit)
-            throw new Exception("First room has to have a usable exit.");
+            throw new Exception("First room needs to have a valid exit.");
 
         // Add sample coin
         var coin = ItemFactory.Coin();
-        coin.Position = Player.Position + exit.Direction.GetOpposite();
+        coin.Position = Player.Position + Direction.Up;
         Map.AddEntity(coin);
-
-        // Establish orientation of the door
-        var direction = exit.Direction;
-        DoorOrientation doorOrientation = DoorOrientation.None;
-        if (direction.IsHorizontal())
-        {
-            doorOrientation = direction == Direction.Left ?
-                DoorOrientation.Left : DoorOrientation.Right;
-        }
-        else
-        {
-            doorOrientation = direction == Direction.Up ?
-                DoorOrientation.TopLeft : DoorOrientation.BottomLeft;
-        }
-
-        // Create the sample door
-        var door = FurnitureFactory.Door(doorOrientation, true, Difficulty.Trivial);
-        door.Position = exit.Position;
-        Map.AddEntity(door);
 
         // Calculate initial FOV
         Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
@@ -155,8 +115,7 @@ internal class GameScreen : ScreenObject
         Children.Add(_infoSurface);
 
         // Create a window to display player's inventory
-        var quickAccess = Player.AllComponents.GetFirstOrDefault<QuickAccessComponent>() ??
-            throw new InvalidOperationException("Player is missing quick access component.");
+        var quickAccess = Player.AllComponents.GetFirst<QuickAccessComponent>();
         _quickAccessWindow = new QuickAccessWindow(quickAccess);
         int x = (Program.Width - _quickAccessWindow.Width) / 2;
         int y = Program.Height - _quickAccessWindow.Height - 1;
@@ -182,6 +141,20 @@ internal class GameScreen : ScreenObject
     {
         if (e.Item is RogueLikeEntity entity && entity.Name == "Door")
             entity.TransparencyChanged -= RogueLikeEntity_OnTransparencyChanged;
+    }
+
+    void AddDoorTransparencyChangeHandler()
+    {
+        var doors = Map.Entities.Where(ip => ip.Item is RogueLikeEntity entity
+            && entity.Name == "Door").Select(ip => ip.Item as RogueLikeEntity).ToList();
+        if (doors.Count > 0)
+        {
+            foreach (var door in doors)
+            {
+                if (door is not null)
+                    door.TransparencyChanged += RogueLikeEntity_OnTransparencyChanged;
+            }
+        }
     }
 
     // Recalculates player FOV if an entity that changed its transparency is in view

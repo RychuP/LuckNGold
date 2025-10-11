@@ -122,10 +122,10 @@
 "ClosedDoorBottomLeft": {"Glyph": 32, "Mirror": 0},
 "ClosedDoorBottomRight": {"Glyph": 32, "Mirror": 2},
 
-"Peaks1": {"Glyph": 98, "Mirror": 0},
-"Peaks2": {"Glyph": 99, "Mirror": 0},
-"Peaks3": {"Glyph": 89, "Mirror": 0},
-"Peaks4": {"Glyph": 88, "Mirror": 0},
+"Peaks1": {"Glyph": 110, "Mirror": 0},
+"Peaks2": {"Glyph": 111, "Mirror": 0},
+"Peaks3": {"Glyph": 112, "Mirror": 0},
+"Peaks4": {"Glyph": 113, "Mirror": 0},
 
 "Coin1": {"Glyph": 100, "Mirror": 0},
 "Coin2": {"Glyph": 101, "Mirror": 0},
@@ -140,5 +140,15 @@
 "Ruby" : {"Glyph": 107, "Mirror": 0},
 "Diamond" : {"Glyph": 108, "Mirror": 0},
 
+"Skull" : {"Glyph": 88, "Mirror": 0},
+"Bones" : {"Glyph": 89, "Mirror": 0},
+"FloorSpiderWebLeft" : {"Glyph": 98, "Mirror": 0},
+"FloorSpiderWebRight" : {"Glyph": 98, "Mirror": 2},
+"BoxesSmall" : {"Glyph": 115, "Mirror": 0},
+"BoxesLarge" : {"Glyph": 114, "Mirror": 0},
 
+"StepsDownLeft" : {"Glyph": 128, "Mirror": 2},
+"StepsDownRight" : {"Glyph": 128, "Mirror": 0},
+"StepsUpLeft" : {"Glyph": 129, "Mirror": 0},
+"StepsUpRight" : {"Glyph": 129, "Mirror": 2},
 }}

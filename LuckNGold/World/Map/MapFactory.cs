@@ -1,4 +1,5 @@
 ﻿using GoRogue.MapGeneration;
+using GoRogue.MapGeneration.ContextComponents;
 using LuckNGold.Generation;
 using LuckNGold.World.Terrain;
 using SadRogue.Primitives.GridViews;
@@ -32,18 +33,26 @@ static class MapFactory
                 gen.AddStep(new MainPathGenerator(15));
                 gen.AddStep(new SidePathGenerator());
                 gen.AddStep(new MinorPathGenerator());
+                gen.AddStep(new DoorGenerator());
             });
 
         // Create actual integration library map.
         var map = new GameMap(generator.Context);
 
-        // get gridview of the terrain
+        // Get gridview of the terrain
         var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
         generator.Context.Remove("WallFloor");
 
-        // translate gridview into terrain
+        // Translate gridview into terrain
         map.ApplyTerrainOverlay(generatedMap, (pos, val) => val ?
             new Floor(pos) : new Wall(pos, generatedMap));
+
+        // Populate the map with doors and keys
+        var generatedDoors = generator.Context.GetFirst<ItemList<Door>>("Doors");
+        map.PlaceDoorAndKeys(generatedDoors);
+
+        // Steps to other levels
+        map.PlaceSteps();
 
         // Generate 10 enemies, placing them in random walkable locations for demo purposes.
         //for (int i = 0; i < 10; i++)

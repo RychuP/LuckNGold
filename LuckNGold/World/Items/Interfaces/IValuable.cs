@@ -5,5 +5,8 @@
 /// </summary>
 internal interface IValuable
 {
+    /// <summary>
+    /// Monetary value in coins.
+    /// </summary>
     int Value { get; }
 }

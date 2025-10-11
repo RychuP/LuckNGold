@@ -59,7 +59,7 @@ static class ItemFactory
             Name = name
         };
         gemstone.AllComponents.Add(new ValueComponent(value));
-        gemstone.AllComponents.Add(new IngredientComponent(material, 15));
+        gemstone.AllComponents.Add(new IngredientComponent(material, 1, 15));
         return gemstone;
     }
 }

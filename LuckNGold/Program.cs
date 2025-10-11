@@ -1,5 +1,5 @@
 ﻿using LuckNGold.Tests;
-using LuckNGold.Visuals;
+using LuckNGold.Visuals.Screens;
 using SadConsole.Configuration;
 using SadRogue.Integration.Keybindings;
 

@@ -2,6 +2,11 @@
 using GoRogue.MapGeneration.ContextComponents;
 using LuckNGold.Generation;
 using LuckNGold.Visuals;
+using LuckNGold.World.Decor;
+using LuckNGold.World.Furniture;
+using LuckNGold.World.Furniture.Enums;
+using LuckNGold.World.Items;
+using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map.Components;
 using SadRogue.Integration.Maps;
 
@@ -103,5 +108,78 @@ class GameMap : RogueLikeMap
     {
         if (_fontSizeMultiplier <= 1) return;
         ResizeView(--_fontSizeMultiplier);
+    }
+
+    public void PlaceDoorAndKeys(ItemList<Door> doorList)
+    {
+        foreach (var itemStep in doorList)
+        {
+            Door genDoor = itemStep.Item;
+
+            // Establish orientation of the door
+            var direction = genDoor.Exit.Direction;
+            DoorOrientation doorOrientation = DoorOrientation.None;
+            if (direction.IsHorizontal())
+            {
+                doorOrientation = direction == Direction.Left ?
+                    DoorOrientation.Left : DoorOrientation.Right;
+            }
+            else
+            {
+                doorOrientation = direction == Direction.Up ?
+                    DoorOrientation.TopLeft : DoorOrientation.BottomLeft;
+            }
+
+            // Check if the door is locked.
+            bool locked = false;
+            Difficulty difficulty = Difficulty.None;
+            if (genDoor.Lock is Lock @lock)
+            {
+                locked = true;
+                difficulty = @lock.Difficulty;
+
+                // Create the key
+                var key = ItemFactory.Key((Gemstone) difficulty);
+                key.Position = @lock.Key.Position;
+                AddEntity(key);
+            }
+
+            // Create the door
+            var door = FurnitureFactory.Door(doorOrientation, locked, difficulty);
+            door.IsVisible = false;
+            door.Position = genDoor.Exit.Position;
+            AddEntity(door);
+        }
+    }
+
+    /// <summary>
+    /// Places steps to the upper and lower level.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
+    public void PlaceSteps()
+    {
+        var mainPath = Paths[0];
+
+        // Steps up
+        var firstRoom = mainPath.FirstRoom;
+        var exit = firstRoom.Connections.Find(c => c is Exit exit) as Exit ??
+            throw new InvalidOperationException("No valid exits in the first room.");
+        var position = firstRoom.Area.PerimeterPositions().Where(p => p.Y == exit.Position.Y
+            && Math.Abs(exit.Position.X - p.X) > 1).First();
+        var stepsUp = DecorFactory.Steps(exit.Direction.GetOpposite(), Direction.Up);
+        stepsUp.Position = position;
+        AddEntity(stepsUp);
+
+        // Steps down
+        var lastRoom = mainPath.LastRoom;
+        exit = lastRoom.Connections.Find(c => c is Exit exit) as Exit ??
+            throw new InvalidOperationException("No valid exits in the last room.");
+        position = lastRoom.Area.Center;
+        var direction = exit.Direction.IsHorizontal() ?
+            exit.Direction.GetOpposite() : Direction.Left;
+        var stepsDown = DecorFactory.Steps(direction, Direction.Down);
+        stepsDown.Position = position;
+        stepsDown.IsVisible = false;
+        AddEntity(stepsDown);
     }
 }

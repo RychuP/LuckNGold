@@ -1,7 +1,8 @@
 ﻿namespace LuckNGold.World.Monsters.Components;
 
 /// <summary>
-/// Additional, always visible inventory meant to be attached to the player entity.
+/// Additional, always visible inventory with keyboard shortcuts
+/// meant to be attached to the player entity.
 /// </summary>
 class QuickAccessComponent() : InventoryComponent(Max)
 {

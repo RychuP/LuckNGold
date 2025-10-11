@@ -1,9 +1,7 @@
-﻿using LuckNGold.Visuals.Screens;
-
-namespace LuckNGold.Visuals;
+﻿namespace LuckNGold.Visuals.Screens;
 
 /// <summary>
-/// RootScreen displays an appropriate screen for the current state of the program.
+/// Displays an appropriate screen for the current state of the program.
 /// </summary>
 internal class RootScreen : ScreenObject
 {
