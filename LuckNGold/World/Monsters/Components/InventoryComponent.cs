@@ -130,8 +130,7 @@ internal class InventoryComponent(int capacity) : InventoryBase(capacity)
             throw new InvalidOperationException("Parent has to be on the map.");
 
         var item = Items[index];
-        return item is null ? 
-            throw new InvalidOperationException("No item at the given index.") : Activate(item);
+        return item is not null && Activate(item);
     }
 
     bool Activate(RogueLikeEntity item)

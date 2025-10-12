@@ -30,7 +30,7 @@ static class MapFactory
         var generator = new Generator(width, height)
             .ConfigAndGenerateSafe(gen =>
             {
-                gen.AddStep(new MainPathGenerator(15));
+                gen.AddStep(new MainPathGenerator(20));
                 gen.AddStep(new SidePathGenerator());
                 gen.AddStep(new MinorPathGenerator());
                 gen.AddStep(new DoorGenerator());

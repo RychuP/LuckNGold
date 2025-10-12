@@ -30,12 +30,13 @@ internal class GameScreen : ScreenObject
     // Player entity
     public readonly RogueLikeEntity Player;
 
-    // TODO probably not needed -> delete at some point ?
     // Message log from the SadRogue template
     public readonly MessageLogConsole MessageLog;
 
-    // TODO debug stuff to be deleted at some point
-    readonly ScreenSurface _infoSurface;
+    // Static debug screen accessible from everywhere
+    public static ScreenSurface InfoSurface { get; }
+        = new ScreenSurface(40, 50) { IsVisible = false };
+    static int s_y = 0;
 
     // Window that shows player's quick access inventory
     readonly QuickAccessWindow _quickAccessWindow;
@@ -51,9 +52,9 @@ internal class GameScreen : ScreenObject
         Map = MapFactory.GenerateMap(GameMap.DefaultWidth, GameMap.DefaultHeight);
         Children.Add(Map);
 
-        // Add event handlers that monitor entities capable of changing their transparency
-        //Map.ObjectAdded += Map_OnObjectAdded;
+        // Add event handlers that update fov when some entities change their transparency
         AddDoorTransparencyChangeHandler();
+        Map.ObjectAdded += Map_OnObjectAdded;
         Map.ObjectRemoved += Map_OnObjectRemoved;
 
         // Create a player entity and place it in the first room of the main path
@@ -111,8 +112,7 @@ internal class GameScreen : ScreenObject
         //Children.Add(debug);
 
         // Small static info screen to display information from debugging methods
-        _infoSurface = new ScreenSurface(20, 10);
-        Children.Add(_infoSurface);
+        Children.Add(InfoSurface);
 
         // Create a window to display player's inventory
         var quickAccess = Player.AllComponents.GetFirst<QuickAccessComponent>();
@@ -137,12 +137,14 @@ internal class GameScreen : ScreenObject
             entity.TransparencyChanged += RogueLikeEntity_OnTransparencyChanged;
     }
 
+    // Removes event handler to entities that have the ability to change their transparency
     void Map_OnObjectRemoved(object? o, ItemEventArgs<IGameObject> e)
     {
         if (e.Item is RogueLikeEntity entity && entity.Name == "Door")
             entity.TransparencyChanged -= RogueLikeEntity_OnTransparencyChanged;
     }
 
+    // Adds transparency handler to doors added at the map factory stage
     void AddDoorTransparencyChangeHandler()
     {
         var doors = Map.Entities.Where(ip => ip.Item is RogueLikeEntity entity
@@ -166,5 +168,15 @@ internal class GameScreen : ScreenObject
         var playerFOV = Player.AllComponents.GetFirst<PlayerFOVController>();
         if (Map.PlayerFOV.CurrentFOV.Contains(door.Position))
             playerFOV.CalculateFOV();
+    }
+
+    /// <summary>
+    /// Prints consecutive lines on the debug info screen.
+    /// </summary>
+    public static void Print(string text)
+    {
+        if (text.Length > InfoSurface.Width)
+            text = text[..InfoSurface.Width];
+        InfoSurface.Surface.Print(0, s_y++, text);
     }
 }

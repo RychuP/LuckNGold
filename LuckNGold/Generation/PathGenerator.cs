@@ -13,7 +13,7 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
     const int MaxRoomsInLine = 4;
 
     // as above but for the rooms with double path where doors can be placed
-    const int MaxRoomsWithDoorInLine = 3;
+    const int MaxRoomsWithWideExitInLine = 2;
 
     // min max corrid length between rooms
     const int MinCorridorLength = 2;
@@ -49,8 +49,8 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
             Direction direction = room.GetRandomAvailableConnection();
 
             // establish how many rooms max in this type of line
-            var maxRoomsInLine = direction.IsVertical() ?
-                MaxRoomsWithDoorInLine : MaxRoomsInLine;
+            var maxRoomsInLine = direction.IsVertical() && room.Width.IsEven() ?
+                MaxRoomsWithWideExitInLine : MaxRoomsInLine;
 
             // opposite direction to check how many rooms there are already in line
             var oppositeDirection = direction.GetOpposite();

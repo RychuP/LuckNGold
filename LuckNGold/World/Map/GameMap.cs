@@ -1,11 +1,14 @@
-﻿using GoRogue.MapGeneration;
+﻿using GoRogue.Components;
+using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using LuckNGold.Generation;
 using LuckNGold.Visuals;
 using LuckNGold.World.Decor;
 using LuckNGold.World.Furniture;
+using LuckNGold.World.Furniture.Components;
 using LuckNGold.World.Furniture.Enums;
 using LuckNGold.World.Items;
+using LuckNGold.World.Items.Components;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map.Components;
 using SadRogue.Integration.Maps;
@@ -118,7 +121,7 @@ class GameMap : RogueLikeMap
 
             // Establish orientation of the door
             var direction = genDoor.Exit.Direction;
-            DoorOrientation doorOrientation = DoorOrientation.None;
+            DoorOrientation doorOrientation;
             if (direction.IsHorizontal())
             {
                 doorOrientation = direction == Direction.Left ?
@@ -149,6 +152,55 @@ class GameMap : RogueLikeMap
             door.IsVisible = false;
             door.Position = genDoor.Exit.Position;
             AddEntity(door);
+
+            // Add aditional door to wide corridors
+            if (genDoor.Exit.IsDouble)
+            {
+                if (!direction.IsVertical())
+                    throw new InvalidOperationException("Double door can only be vertical.");
+                doorOrientation = direction == Direction.Up ?
+                    DoorOrientation.TopRight : DoorOrientation.BottomRight;
+                var door2 = FurnitureFactory.Door(doorOrientation, locked, difficulty);
+                door2.IsVisible = false;
+                door2.Position = door.Position + Direction.Right;
+                AddEntity(door2);
+
+                // Add mirror behaviours to both doors
+                door.AllComponents.GetFirst<OpeningComponent>().Opened +=
+                    (o, e) => door2.AllComponents.GetFirst<OpeningComponent>().Open();
+                door.AllComponents.GetFirst<OpeningComponent>().Closed +=
+                    (o, e) => door2.AllComponents.GetFirst<OpeningComponent>().Close();
+                door2.AllComponents.GetFirst<OpeningComponent>().Opened +=
+                    (o, e) => door.AllComponents.GetFirst<OpeningComponent>().Open();
+                door2.AllComponents.GetFirst<OpeningComponent>().Closed +=
+                    (o, e) => door.AllComponents.GetFirst<OpeningComponent>().Close();
+                door.AllComponents.ComponentRemoved += (o, e) =>
+                {
+                    
+                    if (e.Component is LockComponent lockComp)
+                    {
+                        var @lock = door2.AllComponents.GetFirstOrDefault<LockComponent>();
+                        if (@lock != null)
+                        {
+                            var unlocker = new UnlockingComponent((Quality)lockComp.Difficulty);
+                            @lock.Unlock(unlocker);
+                        }
+                    }
+                };
+                door2.AllComponents.ComponentRemoved += (o, e) =>
+                {
+
+                    if (e.Component is LockComponent lockComp)
+                    {
+                        var @lock = door.AllComponents.GetFirstOrDefault<LockComponent>();
+                        if (@lock != null)
+                        {
+                            var unlocker = new UnlockingComponent((Quality)lockComp.Difficulty);
+                            @lock.Unlock(unlocker);
+                        }
+                    }
+                };
+            }
         }
     }
 
@@ -181,5 +233,10 @@ class GameMap : RogueLikeMap
         stepsDown.Position = position;
         stepsDown.IsVisible = false;
         AddEntity(stepsDown);
+    }
+
+    void Door_OnComponentRemoved(object? o, ComponentChangedEventArgs e)
+    {
+
     }
 }

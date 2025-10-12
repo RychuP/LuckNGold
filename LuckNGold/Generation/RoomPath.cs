@@ -22,6 +22,24 @@ internal class RoomPath(string name, RoomPath? parent = null, Room? startRoom = 
     /// </summary>
     public Room? StartRoom { get; } = startRoom;
 
+    int _sideRoomCount = 0;
+    /// <summary>
+    /// Number of rooms from sub paths connected to this path.
+    /// </summary>
+    public int SideRoomCount
+    {
+        get => _sideRoomCount;
+        set
+        {
+            var prevCount = _sideRoomCount;
+            _sideRoomCount = value;
+
+            // Update parent if any
+            if (Parent is not null)
+                Parent.SideRoomCount += value - prevCount;
+        }
+    }
+
     public Room FirstRoom => Rooms.First();
     public Room LastRoom => Rooms.Last();
     public int Count => Rooms.Count;

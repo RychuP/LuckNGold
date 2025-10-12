@@ -122,6 +122,11 @@
 "ClosedDoorBottomLeft": {"Glyph": 32, "Mirror": 0},
 "ClosedDoorBottomRight": {"Glyph": 32, "Mirror": 2},
 
+"RoundDoubleDoorLeft" : {"Glyph": 126, "Mirror": 0},
+"RoundDoubleDoorRight" : {"Glyph": 127, "Mirror": 0},
+"SquareDoubleDoorLeft" : {"Glyph": 124, "Mirror": 0},
+"SquareDoubleDoorRight" : {"Glyph": 125, "Mirror": 0},
+
 "Peaks1": {"Glyph": 110, "Mirror": 0},
 "Peaks2": {"Glyph": 111, "Mirror": 0},
 "Peaks3": {"Glyph": 112, "Mirror": 0},
@@ -147,8 +152,15 @@
 "BoxesSmall" : {"Glyph": 115, "Mirror": 0},
 "BoxesLarge" : {"Glyph": 114, "Mirror": 0},
 
+"Chest1" : {"Glyph": 120, "Mirror": 0},
+"Chest2" : {"Glyph": 121, "Mirror": 0},
+"Chest3" : {"Glyph": 122, "Mirror": 0},
+"Chest4" : {"Glyph": 123, "Mirror": 0},
+
 "StepsDownLeft" : {"Glyph": 128, "Mirror": 2},
 "StepsDownRight" : {"Glyph": 128, "Mirror": 0},
 "StepsUpLeft" : {"Glyph": 129, "Mirror": 0},
 "StepsUpRight" : {"Glyph": 129, "Mirror": 2},
+
+
 }}

@@ -1,20 +1,9 @@
 ﻿using LuckNGold.Tests;
 using LuckNGold.Visuals.Screens;
 using SadConsole.Configuration;
-using SadRogue.Integration.Keybindings;
 
 namespace LuckNGold;
 
-/// <summary>
-/// The provided code is a simple template to demonstrate some integration library features 
-/// and set up some boilerplate for you. Feel free to use or delete any of it that you want; 
-/// it shows one way of doing things, not the only way!
-///
-/// The code contains a few comments beginning with "CUSTOMIZATION:", which show you some common points 
-/// to modify in order to accomplish some common tasks. The tags by no means represent a comprehensive guide 
-/// to cover everything you might want to modify; they're simply designed to provide a "quick-start" guide 
-/// that can help you accomplish some common tasks.
-/// </summary>
 static class Program
 {
     public const int Width = 84;
@@ -22,6 +11,8 @@ static class Program
 
     public static RootScreen? RootScreen { get; private set; }
     public static IFont Font { get; } = Game.Instance.Fonts["PixelDungeon"];
+    public static Distance Distance { get; } = Distance.Chebyshev;
+    public static AdjacencyRule Adjacency { get; } = AdjacencyRule.EightWay;
 
     public static Color RandomColor =>
         Color.White.GetRandomColor(Game.Instance.Random);

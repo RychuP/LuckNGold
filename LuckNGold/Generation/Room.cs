@@ -1,4 +1,5 @@
 ﻿using GoRogue.Random;
+using LuckNGold.World.Items.Enums;
 using SadRogue.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
@@ -39,7 +40,15 @@ class Room
     // list of exits and dead ends
     public List<IWallConnection> Connections { get; } = new(4);
 
+    /// <summary>
+    /// Path that this room belongs to
+    /// </summary>
     public RoomPath Path { get; private set; }
+
+    /// <summary>
+    /// Section of the dungeon this room is part of
+    /// </summary>
+    public Gemstone Section { get; set; } = Gemstone.None;
 
     public Room(int x, int y, int width, int height, RoomPath parent)
     {
@@ -176,6 +185,29 @@ class Room
             Direction.Types.Left => (Position.X - 1, verticalWallMiddleY),
             _ => (Area.MaxExtentX + 1, verticalWallMiddleY)
         };
+    }
+
+    /// <summary>
+    /// Counts all conncted rooms recursively.
+    /// </summary>
+    /// <param name="excludedExit"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public int CountConnectedRooms(Exit excludedExit)
+    {
+        int roomCount = 0;
+        foreach (var connection in Connections)
+        {
+            if (connection is Exit exit)
+            {
+                if (exit == excludedExit)
+                    continue;
+                if (exit.End is null)
+                    throw new InvalidOperationException("Exit has got not valid end.");
+                roomCount += exit.End.Room.CountConnectedRooms(exit.End);
+            }
+        }
+        return roomCount;
     }
 
     public bool TransferToPath(RoomPath newPath)

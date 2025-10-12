@@ -83,6 +83,9 @@ internal class MinorPathGenerator() : PathGenerator("MinorPath",
             //    continue;
             //}
 
+            // Update parent with the number of side rooms from the minor path
+            minorPath.Parent!.SideRoomCount += minorPath.Count;
+
             // update context
             AddRoomPathsToContext(context, minorPath);
         }

@@ -1,5 +1,6 @@
 ﻿using GoRogue.MapGeneration;
 using GoRogue.Random;
+using LuckNGold.Visuals.Screens;
 using ShaiRandom.Generators;
 
 namespace LuckNGold.Generation;
@@ -17,7 +18,10 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
         // list of corridors between the rooms in the chain
         List<Corridor> corridors = [];
 
-        while (mainPath.Count < roomCount)
+        double distance;
+        var minDistance = context.Width * 0.5d;
+
+        do
         {
             mainPath.Clear();
             corridors.Clear();
@@ -29,7 +33,17 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
             mainPath.Add(firstRoom);
 
             CreateRooms(ref mainPath, ref corridors, context, firstRoom, roomCount);
+
+            distance = Program.Distance.Calculate(mainPath.FirstRoom.Area.Center,
+                mainPath.LastRoom.Area.Center);
         }
+        // keep generating the main path until the required number of rooms is achieved
+        // and the percentage of dead ends to available connections doesn't go over 
+        // a certain small treshold
+        while (mainPath.Count < roomCount || distance < minDistance);
+
+        GameScreen.Print($"Min distance: {minDistance:0.00}");
+        GameScreen.Print($"Actual distance: {distance:0.00}");
 
         // add dead ends to first and last room, so that they won't
         // accept any further connections
@@ -41,6 +55,24 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
         AddCorridorsToContext(context, corridors);
 
         yield break;
+    }
+
+    // Checks the middle part of the main path to see if the rooms have plenty 
+    // of available connections to accept side paths in the next generation step
+    static bool CheckDeadEnds(RoomPath path, double percent)
+    {
+        int deadEndCount = 0;
+        for (int i = 1;  i < path.Count - 1; i++)
+        {
+            var room = path.Rooms[i];
+            foreach (var connection in room.Connections)
+            {
+                if (connection is DeadEnd)
+                    deadEndCount++;
+            }
+        }
+        var possibleConnections = (path.Count - 2) * 4;
+        return possibleConnections * percent > deadEndCount;
     }
 
     static void AddDeadEnds(Room room)

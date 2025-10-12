@@ -1,4 +1,5 @@
 ﻿using GoRogue.GameFramework;
+using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Furniture.Interfaces;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
@@ -43,6 +44,11 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
 
         AddMapControls();
         AddPlayerControls();
+
+        // Debug screen on and off
+        var button = new InputKey(Keys.OemTilde, KeyModifiers.LeftShift);
+        SetAction(button, () => GameScreen.InfoSurface.IsVisible 
+            = !GameScreen.InfoSurface.IsVisible);
     }
 
     void AddPlayerControls()
