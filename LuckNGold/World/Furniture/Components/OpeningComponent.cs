@@ -54,18 +54,19 @@ internal class OpeningComponent(string openingAnimation = "",
         if (lockable is not null)
             throw new InvalidOperationException("Entity is locked open. This is not a valid state.");
 
-        // Open the opening and report success
-        if (Parent is AnimatedRogueLikeEntity animated && animated.HasAnimation(closingAnimation)
-            && !animated.IsPlaying)
+        // Check the parent is animated
+        if (Parent is AnimatedRogueLikeEntity animated && animated.HasAnimation(closingAnimation))
         {
-            animated.PlayAnimation(closingAnimation);
+            // Play closing animation. Actual closing will be handled by animation event handler.
+            if (!animated.IsPlaying)
+                animated.PlayAnimation(closingAnimation);
 
             // Operation was successful but the access will only be granted 
             // after the animation finished playing hence returning false
             return false;
         }
 
-        // Close the opening and report success.
+        // Close the opening and report success
         IsOpen = false;
         return true;
     }
@@ -86,11 +87,12 @@ internal class OpeningComponent(string openingAnimation = "",
         if (lockable is not null)
             return false;
 
-        // Open the opening and report success
-        if (Parent is AnimatedRogueLikeEntity animated && animated.HasAnimation(openingAnimation)
-            && !animated.IsPlaying)
+        // Check the parent is animated
+        if (Parent is AnimatedRogueLikeEntity animated && animated.HasAnimation(openingAnimation))
         {
-            animated.PlayAnimation(openingAnimation);
+            // Play opening animation. Actual opening will be handled by animation event handler.
+            if (!animated.IsPlaying)
+                animated.PlayAnimation(openingAnimation);
             
             // Operation was successful but the access will only be granted 
             // after the animation finished playing hence returning false
@@ -112,9 +114,13 @@ internal class OpeningComponent(string openingAnimation = "",
             throw new InvalidOperationException("Furniture and below needs to be on the map.");
 
         if (IsOpen)
+        {
             return Close();
+        }
         else
+        {
             return Open();
+        }
     }
 
     void OnOpened()

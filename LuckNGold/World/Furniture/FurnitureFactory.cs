@@ -60,11 +60,11 @@ internal class FurnitureFactory
         return door;
     }
 
-    public static AnimatedRogueLikeEntity Chest()
+    public static AnimatedRogueLikeEntity Chest(params RogueLikeEntity[] items)
     {
         string[] animations = ["ClosedChest", "OpenChest", "ChestOpening", "ChestClosing"];
         var chest = new AnimatedRogueLikeEntity(animations, "ClosedChest", false,
-            GameMap.Layer.Furniture)
+            GameMap.Layer.Furniture, false)
         {
             Name = "Chest"
         };
@@ -77,7 +77,7 @@ internal class FurnitureFactory
         };
 
         // Add loot spawner
-        var loot = new LootSpawnerComponent();
+        var loot = new LootSpawnerComponent(items);
         chest.AllComponents.Add(loot);
 
         // Add opening component

@@ -1,7 +1,7 @@
 ﻿namespace LuckNGold.World.Items.Interfaces;
 
 /// <summary>
-/// It is accepted by traders like currency.
+/// It can by purchased and sold by traders.
 /// </summary>
 internal interface IValuable
 {

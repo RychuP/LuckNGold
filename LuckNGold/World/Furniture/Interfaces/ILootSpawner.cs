@@ -7,6 +7,6 @@ namespace LuckNGold.World.Furniture.Interfaces;
 /// </summary>
 internal interface ILootSpawner
 {
-    RogueLikeEntity[] Contents { get; }
+    List<RogueLikeEntity> Contents { get; }
     void DropItems();
 }

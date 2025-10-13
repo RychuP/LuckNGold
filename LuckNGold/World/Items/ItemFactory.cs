@@ -28,7 +28,7 @@ static class ItemFactory
         {
             Name = "Coin"
         };
-        coin.AllComponents.Add(new CollectableComponent(1, 1000));
+        coin.AllComponents.Add(new CurrencyComponent(1));
         return coin;
     }
 

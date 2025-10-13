@@ -1,4 +1,5 @@
-﻿using LuckNGold.World.Items.Interfaces;
+﻿using LuckNGold.World.Items.Components;
+using LuckNGold.World.Items.Interfaces;
 using SadRogue.Integration;
 
 namespace LuckNGold.World.Monsters.Components;
@@ -62,13 +63,25 @@ internal class InventoryComponent(int capacity) : InventoryBase(capacity)
         if (Parent.CurrentMap == null)
             throw new InvalidOperationException("Parent has to be on the map.");
 
+        var wallet = Parent.AllComponents.GetFirstOrDefault<WalletComponent>();
+
         foreach (var item in Parent.CurrentMap.GetEntitiesAt<RogueLikeEntity>(Parent.Position))
         {
             // Check if any of the components of the entity allow it to be picked up
             if (!item.AllComponents.Contains<ICarryable>()) 
                 continue;
 
-            if (Add(item))
+            if (item.AllComponents.GetFirstOrDefault<CurrencyComponent>() is 
+                CurrencyComponent currency)
+            {
+                if (wallet is not null)
+                {
+                    wallet.Coins += currency.Amount;
+                    item.CurrentMap!.RemoveEntity(item);
+                }
+            }
+
+            else if (Add(item))
             {
                 item.CurrentMap!.RemoveEntity(item);
                 return true;
@@ -135,6 +148,12 @@ internal class InventoryComponent(int capacity) : InventoryBase(capacity)
 
     bool Activate(RogueLikeEntity item)
     {
+        if (Parent == null)
+            throw new InvalidOperationException("Component needs to be attached to an entity.");
+
+        if (Parent.CurrentMap == null)
+            throw new InvalidOperationException("Parent has to be on the map.");
+
         // Check item is usable
         var usable = item.AllComponents.GetFirstOrDefault<IUsable>();
         if (usable == null)

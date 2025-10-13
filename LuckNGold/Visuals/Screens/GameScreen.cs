@@ -4,7 +4,7 @@ using LuckNGold.Visuals.Components;
 using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Decor;
 using LuckNGold.World.Furniture;
-using LuckNGold.World.Furniture.Enums;
+using LuckNGold.World.Furniture.Components;
 using LuckNGold.World.Items;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
@@ -40,6 +40,9 @@ internal class GameScreen : ScreenObject
 
     // Window that shows player's quick access inventory
     readonly QuickAccessWindow _quickAccessWindow;
+
+    // Window that displays player health, wealth and other stats
+    readonly StatusWindow _statusWindow;
 
     // Keyboard handler for the map and player
     readonly KeybindingsComponent _keybindingsComponent;
@@ -94,14 +97,19 @@ internal class GameScreen : ScreenObject
         if (firstRoom.Connections.Find(c => c is Exit) is not Exit exit)
             throw new Exception("First room needs to have a valid exit.");
 
-        // Add sample coin
-        var coin = ItemFactory.Coin();
-        coin.Position = Player.Position + Direction.Up;
-        Map.AddEntity(coin);
-
         // Add sample chest
-        var chest = FurnitureFactory.Chest();
+        var coins = new RogueLikeEntity[5];
+        for (int i = 0; i < 5; i++)
+            coins[i] = ItemFactory.Coin();
+
+        var chest = FurnitureFactory.Chest(coins);
         chest.Position = Player.Position + Direction.Down;
+        Player.PositionChanged += (o, e) =>
+        {
+            var opening = chest.AllComponents.GetFirst<OpeningComponent>();
+            if (opening.IsOpen)
+                opening.Close();
+        };
         Map.AddEntity(chest);
 
         // Calculate initial FOV
@@ -126,6 +134,11 @@ internal class GameScreen : ScreenObject
         int y = Program.Height - _quickAccessWindow.Height - 1;
         _quickAccessWindow.Position = (x, y);
         Children.Add(_quickAccessWindow);
+
+        // Create a window to display player status
+        var wallet = Player.AllComponents.GetFirst<WalletComponent>();
+        _statusWindow = new StatusWindow(wallet) { Position = (0, 1) };
+        Children.Add(_statusWindow);
 
         // Create message log
         MessageLog = new MessageLogConsole(Program.Width, MessageLogConsole.DefaultHeight);

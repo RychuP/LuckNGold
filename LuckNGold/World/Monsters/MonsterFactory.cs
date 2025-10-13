@@ -17,12 +17,13 @@ static class MonsterFactory
         };
 
         // Add inventory component
-        var inventory = new InventoryComponent(20);
-        player.AllComponents.Add(inventory);
+        player.AllComponents.Add(new InventoryComponent(20));
+
+        // Add wallet to hold coins
+        player.AllComponents.Add(new WalletComponent());
 
         // Add quick access component displayed at the bottom of the screen
-        var quickAccess = new QuickAccessComponent();
-        player.AllComponents.Add(quickAccess);
+        player.AllComponents.Add(new QuickAccessComponent());
 
         // Add component for updating map's player FOV as they move
         player.AllComponents.Add(new PlayerFOVController());
