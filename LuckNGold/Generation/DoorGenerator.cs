@@ -42,7 +42,7 @@ internal class DoorGenerator() : GenerationStep("DoorGenerator",
 
         GameScreen.Print($"Sections req: {sectionsRequired}");
         GameScreen.Print($"Side paths: {sidePathCount}");
-        GameScreen.Print($"Side paths ps: {sidePathsPerSection:0.00}");
+        GameScreen.Print($"Paths per sec: {sidePathsPerSection:0.00}");
 
         Gemstone currentGemstone = Gemstone.Onyx;
 

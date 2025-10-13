@@ -6,7 +6,15 @@ namespace LuckNGold.Visuals;
 
 internal class AnimatedRogueLikeEntity : RogueLikeEntity
 {
+    /// <summary>
+    /// Fired when <see cref="CurrentAnimation"/> has changed.
+    /// </summary>
     public event EventHandler<ValueChangedEventArgs<string>>? AnimationChanged;
+
+    /// <summary>
+    /// Fired when <see cref="CurrentAnimation"/> finished playing.
+    /// </summary>
+    public event EventHandler? Finished;
 
     // default animation that the entity plays when idle
     readonly string _defaultAnimation;
@@ -21,6 +29,14 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
     /// Default animation will play forwards and than backwards if true.
     /// </summary>
     public bool DefaultAnimationIsReversable { get; set; }
+
+    /// <summary>
+    /// Whether the default animation should automatically start playing when
+    /// current animation is finished.
+    /// </summary>
+    public bool PlaysDefaultAnimationOnFinished { get; set; } = false;
+
+    public bool IsPlaying => _animationComponent.IsPlaying;
 
     /// <summary>
     /// Appearance of the entity for the purpose of displaying it in various information windows.
@@ -116,7 +132,7 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
 
         // Create the component to play the animations
         _animationComponent = new AnimationComponent();
-        _animationComponent.Finished += (o, e) => PlayDefaultAnimation();
+        _animationComponent.Finished += AnimatedComponent_OnFinished;
         AllComponents.Add(_animationComponent);
 
         // Start animating
@@ -248,5 +264,13 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
 
         var args = new ValueChangedEventArgs<string>(prevAnimation, newAnimation);
         AnimationChanged?.Invoke(this, args);
+    }
+
+    void AnimatedComponent_OnFinished(object? o, EventArgs e)
+    {
+        Finished?.Invoke(this, e);
+
+        if (PlaysDefaultAnimationOnFinished)
+            PlayDefaultAnimation();
     }
 }

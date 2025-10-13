@@ -99,6 +99,11 @@ internal class GameScreen : ScreenObject
         coin.Position = Player.Position + Direction.Up;
         Map.AddEntity(coin);
 
+        // Add sample chest
+        var chest = FurnitureFactory.Chest();
+        chest.Position = Player.Position + Direction.Down;
+        Map.AddEntity(chest);
+
         // Calculate initial FOV
         Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
 

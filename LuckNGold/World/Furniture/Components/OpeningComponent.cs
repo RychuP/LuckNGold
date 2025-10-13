@@ -3,6 +3,7 @@ using LuckNGold.World.Furniture.Interfaces;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
+using static SadConsole.Entities.Entity;
 
 namespace LuckNGold.World.Furniture.Components;
 
@@ -10,12 +11,14 @@ namespace LuckNGold.World.Furniture.Components;
 /// Component for entities that have some sort of opening that first needs to be
 /// opened in order for the entity to become accessible.
 /// </summary>
-internal class OpeningComponent : RogueLikeComponentBase<RogueLikeEntity>, IOpenable
+internal class OpeningComponent(string openingAnimation = "",
+    string closingAnimation = "", bool isOpen = false) 
+    : RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IOpenable
 {
     public event EventHandler? Opened;
     public event EventHandler? Closed;
 
-    bool _isOpen;
+    bool _isOpen = isOpen;
     /// <summary>
     /// State of the opening.
     /// </summary>
@@ -30,12 +33,6 @@ internal class OpeningComponent : RogueLikeComponentBase<RogueLikeEntity>, IOpen
             if (_isOpen) OnOpened();
             else OnClosed();
         }
-    }
-
-    public OpeningComponent(bool isOpen = false) : base(false, false, false, false)
-    {
-        // assign the value quietly
-        _isOpen = isOpen;
     }
 
     public bool Close()
@@ -58,13 +55,10 @@ internal class OpeningComponent : RogueLikeComponentBase<RogueLikeEntity>, IOpen
             throw new InvalidOperationException("Entity is locked open. This is not a valid state.");
 
         // Open the opening and report success
-        if (Parent is AnimatedRogueLikeEntity animated && animated.HasAnimation("Close"))
+        if (Parent is AnimatedRogueLikeEntity animated && animated.HasAnimation(closingAnimation)
+            && !animated.IsPlaying)
         {
-            animated.PlayAnimation("Close");
-            animated.AnimationChanged += (s, e) =>
-            {
-                IsOpen = false;
-            };
+            animated.PlayAnimation(closingAnimation);
 
             // Operation was successful but the access will only be granted 
             // after the animation finished playing hence returning false
@@ -93,14 +87,11 @@ internal class OpeningComponent : RogueLikeComponentBase<RogueLikeEntity>, IOpen
             return false;
 
         // Open the opening and report success
-        if (Parent is AnimatedRogueLikeEntity animated && animated.HasAnimation("Open"))
+        if (Parent is AnimatedRogueLikeEntity animated && animated.HasAnimation(openingAnimation)
+            && !animated.IsPlaying)
         {
-            animated.PlayAnimation("Open");
-            animated.AnimationChanged += (s, e) =>
-            {
-                IsOpen = true;
-            };
-
+            animated.PlayAnimation(openingAnimation);
+            
             // Operation was successful but the access will only be granted 
             // after the animation finished playing hence returning false
             return false;
@@ -111,6 +102,21 @@ internal class OpeningComponent : RogueLikeComponentBase<RogueLikeEntity>, IOpen
         return true;
     }
 
+    public bool Interact(RogueLikeEntity interactor)
+    {
+        if (Parent is null)
+            throw new InvalidOperationException("Component needs to be attached to an entity.");
+
+        // Anything static and big must be present on the map to be interactable
+        if (Parent.Layer <= (int)GameMap.Layer.Furniture && Parent.CurrentMap is null)
+            throw new InvalidOperationException("Furniture and below needs to be on the map.");
+
+        if (IsOpen)
+            return Close();
+        else
+            return Open();
+    }
+
     void OnOpened()
     {
         Opened?.Invoke(this, EventArgs.Empty);
@@ -119,5 +125,37 @@ internal class OpeningComponent : RogueLikeComponentBase<RogueLikeEntity>, IOpen
     public void OnClosed()
     {
         Closed?.Invoke(this, EventArgs.Empty);
+    }
+
+    void AnimatedRogueLikeEntity_OnAnimationChanged(object? o, ValueChangedEventArgs<string> e)
+    {
+        if (IsOpen && e.OldValue == closingAnimation)
+            IsOpen = false;
+        else if (!IsOpen && e.OldValue == openingAnimation)
+            IsOpen = true;
+    }
+
+    public override void OnAdded(IScreenObject host)
+    {
+        base.OnAdded(host);
+
+        if (host is AnimatedRogueLikeEntity animatedEntity 
+            && animatedEntity.HasAnimation(openingAnimation)
+            && animatedEntity.HasAnimation(closingAnimation))
+        {
+            animatedEntity.AnimationChanged += AnimatedRogueLikeEntity_OnAnimationChanged;
+        }
+    }
+
+    public override void OnRemoved(IScreenObject host)
+    {
+        base.OnRemoved(host);
+
+        if (host is AnimatedRogueLikeEntity animatedEntity
+            && animatedEntity.HasAnimation(openingAnimation)
+            && animatedEntity.HasAnimation(closingAnimation))
+        {
+            animatedEntity.AnimationChanged -= AnimatedRogueLikeEntity_OnAnimationChanged;
+        }
     }
 }

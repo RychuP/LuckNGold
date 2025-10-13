@@ -14,16 +14,14 @@ public class AnimationComponent : UpdateComponent
     /// Occurs when the animation has finished playing (last frame was displayed).
     /// This event will not trigger if the animation is set to repeat.
     /// </summary>
-    /// <remarks>Subscribe to this event to be notified when the operation finishes.
-    /// The event handler receives an <see cref="EventArgs"/> instance, 
-    /// as no additional data is provided with the event.</remarks>
     public event EventHandler? Finished;
 
     int _frameIndex;
-    bool _isPlaying;
     bool _isPlayingInReverse;
     TimeSpan _totalTime;
     Entity? _entity;
+
+    public bool IsPlaying { get; private set; }
 
     /// <summary>
     /// The frames of animation.
@@ -91,7 +89,7 @@ public class AnimationComponent : UpdateComponent
     /// <param name="delta">The time between calls to this method.</param>
     public override void Update(IScreenObject host, TimeSpan delta)
     {
-        if (!_isPlaying) return;
+        if (!IsPlaying) return;
 
         if (_entity!.IsSingleCell)
         {
@@ -152,20 +150,17 @@ public class AnimationComponent : UpdateComponent
     /// <summary>
     /// Starts the animation and immediately applies the current frame to the entity.
     /// </summary>
-    /// <exception cref="InvalidOperationException">The animation was started 
-    /// but there aren't any frames to animate.</exception>
     public void Start()
     {
-        if (_frames.Length == 0) 
-            throw new InvalidOperationException("Animation was started " +
-                "but there aren't any frames to animate");
+        if (_frames.Length == 0)
+            return;
 
         if (_entity == null) 
             throw new Exception("Component must be added to an entity.");
 
         if (_entity.IsSingleCell)
         {
-            _isPlaying = true;
+            IsPlaying = true;
             _frames[_frameIndex].CopyAppearanceTo(_entity.AppearanceSingle.Appearance, false);
         }
     }
@@ -175,7 +170,7 @@ public class AnimationComponent : UpdateComponent
     /// </summary>
     public void Stop()
     {
-        _isPlaying = false;
+        IsPlaying = false;
     }
 
     /// <summary>
@@ -191,7 +186,8 @@ public class AnimationComponent : UpdateComponent
 
     void OnFinished()
     {
-        Stop();
+        IsPlaying = false;
+        _frames = [];
         Finished?.Invoke(this, EventArgs.Empty);
     }
 }

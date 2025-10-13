@@ -1,6 +1,9 @@
 ﻿namespace LuckNGold.World.Furniture.Interfaces;
 
-internal interface IOpenable
+/// <summary>
+/// It can be opened and closed.
+/// </summary>
+internal interface IOpenable : IInteractable
 {
     bool IsOpen { get; }
     bool Open();

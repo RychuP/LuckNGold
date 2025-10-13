@@ -6,6 +6,9 @@ using SadRogue.Integration.Components;
 
 namespace LuckNGold.World.Furniture.Components;
 
+// TODO: Probably can be deleted
+// Try to add IInteractable to the individual components that can be interacted with
+// and use some sort of a selector if there is more than one?
 internal class InteractableComponent : RogueLikeComponentBase<RogueLikeEntity>, IInteractable
 {
     public InteractableComponent() : base(false, false, false, false)
@@ -25,19 +28,10 @@ internal class InteractableComponent : RogueLikeComponentBase<RogueLikeEntity>, 
         // Look for known components that can be interacted with
         if (Parent.AllComponents.GetFirstOrDefault<OpeningComponent>() is OpeningComponent op)
         {
-            PlayerFOVController playerFOV = interactor.AllComponents
-                .GetFirst<PlayerFOVController>();
-
             if (op.IsOpen)
-            {
-                playerFOV.CalculateFOV();
                 return op.Close();
-            }
             else
-            {
-                playerFOV.CalculateFOV();
                 return op.Open();
-            }
         }
 
         return false;

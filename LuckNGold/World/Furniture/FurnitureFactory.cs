@@ -1,4 +1,5 @@
-﻿using LuckNGold.World.Furniture.Components;
+﻿using LuckNGold.Visuals;
+using LuckNGold.World.Furniture.Components;
 using LuckNGold.World.Furniture.Enums;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
@@ -56,9 +57,37 @@ internal class FurnitureFactory
             door.AllComponents.Add(lockComp);
         }
 
-        // Add interactable component
-        door.AllComponents.Add(new InteractableComponent());
-
         return door;
+    }
+
+    public static AnimatedRogueLikeEntity Chest()
+    {
+        string[] animations = ["ClosedChest", "OpenChest", "ChestOpening", "ChestClosing"];
+        var chest = new AnimatedRogueLikeEntity(animations, "ClosedChest", false,
+            GameMap.Layer.Furniture)
+        {
+            Name = "Chest"
+        };
+        chest.Finished += (o, e) =>
+        {
+            if (chest.CurrentAnimation == "ChestOpening")
+                chest.CurrentAnimation = "OpenChest";
+            else if (chest.CurrentAnimation == "ChestClosing")
+                chest.CurrentAnimation = "ClosedChest";
+        };
+
+        // Add loot spawner
+        var loot = new LootSpawnerComponent();
+        chest.AllComponents.Add(loot);
+
+        // Add opening component
+        var opening = new OpeningComponent("ChestOpening", "ChestClosing");
+        opening.Opened += (o, e) =>
+        {
+            loot.DropItems();
+        };
+        chest.AllComponents.Add(opening);
+
+        return chest;
     }
 }
