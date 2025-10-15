@@ -29,13 +29,13 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
     protected static void CreateRooms(ref RoomPath roomPath, ref List<Corridor> corridors,
         GenerationContext context, Room room, int roomCount)
     {
-        var rooms = GetRooms(context);
-        if (rooms.Count == 0) 
+        // Get a copy of all rooms so that the new ones can be added in and they will all
+        // be taken into account when checking empty space before placing a new room.
+        var rooms = GetClonedRooms(context);
+        if (rooms.Count == 0)
             rooms = [room];
 
         var mapBounds = new Rectangle(0, 0, context.Width, context.Height);
-
-        // handles random number gen
         var rnd = GlobalRandom.DefaultRNG;
 
         // create a chain of rooms
@@ -54,7 +54,7 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
 
             // opposite direction to check how many rooms there are already in line
             var oppositeDirection = direction.GetOpposite();
-            int roomsInLine = GetRoomsInLine(oppositeDirection, room);
+            int roomsInLine = CountRoomsInLine(oppositeDirection, room);
 
             // max rooms in line reached -> mark this connection as dead end
             if (roomsInLine >= maxRoomsInLine)
@@ -112,7 +112,7 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
                     rooms.Add(newRoom);
 
                     // create exits and corridor
-                    CreatePassage(room, newRoom, direction, corridors);
+                    CreateCorridor(room, newRoom, direction, corridors);
 
                     // save the new room as the current node
                     room = newRoom;
@@ -126,7 +126,14 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
         }
     }
 
-    static void CreatePassage(Room firstRoom, Room secondRoom, Direction direction,
+    /// <summary>
+    /// Creates a corridor and associated exits between rooms.
+    /// </summary>
+    /// <param name="firstRoom"><see cref="Room"/> where <see cref="Corridor"/> starts.</param>
+    /// <param name="secondRoom"><see cref="Room"/> where <see cref="Corridor"/> ends.</param>
+    /// <param name="direction"><see cref="Direction"/> of <see cref="Corridor"/>.</param>
+    /// <param name="corridors">List of all corridors to which the new one will be added.</param>
+    static void CreateCorridor(Room firstRoom, Room secondRoom, Direction direction,
         List<Corridor> corridors)
     {
         // create exits
@@ -142,16 +149,24 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
         end.Corridor = corridor;
     }
 
-    protected void AddRoomPathsToContext(GenerationContext context, RoomPath roomPath)
+    protected void AddPathsToContext(GenerationContext context, RoomPath roomPath)
     {
         if (roomPath.Count == 0)
             throw new ArgumentException("Paths with zero lengths are not allowed.");
 
-        // add room path to context
-        var pathContext = GetPaths(context);
-        pathContext.Add(roomPath, Name);
+        // Add room path to context.
+        GetPaths(context).Add(roomPath, Name);
+    }
 
-        // set all room area positions in the wallFloorContext to true (walkable)
+    protected void AddRoomsToContext(GenerationContext context, RoomPath roomPath)
+    {
+        if (roomPath.Count == 0)
+            return;
+
+        // Add rooms to context.
+        GetRooms(context).AddRange(roomPath.Rooms, Name);
+
+        // Set all room area positions in the wallFloorContext to true (walkable).
         var wallFloorContext = GetWallFloor(context);
         foreach (var room in roomPath.Rooms)
         {
@@ -165,7 +180,7 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
         var wallFloorContext = GetWallFloor(context);
         GetCorridors(context).AddRange(corridors, Name);
 
-        // set all corridor positions in the wallFloorContext to true (walkable)
+        // Set all corridor positions in the wallFloorContext to true (walkable).
         foreach (var corridor in corridors)
         {
             foreach (var point in corridor.GetPositions())
@@ -185,27 +200,27 @@ abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] 
     static ItemList<Corridor> GetCorridors(GenerationContext context) =>
         context.GetFirstOrNew(() => new ItemList<Corridor>(), "Corridors");
 
-    protected static List<Room> GetRooms(GenerationContext context)
-    {
-        var paths = GetPaths(context);
-        var rooms = new List<Room>();
-        foreach (var element in paths)
-            rooms.AddRange(element.Item.Rooms);
-        return rooms;
-    }
+    static ItemList<Room> GetRooms(GenerationContext context) =>
+        context.GetFirstOrNew(() => new ItemList<Room>(), "Rooms");
 
-    // returns rooms connected in the same line vertically or horizontally
-    static int GetRoomsInLine(Direction direction, Room room)
+    protected static List<Room> GetClonedRooms(GenerationContext context) =>
+        [.. GetRooms(context).Items];
+
+    /// <summary>
+    /// Counts rooms connected in the same line vertically or horizontally.
+    /// </summary>
+    /// <param name="direction">Direction in which to start checking exits 
+    /// and counting rooms.</param>
+    /// <param name="room">Start room where the counting starts.</param>
+    /// <returns></returns>
+    static int CountRoomsInLine(Direction direction, Room room)
     {
         int count = 1;
         while (true)
         {
             if (!room.TryGetExit(direction, out Exit? exit))
                 break;
-            Exit? end = exit.End;
-            if (end is null)
-                break;
-            room = end.Room;
+            room = exit.End!.Room;
             count++;
         }
         return count;

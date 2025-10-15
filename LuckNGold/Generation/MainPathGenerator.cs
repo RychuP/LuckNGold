@@ -37,32 +37,32 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
             distance = Program.Distance.Calculate(mainPath.FirstRoom.Area.Center,
                 mainPath.LastRoom.Area.Center);
         }
-        // keep generating the main path until the required number of rooms is achieved
-        // and the percentage of dead ends to available connections doesn't go over 
-        // a certain small treshold
+        // Keep generating the main path until the required number of rooms is achieved.
+        // Also, check distance between the first and last room to make sure
+        // the main path is elongated rather than crammed in one part of the map.
         while (mainPath.Count < roomCount || distance < minDistance);
 
         GameScreen.Print($"Min distance: {minDistance:0.00}");
         GameScreen.Print($"Actual distance: {distance:0.00}");
+        GameScreen.Print($"Main path dead end ration: {GetDeadEndRatio(mainPath):0.00}");
 
-        // add dead ends to first and last room, so that they won't
-        // accept any further connections
+        // Add dead ends to first and last room, so that they won't
+        // accept any further connections.
         AddDeadEnds(mainPath.FirstRoom);
         AddDeadEnds(mainPath.LastRoom);
 
-        // update context
-        AddRoomPathsToContext(context, mainPath);
+        // Update context.
+        AddPathsToContext(context, mainPath);
+        AddRoomsToContext(context, mainPath);
         AddCorridorsToContext(context, corridors);
 
         yield break;
     }
 
-    // Checks the middle part of the main path to see if the rooms have plenty 
-    // of available connections to accept side paths in the next generation step
-    static bool CheckDeadEnds(RoomPath path, double percent)
+    static double GetDeadEndRatio(RoomPath path)
     {
         int deadEndCount = 0;
-        for (int i = 1;  i < path.Count - 1; i++)
+        for (int i = 1; i < path.Count - 1; i++)
         {
             var room = path.Rooms[i];
             foreach (var connection in room.Connections)
@@ -72,7 +72,7 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
             }
         }
         var possibleConnections = (path.Count - 2) * 4;
-        return possibleConnections * percent > deadEndCount;
+        return deadEndCount / (double)possibleConnections;
     }
 
     static void AddDeadEnds(Room room)

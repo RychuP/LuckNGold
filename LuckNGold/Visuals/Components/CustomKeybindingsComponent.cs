@@ -45,10 +45,18 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
         AddMapControls();
         AddPlayerControls();
 
-        // Debug screen on and off
-        var button = new InputKey(Keys.OemTilde, KeyModifiers.LeftShift);
-        SetAction(button, () => GameScreen.InfoSurface.IsVisible 
+        // Info screen on and off
+        var inputKey = new InputKey(Keys.OemTilde, KeyModifiers.LeftShift);
+        SetAction(inputKey, () => GameScreen.InfoSurface.IsVisible 
             = !GameScreen.InfoSurface.IsVisible);
+
+        // Debug screen on and off
+        inputKey = new InputKey(Keys.OemTilde, KeyModifiers.LeftCtrl);
+        SetAction(inputKey, () =>
+        {
+            if (GameScreen.DebugSurface is null) return;
+            GameScreen.DebugSurface.IsVisible = !GameScreen.DebugSurface.IsVisible;
+        });
     }
 
     void AddPlayerControls()

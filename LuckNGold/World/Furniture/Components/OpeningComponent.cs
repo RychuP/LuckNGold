@@ -3,7 +3,6 @@ using LuckNGold.World.Furniture.Interfaces;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
-using static SadConsole.Entities.Entity;
 
 namespace LuckNGold.World.Furniture.Components;
 

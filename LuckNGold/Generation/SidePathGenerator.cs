@@ -57,7 +57,8 @@ internal class SidePathGenerator() : PathGenerator("SidePath",
             mainPath.SideRoomCount += sidePath.Count;
 
             // update context
-            AddRoomPathsToContext(context, sidePath);
+            AddPathsToContext(context, sidePath);
+            AddRoomsToContext(context, sidePath);
         }
 
         AddCorridorsToContext(context, corridors);

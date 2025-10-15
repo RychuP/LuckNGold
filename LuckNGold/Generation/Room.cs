@@ -7,10 +7,15 @@ namespace LuckNGold.Generation;
 
 class Room
 {
-    // min odd wall size (minimum 3)
+    /// <summary>
+    /// Min odd wall size.
+    /// </summary>
+    /// <remarks>Cannot be set to less than 3.</remarks>
     public const int MinOddSize = 3;
 
-    // max odd wall size
+    /// <summary>
+    /// Max odd wall size.
+    /// </summary>
     public const int MaxOddSize = 9;
 
     public const int MinEvenSize = MinOddSize + 1;
@@ -21,35 +26,69 @@ class Room
     /// Minimum ratio of shorter length to longer length. 
     /// </summary>
     public const double MinSizeRatio = 0.65d;
-    
-    // inner area of the room
+
+    /// <summary>
+    /// Inner area of the room.
+    /// </summary>
     public Rectangle Area { get; }
 
-    // area with added wall space around needed to display the walls properly
+    /// <summary>
+    /// Bounds of the room that includes inner area and walls around it.
+    /// </summary>
     public Rectangle Bounds { get; }
 
-    // width of the room
+    /// <summary>
+    /// Width of the room.
+    /// </summary>
     public int Width => Area.Width;
 
-    // height of the room
+    /// <summary>
+    /// Height of the room.
+    /// </summary>
     public int Height => Area.Height;
 
     // position of the room
     public Point Position => Area.Position;
 
-    // list of exits and dead ends
+    /// <summary>
+    /// List of exits and dead ends.
+    /// </summary>
     public List<IWallConnection> Connections { get; } = new(4);
 
     /// <summary>
-    /// Path that this room belongs to
+    /// <see cref="RoomPath"/> that this room belongs to.
     /// </summary>
     public RoomPath Path { get; private set; }
 
     /// <summary>
-    /// Section of the dungeon this room is part of
+    /// Wall directions.
     /// </summary>
-    public Gemstone Section { get; set; } = Gemstone.None;
+    public static Direction[] Directions =>
+        AdjacencyRule.Cardinals.DirectionsOfNeighborsCache;
 
+    Section? _section = null;
+    /// <summary>
+    /// Section of the dungeon this room is part of.
+    /// </summary>
+    public Section? Section
+    {
+        get => _section;
+        set
+        {
+            if (_section != null)
+                throw new InvalidOperationException("Section should not change once allocated.");
+            _section = value;
+        }
+    }
+
+    /// <summary>
+    /// Initializes and instance of the <see cref="Room"/> class with the given parameters.
+    /// </summary>
+    /// <param name="x">X coordinate of the position of the room on the map.</param>
+    /// <param name="y">Y coordinate of the position of the room on the map.</param>
+    /// <param name="width">Width of the room.</param>
+    /// <param name="height">Height of the room.</param>
+    /// <param name="parent">Path this room belongs to.</param>
     public Room(int x, int y, int width, int height, RoomPath parent)
     {
         Area = new Rectangle(x, y, width, height);
@@ -57,8 +96,34 @@ class Room
         Path = parent;
     }
 
+    /// <summary>
+    /// Initializes an instance of the <see cref="Room"/> class with the given parameters.
+    /// </summary>
+    /// <param name="position">Position on the map.</param>
+    /// <param name="width">Width of the room.</param>
+    /// <param name="height">Height of the room.</param>
+    /// <param name="parent">Path this room belongs to.</param>
     public Room(Point position, int width, int height, RoomPath parent) :
         this(position.X, position.Y, width, height, parent) { }
+
+    public static int GetRandomOddSize(int min = MinOddSize, int max = MaxOddSize)
+    {
+        int size;
+        do { size = GlobalRandom.DefaultRNG.NextInt(min, max + 1); }
+        while (size.IsEven());
+        return size;
+    }
+
+    public static int GetRandomEvenSize(int min = MinEvenSize, int max = MaxEvenSize)
+    {
+        int size;
+        do { size = GlobalRandom.DefaultRNG.NextInt(min, max + 1); }
+        while (size.IsOdd());
+        return size;
+    }
+
+    public static int GetRandomSize(int min = MinOddSize, int max = MaxEvenSize) =>
+        GlobalRandom.DefaultRNG.NextInt(min, max + 1);
 
     /// <summary>
     /// Creates a new <see cref="Exit"/> in the given direction.
@@ -78,7 +143,7 @@ class Room
     }
 
     /// <summary>
-    /// Checks if the room has walls that can accept new exits
+    /// Checks if the room has walls that can accept new exits.
     /// </summary>
     public bool HasAvailableConnections() =>
         Connections.Count < 4;
@@ -92,7 +157,6 @@ class Room
         return false;
     }
 
-
     public bool TryGetExit(Direction direction, [NotNullWhen(true)] out Exit? exit)
     {
         var connection = Connections.Find(c => c.Direction == direction);
@@ -101,7 +165,19 @@ class Room
     }
 
     /// <summary>
-    /// Returns the direction to a random wall available to add a connection.
+    /// Tries to get <see cref="Exit"/> to the given <see cref="Room"/>.
+    /// </summary>
+    /// <param name="room">Room to which exit needs to be found.</param>
+    /// <param name="exit">Exit to the room if found.</param>
+    /// <returns>True if exit was found, false otherwise.</returns>
+    public bool TryGetExit(Room room, [NotNullWhen(true)] out Exit? exit)
+    {
+        exit = Exits.Where(e => e.End!.Room == room).First();
+        return exit is not null;
+    }
+
+    /// <summary>
+    /// Gets the direction to a random wall of the room available to add a connection.
     /// </summary>
     public Direction GetRandomAvailableConnection()
     {
@@ -172,7 +248,12 @@ class Room
     public int GetWallSize(Direction direction) =>
         direction.IsHorizontal() ? Height : Width;
 
-    // returns the point on the wall in the given direction where an exit can be placed
+    /// <summary>
+    /// Gets the point on the wall in the given direction where a connection can be placed.
+    /// </summary>
+    /// <param name="direction">Direction from the center of the room
+    /// to the wall to be checked.</param>
+    /// <returns>Position for the connection.</returns>
     public Point GetConnectionPoint(Direction direction)
     {
         int horizontalWallMiddleX = Position.X + (Width.IsOdd() ? Width / 2 : Width / 2 - 1);
@@ -185,29 +266,6 @@ class Room
             Direction.Types.Left => (Position.X - 1, verticalWallMiddleY),
             _ => (Area.MaxExtentX + 1, verticalWallMiddleY)
         };
-    }
-
-    /// <summary>
-    /// Counts all conncted rooms recursively.
-    /// </summary>
-    /// <param name="excludedExit"></param>
-    /// <returns></returns>
-    /// <exception cref="InvalidOperationException"></exception>
-    public int CountConnectedRooms(Exit excludedExit)
-    {
-        int roomCount = 0;
-        foreach (var connection in Connections)
-        {
-            if (connection is Exit exit)
-            {
-                if (exit == excludedExit)
-                    continue;
-                if (exit.End is null)
-                    throw new InvalidOperationException("Exit has got not valid end.");
-                roomCount += exit.End.Room.CountConnectedRooms(exit.End);
-            }
-        }
-        return roomCount;
     }
 
     public bool TransferToPath(RoomPath newPath)
@@ -229,28 +287,66 @@ class Room
         return false;
     }
 
-    #region Static Members
-    // wall directions
-    public static Direction[] Directions =>
-        AdjacencyRule.Cardinals.DirectionsOfNeighborsCache;
+    /// <summary>
+    /// Gets the list of all paths branching from the sides of this room.
+    /// </summary>
+    /// <remarks>Sides are the walls with exits that lead to paths other
+    /// than the path this room is part of.</remarks>
+    //public List<RoomPath> GetAllPaths()
+    //{
+    //    if (!IsStartRoom())
+    //        return [];
 
-    public static int GetRandomOddSize(int min = MinOddSize, int max = MaxOddSize)
-    {
-        int size;
-        do { size = GlobalRandom.DefaultRNG.NextInt(min, max + 1); }
-        while (size.IsEven());
-        return size;
-    }
+    //    List<RoomPath> paths = [.. SidePaths];
+    //    //foreach (var path in SidePaths)
+    //    //    paths.AddRange(path.GetAllPaths());
+    //    return paths;
+    //}
 
-    public static int GetRandomEvenSize(int min = MinEvenSize, int max = MaxEvenSize)
-    {
-        int size;
-        do { size = GlobalRandom.DefaultRNG.NextInt(min, max + 1); }
-        while (size.IsOdd());
-        return size;
-    }
+    /// <summary>
+    /// Checks if this room is the start room of side paths.
+    /// </summary>
+    /// <returns>True if the room is a start room of another path, false otherwise.</returns>
+    public bool IsStartRoom() =>
+        SidePathExits.Any();
 
-    public static int GetRandomSize(int min = MinOddSize, int max = MaxEvenSize) =>
-        GlobalRandom.DefaultRNG.NextInt(min, max + 1);
-    #endregion
+    /// <summary>
+    /// Exits leading to other paths
+    /// not including the parent path of the room's path.
+    /// </summary>
+    public IEnumerable<Exit> SidePathExits => Exits.
+        Where(e => e.End!.Room.Path != Path && e.End!.Room.Path != Path.Parent);
+
+    /// <summary>
+    /// Side paths connected directly to the room.
+    /// </summary>
+    public IEnumerable<RoomPath> SidePaths => SidePathExits
+        .Select(e => e.End!.Room.Path);
+
+    /// <summary>
+    /// Exits leading out of the room.
+    /// </summary>
+    public IEnumerable<Exit> Exits => Connections
+        .Where(c => c is Exit)
+        .Cast<Exit>();
+
+    /// <summary>
+    /// Propagates section too all connected rooms that are not on the main path.
+    /// </summary>
+    /// <param name="section">Section <see cref="Gemstone"/> to be set to connected rooms.</param>
+    /// <exception cref="MissingOrNotValidExitException"></exception>
+    //void OnSectionChanged(Gemstone section)
+    //{
+    //    foreach (var exit in Exits)
+    //    {
+    //        var room = exit.End!.Room;
+
+    //        // Skip main path rooms as they will be set individually
+    //        // and rooms that already have the section set.
+    //        if (room.Path.Name == "MainPath" || room.Section == Gemstone.None)
+    //            continue;
+
+    //        room.Section = section;
+    //    }
+    //}
 }

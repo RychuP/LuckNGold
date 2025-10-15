@@ -10,12 +10,20 @@ static class Program
     public const int Height = 60;
 
     public static RootScreen? RootScreen { get; private set; }
-    public static IFont Font { get; } = Game.Instance.Fonts["PixelDungeon"];
-    public static Distance Distance { get; } = Distance.Chebyshev;
-    public static AdjacencyRule Adjacency { get; } = AdjacencyRule.EightWay;
-
-    public static Color RandomColor =>
-        Color.White.GetRandomColor(Game.Instance.Random);
+    public static IFont Font => Game.Instance.Fonts["PixelDungeon"];
+    public static Distance Distance => Distance.Chebyshev;
+    public static AdjacencyRule Adjacency => AdjacencyRule.EightWay;
+    public static Color RandomColor => Color.White.GetRandomColor(Game.Instance.Random);
+    public static Color RandomBrightColor
+    {
+        get 
+        {
+            Color color;
+            do color = RandomColor;
+            while (color.GetHSVBrightness() < 0.5f);
+            return color;
+        }
+    }
 
     static void Main()
     {

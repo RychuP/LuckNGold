@@ -12,7 +12,6 @@ namespace LuckNGold.World.Furniture.Components;
 /// <summary>
 /// Component for entities that can drop loot.
 /// </summary>
-/// <param name="contents"></param>
 class LootSpawnerComponent : RogueLikeComponentBase<RogueLikeEntity>, ILootSpawner
 {
     public List<RogueLikeEntity> Contents { get; }

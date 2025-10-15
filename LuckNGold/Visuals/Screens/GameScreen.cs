@@ -1,5 +1,6 @@
 ﻿using GoRogue.GameFramework;
 using LuckNGold.Generation;
+using LuckNGold.Tests;
 using LuckNGold.Visuals.Components;
 using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Decor;
@@ -33,10 +34,12 @@ internal class GameScreen : ScreenObject
     // Message log from the SadRogue template
     public readonly MessageLogConsole MessageLog;
 
-    // Static debug screen accessible from everywhere
+    // Debug surface that can print various information
     public static ScreenSurface InfoSurface { get; }
         = new ScreenSurface(40, 50) { IsVisible = false };
     static int s_y = 0;
+
+    public static DebugSurface? DebugSurface { get; set; }
 
     // Window that shows player's quick access inventory
     readonly QuickAccessWindow _quickAccessWindow;
@@ -120,9 +123,9 @@ internal class GameScreen : ScreenObject
         Map.DefaultRenderer!.SadComponents.Add(followTargetComponent);
 
         // Debug layer
-        //var debug = new DebugSurface(Map);
-        //debug.SadComponents.Add(followTargetComponent);
-        //Children.Add(debug);
+        DebugSurface = new DebugSurface(Map) { IsVisible = false };
+        DebugSurface.SadComponents.Add(followTargetComponent);
+        Children.Add(DebugSurface);
 
         // Small static info screen to display information from debugging methods
         Children.Add(InfoSurface);

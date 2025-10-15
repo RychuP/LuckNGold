@@ -4,6 +4,11 @@ using SadRogue.Integration;
 
 namespace LuckNGold.Visuals;
 
+/// <summary>
+/// Base entity that can play various, named animations depending on the state.
+/// </summary>
+/// <remarks>Animations can have multiple or a single frame. Both cases are handled 
+/// by the <see cref="AnimationComponent"/>.</remarks>
 internal class AnimatedRogueLikeEntity : RogueLikeEntity
 {
     /// <summary>
@@ -16,13 +21,13 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
     /// </summary>
     public event EventHandler? Finished;
 
-    // default animation that the entity plays when idle
+    // Default animation that can be played when idle
     readonly string _defaultAnimation;
 
-    // list of all animations available to be played
+    // List of all animations available to be played
     readonly Dictionary<string, ColoredGlyph[]> _animations;
 
-    // component that plays the animations
+    // Component that plays the animations
     readonly AnimationComponent _animationComponent;
 
     /// <summary>
@@ -36,6 +41,10 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
     /// </summary>
     public bool PlaysDefaultAnimationOnFinished { get; set; } = false;
 
+    /// <summary>
+    /// True whe <see cref="AnimationComponent"/> is playing frames
+    /// and false when only one frame is set as appearance.
+    /// </summary>
     public bool IsPlaying => _animationComponent.IsPlaying;
 
     /// <summary>
@@ -44,10 +53,10 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
     public ColoredGlyphBase StaticAppearance =>
         _animations[_defaultAnimation][0];
 
+    string _currentAnimation = string.Empty;
     /// <summary>
     /// Name of the animation currently being played.
     /// </summary>
-    string _currentAnimation = string.Empty;
     public string CurrentAnimation
     {
         get => _currentAnimation;

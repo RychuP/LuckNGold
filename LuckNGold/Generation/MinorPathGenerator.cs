@@ -69,27 +69,36 @@ internal class MinorPathGenerator() : PathGenerator("MinorPath",
                 continue;
             }
 
-            // TODO investigate: produces corridors with no end rooms
-            //if (startRoom.Path.LastRoom == startRoom)
-            //{
-            //    while (minorPath.Count > 0)
-            //    {
-            //        var room = minorPath.FirstRoom;
-            //        if (!room.TransferToPath(startRoom.Path))
-            //            throw new InvalidOperationException("Room transfer between paths failed.");
-            //    }
+            // Transfer rooms from minor paths that form an extension of an existing path
+            // to the parent path.
+            if (startRoom.Path.LastRoom == startRoom)
+            {
+                AddRoomsToContext(context, minorPath);
 
-            //    // skip adding minor path to the context as it has been emptied
-            //    continue;
-            //}
+                // Update parent of the parent with the number of side rooms from the minor path
+                // that will be added to the parent path
+                minorPath.Parent!.Parent!.SideRoomCount += minorPath.Count;
+
+                // Transfer rooms to the parent path.
+                while (minorPath.Count > 0)
+                {
+                    var room = minorPath.FirstRoom;
+                    if (!room.TransferToPath(startRoom.Path))
+                        throw new InvalidOperationException("Room transfer between paths failed.");
+                }
+
+                // Skip adding minor path to the context as it has been emptied.
+                continue;
+            }
 
             // Update parent with the number of side rooms from the minor path
             minorPath.Parent!.SideRoomCount += minorPath.Count;
 
             // update context
-            AddRoomPathsToContext(context, minorPath);
+            AddPathsToContext(context, minorPath);
+            AddRoomsToContext(context, minorPath);
         }
-        while (roomsWithFreeConnections.Count > 0 && attemptCount++ < 100);
+        while (roomsWithFreeConnections.Count > 0 && attemptCount++ < 200);
 
         AddCorridorsToContext(context, corridors);
 
@@ -97,5 +106,5 @@ internal class MinorPathGenerator() : PathGenerator("MinorPath",
     }
 
     static List<Room> GetRoomsWithFreeConnections(RoomPath path) =>
-        [.. path.Rooms.Where(r => r.HasAvailableConnections()).Select(r => r)];
+        [.. path.Rooms.Where(r => r.HasAvailableConnections())];
 }

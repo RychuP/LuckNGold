@@ -20,35 +20,31 @@ internal class Exit : IWallConnection
     /// <summary>
     /// Destination <see cref="Exit"/> where this exit leads to.
     /// </summary>
-    public Exit? End
-    {
-        get
-        {
-            if (Corridor is not null)
-            {
-                return Corridor.Start == this ? Corridor.End : Corridor.Start;
-            }
-            return null;
-        }
-    }
+    public Exit? End { get; private set; } = null;
 
     Corridor? _corridor = null;
+    /// <summary>
+    /// Corridor that has this exit as one of its end points.
+    /// </summary>
     public Corridor? Corridor
     {
         get => _corridor;
         set
         {
-            if (value is not null && !value.HasExit(this))
-                throw new ArgumentException("Given corridor does not start or end with this exit.");
+            ArgumentNullException.ThrowIfNull(value);
+
+            if (!value.HasExit(this))
+                throw new ArgumentException("Corridor does not start or end with this exit.");
             
             _corridor = value;
+            OnCorridorChange(_corridor);
         }
     }
 
-    /// <summary>
-    /// Whether the width of the exit is double (can accommodate a door) or single tile
-    /// </summary>
     bool _isDouble;
+    /// <summary>
+    /// Whether the width of the exit is one or two tiles.
+    /// </summary>
     public bool IsDouble
     {
         get => _isDouble;
@@ -62,6 +58,12 @@ internal class Exit : IWallConnection
         }
     }
 
+    /// <summary>
+    /// Initializes an instance of <see cref="Exit"/> class with given parameters.
+    /// </summary>
+    /// <param name="position">Position of the exit.</param>
+    /// <param name="room">Room the exit belongs to.</param>
+    /// <exception cref="ArgumentException"></exception>
     public Exit(Point position, Room room)
     {
         if (!room.Area.Expand(1, 1).PerimeterPositions().Contains(position))
@@ -76,4 +78,22 @@ internal class Exit : IWallConnection
         int wallSize = room.GetWallSize(Direction);
         IsDouble = wallSize.IsEven();
     }
+
+    void OnCorridorChange(Corridor corridor)
+    {
+        End = corridor.Start == this ? corridor.End : corridor.Start;
+    }
+}
+
+/// <summary>
+/// Exception that is thrown when no valid <see cref="Exit"/> was found 
+/// where it should have been set or the exit leads to a room that
+/// should not have been there.
+/// </summary>
+public class MissingOrNotValidExitException : Exception
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MissingOrNotValidExitException"/>.
+    /// </summary>
+    public MissingOrNotValidExitException() { }
 }

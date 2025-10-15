@@ -37,10 +37,6 @@ class GameMap : RogueLikeMap
     // (path connects many rooms in a logical, linear way)
     public IReadOnlyList<RoomPath> Paths { get; init; }
 
-    // list of all corridors from generator for testing/debugging
-    // (corridor connects two rooms)
-    public IReadOnlyList<Corridor> Corridors { get; init; }
-
     /// <summary>
     /// Layers available for entities in the game
     /// </summary>
@@ -70,11 +66,7 @@ class GameMap : RogueLikeMap
         // TODO Delete this in the future when generation is sorted.
         // Generated data saved mainly for testing and debugging purposes.
         Paths = context.GetFirst<ItemList<RoomPath>>().Items;
-        Corridors = context.GetFirst<ItemList<Corridor>>().Items;
-        var temp = new List<Room>();
-        foreach (var path in Paths)
-            temp.AddRange(path.Rooms);
-        Rooms = temp;
+        Rooms = context.GetFirst<ItemList<Room>>().Items;
 
         // Create renderer
         Point viewSize = new(Program.Width / _fontSizeMultiplier,

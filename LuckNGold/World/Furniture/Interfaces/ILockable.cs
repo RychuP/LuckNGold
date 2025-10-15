@@ -4,7 +4,7 @@ using LuckNGold.World.Items.Interfaces;
 namespace LuckNGold.World.Furniture.Interfaces;
 
 /// <summary>
-/// Interface for components that need to be unlocked before access is granted.
+/// It can be locked. Must be unlocked before access is granted.
 /// </summary>
 internal interface ILockable
 {

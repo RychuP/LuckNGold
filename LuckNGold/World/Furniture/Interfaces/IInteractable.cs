@@ -8,5 +8,10 @@ namespace LuckNGold.World.Furniture.Interfaces;
 /// </summary>
 internal interface IInteractable
 {
+    /// <summary>
+    /// Execute the interaction logic.
+    /// </summary>
+    /// <param name="interactor">Entity interacting with the component.</param>
+    /// <returns>True if the interaction was successful, false otherwise.</returns>
     bool Interact(RogueLikeEntity interactor);
 }

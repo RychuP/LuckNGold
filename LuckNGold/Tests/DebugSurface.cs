@@ -1,12 +1,14 @@
 ﻿using LuckNGold.Generation;
+using LuckNGold.Visuals;
+using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
 
 namespace LuckNGold.Tests;
 
 internal class DebugSurface : ScreenSurface
 {
-    ColoredGlyph DeadEndAppearance = new(Color.Red, Color.Transparent, 'X');
-    ColoredGlyph ExitAppearance = new(Color.LightGreen, Color.Transparent, 'E');
+    readonly ColoredGlyph DeadEndAppearance = new(Color.Red, Color.Transparent, 'X');
+    readonly ColoredGlyph ExitAppearance = new(Color.LightGreen, Color.Transparent, 'E');
 
     public DebugSurface(GameMap map) : base(map.Width, map.Height)
     {
@@ -15,18 +17,29 @@ internal class DebugSurface : ScreenSurface
         Surface.DefaultForeground = Color.CornflowerBlue;
         Surface.Clear();
 
-        // draw debug information
-        // draw trace of the main path
-        DrawPath(map.Paths[0]);
+        // Draw trace of the main path.
+        //DrawPath(map.Paths[0]);
+
+        // Draw connections of each room.
         foreach (var path in map.Paths)
         {
-            // draw connections of each room
+            DrawPath(path);
             foreach (var room in path.Rooms)
+            {
+                DrawRoom(room);
                 DrawConnections(room);
+            }
         }
     }
 
-    public void DrawConnections(Room room)
+    void DrawRoom(Room room)
+    {
+        var color = Colors.FromGemstone[room.Section?.Gemstone ?? Gemstone.None];
+        var shapeParams = ShapeParameters.CreateStyledBoxThin(color);
+        Surface.DrawBox(room.Bounds, shapeParams);
+    }
+
+    void DrawConnections(Room room)
     {
         foreach (var connection in room.Connections)
         {
@@ -40,7 +53,7 @@ internal class DebugSurface : ScreenSurface
 
     public void DrawPath(RoomPath path)
     {
-        var color = Program.RandomColor;
+        var color = Program.RandomBrightColor;
         int glyph = 176;
 
         // draw lines between each room
