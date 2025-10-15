@@ -3,7 +3,6 @@ using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Items.Enums;
-using static System.Collections.Specialized.BitVector32;
 
 namespace LuckNGold.Generation;
 
