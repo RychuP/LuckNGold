@@ -1,4 +1,4 @@
-﻿namespace LuckNGold.Generation;
+﻿namespace LuckNGold.Generation.Map;
 
 internal class Corridor
 {

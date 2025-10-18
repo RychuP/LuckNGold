@@ -1,6 +1,6 @@
 ﻿using GoRogue.MapGeneration.ContextComponents;
 
-namespace LuckNGold.Generation;
+namespace LuckNGold.Generation.Map;
 
 internal class Probe
 {
@@ -211,7 +211,7 @@ internal class Probe
     // this method take room bounds into account
     void ShrinkAreaOnOuterEdge_Room(Rectangle roomBounds)
     {
-        while (roomBounds.Intersects((_bounds)))
+        while (roomBounds.Intersects(_bounds))
             MoveOuterEdgeInwards();
     }
 

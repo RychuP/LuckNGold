@@ -47,15 +47,15 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
 
         // Info screen on and off
         var inputKey = new InputKey(Keys.OemTilde, KeyModifiers.LeftShift);
-        SetAction(inputKey, () => GameScreen.InfoSurface.IsVisible 
-            = !GameScreen.InfoSurface.IsVisible);
+        SetAction(inputKey, () => GameScreen.DebugConsole.IsVisible 
+            = !GameScreen.DebugConsole.IsVisible);
 
         // Debug screen on and off
         inputKey = new InputKey(Keys.OemTilde, KeyModifiers.LeftCtrl);
         SetAction(inputKey, () =>
         {
-            if (GameScreen.DebugSurface is null) return;
-            GameScreen.DebugSurface.IsVisible = !GameScreen.DebugSurface.IsVisible;
+            if (GameScreen.MapLayout is null) return;
+            GameScreen.MapLayout.IsVisible = !GameScreen.MapLayout.IsVisible;
         });
     }
 

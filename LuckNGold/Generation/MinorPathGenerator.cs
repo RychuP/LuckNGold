@@ -2,9 +2,14 @@
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
+using LuckNGold.Generation.Map;
 
 namespace LuckNGold.Generation;
 
+/// <summary>
+/// Minor paths fill the remaining space of the map attaching themselves to side paths
+/// or other minor paths.
+/// </summary>
 internal class MinorPathGenerator() : PathGenerator("MinorPath",
     new ComponentTypeTagPair(typeof(ItemList<RoomPath>), "Paths"))
 {

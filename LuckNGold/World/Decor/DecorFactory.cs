@@ -1,10 +1,8 @@
 ﻿using GoRogue.Random;
 using LuckNGold.Visuals;
-using LuckNGold.World.Furniture.Enums;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
-using SadRogue.Primitives;
 
 namespace LuckNGold.World.Decor;
 
@@ -99,19 +97,11 @@ static class DecorFactory
     /// <summary>
     /// Steps leading to upper or lower levels.
     /// </summary>
-    /// <param name="side">Horizontal appearance: either left or right.</param>
-    /// <param name="direction">Vertical appearance: either up or down.</param>
-    /// <exception cref="ArgumentException">Fired when the wrong type 
-    /// of direction is passed.</exception>
-    public static RogueLikeEntity Steps(Direction side, Direction direction)
+    public static RogueLikeEntity Steps(bool faceRight, bool leadDown)
     {
-        if (!direction.IsVertical())
-            throw new ArgumentException("Direction needs to be vertical.");
-
-        if (!side.IsHorizontal())
-            throw new ArgumentException("Side needs to be horizontal");
-
-        return GetEntity($"Steps{direction}{side}");
+        string direction = leadDown ? "Down" : "Up";
+        string face = faceRight ? "Right" : "Left";
+        return GetEntity($"Steps{direction}{face}");
     }
 
     static RogueLikeEntity GetEntity(string name, bool isWalkable = true)

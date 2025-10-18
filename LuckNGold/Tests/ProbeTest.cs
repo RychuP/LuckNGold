@@ -1,4 +1,4 @@
-﻿using LuckNGold.Generation;
+﻿using LuckNGold.Generation.Map;
 using SadConsole;
 using SadConsole.Input;
 

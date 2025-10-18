@@ -1,6 +1,4 @@
-﻿using LuckNGold.World.Items.Enums;
-
-namespace LuckNGold.Generation;
+﻿namespace LuckNGold.Generation.Map;
 
 /// <summary>
 /// Path made out of rooms connected one after another.
@@ -63,13 +61,19 @@ internal class RoomPath(string name, RoomPath? parent = null, Room? startRoom = 
     public bool Remove(Room room) => Rooms.Remove(room);
 
     /// <summary>
-    /// Gets the list of all paths branching out from this path.
+    /// Gets the distance between two rooms on the path measured in number of rooms.
     /// </summary>
-    //public List<RoomPath> GetAllPaths()
-    //{
-    //    List<RoomPath> paths = [];
-    //    foreach (var room in Rooms)
-    //        paths.AddRange(room.GetAllPaths());
-    //    return paths;
-    //}
+    /// <param name="start">Start <see cref="Room"/> of the distance.</param>
+    /// <param name="end">End <see cref="Room"/> of the distance.</param>
+    /// <returns>Distance between rooms or -1 if either of the rooms was
+    /// not part of the path.</returns>
+    public int GetDistance(Room start, Room end)
+    {
+        if (!Rooms.Contains(start) || !Rooms.Contains(end))
+            return -1;
+
+        int startIndex = Rooms.IndexOf(start);
+        int endIndex = Rooms.IndexOf(end);
+        return Math.Abs(startIndex - endIndex);
+    }
 }

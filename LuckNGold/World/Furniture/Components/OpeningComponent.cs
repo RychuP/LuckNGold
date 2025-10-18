@@ -108,7 +108,6 @@ internal class OpeningComponent(string openingAnimation = "",
         if (Parent is null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
-        // Anything static and big must be present on the map to be interactable
         if (Parent.Layer <= (int)GameMap.Layer.Furniture && Parent.CurrentMap is null)
             throw new InvalidOperationException("Furniture and below needs to be on the map.");
 

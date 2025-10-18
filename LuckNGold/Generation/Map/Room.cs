@@ -3,7 +3,7 @@ using LuckNGold.World.Items.Enums;
 using SadRogue.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
-namespace LuckNGold.Generation;
+namespace LuckNGold.Generation.Map;
 
 class Room
 {
@@ -47,8 +47,15 @@ class Room
     /// </summary>
     public int Height => Area.Height;
 
-    // position of the room
+    /// <summary>
+    /// Position of the room.
+    /// </summary>
     public Point Position => Area.Position;
+
+    /// <summary>
+    /// Number of rooms between this room and the exit room of the section.
+    /// </summary>
+    public int DistanceToSectionExit { get; set; }
 
     /// <summary>
     /// List of exits and dead ends.
@@ -59,6 +66,27 @@ class Room
     /// <see cref="RoomPath"/> that this room belongs to.
     /// </summary>
     public RoomPath Path { get; private set; }
+
+    RoomType _type;
+    public RoomType Type
+    {
+        get => _type;
+        set
+        {
+            if (_type != RoomType.None)
+                throw new InvalidOperationException("Room type doesn't change once set.");
+
+            if (value == RoomType.DungeonEntrance
+                && (Path.Name != "MainPath" || Path.FirstRoom != this))
+                throw new InvalidOperationException("This room is not the dungeon entrance.");
+            else if (value == RoomType.DungeonExit &&
+                (Path.Name != "MainPath" || Path.LastRoom != this))
+                throw new InvalidOperationException("This room is not the dungeon exit.");
+
+
+            _type = value;
+        }
+    }
 
     /// <summary>
     /// Wall directions.
@@ -288,22 +316,6 @@ class Room
     }
 
     /// <summary>
-    /// Gets the list of all paths branching from the sides of this room.
-    /// </summary>
-    /// <remarks>Sides are the walls with exits that lead to paths other
-    /// than the path this room is part of.</remarks>
-    //public List<RoomPath> GetAllPaths()
-    //{
-    //    if (!IsStartRoom())
-    //        return [];
-
-    //    List<RoomPath> paths = [.. SidePaths];
-    //    //foreach (var path in SidePaths)
-    //    //    paths.AddRange(path.GetAllPaths());
-    //    return paths;
-    //}
-
-    /// <summary>
     /// Checks if this room is the start room of side paths.
     /// </summary>
     /// <returns>True if the room is a start room of another path, false otherwise.</returns>
@@ -329,24 +341,4 @@ class Room
     public IEnumerable<Exit> Exits => Connections
         .Where(c => c is Exit)
         .Cast<Exit>();
-
-    /// <summary>
-    /// Propagates section too all connected rooms that are not on the main path.
-    /// </summary>
-    /// <param name="section">Section <see cref="Gemstone"/> to be set to connected rooms.</param>
-    /// <exception cref="MissingOrNotValidExitException"></exception>
-    //void OnSectionChanged(Gemstone section)
-    //{
-    //    foreach (var exit in Exits)
-    //    {
-    //        var room = exit.End!.Room;
-
-    //        // Skip main path rooms as they will be set individually
-    //        // and rooms that already have the section set.
-    //        if (room.Path.Name == "MainPath" || room.Section == Gemstone.None)
-    //            continue;
-
-    //        room.Section = section;
-    //    }
-    //}
 }

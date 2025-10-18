@@ -16,13 +16,13 @@ class LootSpawnerComponent : RogueLikeComponentBase<RogueLikeEntity>, ILootSpawn
 {
     public List<RogueLikeEntity> Contents { get; }
 
-    public LootSpawnerComponent(params RogueLikeEntity[] contents) 
+    public LootSpawnerComponent(List<RogueLikeEntity> contents) 
         :base(false, false, false, false)
     {
         if (contents.Where(e => e.Layer != (int)GameMap.Layer.Items).Any())
             throw new ArgumentException("Only item entities are allowed to be loot.");
 
-        Contents = [.. contents];
+        Contents = contents;
     }
 
     public void DropItems()

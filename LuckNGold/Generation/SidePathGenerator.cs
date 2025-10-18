@@ -2,9 +2,13 @@
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
+using LuckNGold.Generation.Map;
 
 namespace LuckNGold.Generation;
 
+/// <summary>
+/// Secondary paths of rooms that branch out directly from the main path.
+/// </summary>
 internal class SidePathGenerator() : PathGenerator("SidePath", 
     new ComponentTypeTagPair(typeof(ItemList<RoomPath>), "Paths"))
 {

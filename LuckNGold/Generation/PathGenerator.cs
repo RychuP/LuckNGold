@@ -2,10 +2,17 @@
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
+using LuckNGold.Generation.Map;
 using SadRogue.Primitives.GridViews;
 
 namespace LuckNGold.Generation;
 
+/// <summary>
+/// Base class for all other path generators providing common functionality.
+/// </summary>
+/// <param name="name">Name of the path.</param>
+/// <param name="required">Components required for the proper functionality 
+/// of this generator.</param>
 abstract class PathGenerator(string? name = null, params ComponentTypeTagPair[] required) 
     : GenerationStep(name, required)
 {

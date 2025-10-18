@@ -1,26 +1,40 @@
-﻿using LuckNGold.Generation;
-using LuckNGold.Visuals;
+﻿using LuckNGold.Generation.Map;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
 
-namespace LuckNGold.Tests;
+namespace LuckNGold.Visuals.Overlays;
 
-internal class DebugSurface : ScreenSurface
+/// <summary>
+/// Overlay screen that shows visual layout of the map with all rooms, paths
+/// and sections drawn.
+/// </summary>
+internal class MapLayout : ScreenSurface
 {
+    const int SidePathGlyph = 176;
+    const int MainPathGlyph = 249;
+
     readonly ColoredGlyph DeadEndAppearance = new(Color.Red, Color.Transparent, 'X');
     readonly ColoredGlyph ExitAppearance = new(Color.LightGreen, Color.Transparent, 'E');
 
-    public DebugSurface(GameMap map) : base(map.Width, map.Height)
+    public MapLayout() : base(Program.Width, Program.Height)
     {
-        ViewWidth = Program.Width;
-        ViewHeight = Program.Height;
-        Surface.DefaultForeground = Color.CornflowerBlue;
+        IsVisible = false;
+    }
+
+    public void DrawOverlay(GameMap map)
+    {
+        // Resize to the map size first.
+        if (Width != map.Width || Height != map.Height)
+        {
+            (Surface as ICellSurfaceResize)!.Resize(map.Width, map.Height, false);
+            ViewWidth = Program.Width;
+            ViewHeight = Program.Height;
+        }
+        
+        //Surface.DefaultForeground = Color.CornflowerBlue;
         Surface.Clear();
 
-        // Draw trace of the main path.
-        //DrawPath(map.Paths[0]);
-
-        // Draw connections of each room.
+        // Draw connections and section colors of each room.
         foreach (var path in map.Paths)
         {
             DrawPath(path);
@@ -28,6 +42,17 @@ internal class DebugSurface : ScreenSurface
             {
                 DrawRoom(room);
                 DrawConnections(room);
+            }
+        }
+
+        // Draw distances of each room to the section exit.
+        foreach (var section in map.Sections)
+        {
+            foreach (var room in section.Rooms)
+            {
+                int dist = room.DistanceToSectionExit;
+                (int x, int y) = room.Position;
+                Surface.Print(x, y, $"{dist}");
             }
         }
     }
@@ -54,7 +79,7 @@ internal class DebugSurface : ScreenSurface
     public void DrawPath(RoomPath path)
     {
         var color = Program.RandomBrightColor;
-        int glyph = 176;
+        int glyph = path.Name == "MainPath" ? MainPathGlyph : SidePathGlyph;
 
         // draw lines between each room
         if (path.Count > 1)

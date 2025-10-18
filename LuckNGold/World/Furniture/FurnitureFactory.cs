@@ -12,6 +12,14 @@ namespace LuckNGold.World.Furniture;
 /// </summary>
 internal class FurnitureFactory
 {
+    /// <summary>
+    /// Entity that seperates one room from another.
+    /// </summary>
+    /// <param name="orientation"></param>
+    /// <param name="locked"></param>
+    /// <param name="lockDifficulty"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public static RogueLikeEntity Door(DoorOrientation orientation,
         bool locked = false, Difficulty lockDifficulty = Difficulty.None)
     {
@@ -60,7 +68,11 @@ internal class FurnitureFactory
         return door;
     }
 
-    public static AnimatedRogueLikeEntity Chest(params RogueLikeEntity[] items)
+    /// <summary>
+    /// Entity that drops loot when opened.
+    /// </summary>
+    /// <param name="items">Item entities that will drop as loot when chest is open.</param>
+    public static AnimatedRogueLikeEntity Chest(List<RogueLikeEntity> items)
     {
         string[] animations = ["ClosedChest", "OpenChest", "ChestOpening", "ChestClosing"];
         var chest = new AnimatedRogueLikeEntity(animations, "ClosedChest", false,
@@ -90,4 +102,9 @@ internal class FurnitureFactory
 
         return chest;
     }
+
+    //public AnimatedRogueLikeEntity Lever()
+    //{
+    //    var lever = new 
+    //}
 }

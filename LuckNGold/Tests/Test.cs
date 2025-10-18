@@ -9,6 +9,7 @@ internal class Test : SimpleSurface
 
     public Test()
     {
-        
+        int x = 0 / 2;
+        Surface.Print(1, 1, x.ToString());
     }
 }
