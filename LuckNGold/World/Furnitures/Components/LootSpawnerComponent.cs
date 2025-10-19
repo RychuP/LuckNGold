@@ -1,5 +1,5 @@
 ﻿using GoRogue.Random;
-using LuckNGold.World.Furniture.Interfaces;
+using LuckNGold.World.Furnitures.Interfaces;
 using LuckNGold.World.Items.Interfaces;
 using LuckNGold.World.Map;
 using SadConsole.Components;
@@ -7,7 +7,7 @@ using SadRogue.Integration;
 using SadRogue.Integration.Components;
 using ShaiRandom.Generators;
 
-namespace LuckNGold.World.Furniture.Components;
+namespace LuckNGold.World.Furnitures.Components;
 
 /// <summary>
 /// Component for entities that can drop loot.

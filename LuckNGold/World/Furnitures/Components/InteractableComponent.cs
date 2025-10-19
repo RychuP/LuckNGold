@@ -1,10 +1,10 @@
-﻿using LuckNGold.World.Furniture.Interfaces;
+﻿using LuckNGold.World.Furnitures.Interfaces;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
-namespace LuckNGold.World.Furniture.Components;
+namespace LuckNGold.World.Furnitures.Components;
 
 // TODO: Probably can be deleted
 // Try to add IInteractable to the individual components that can be interacted with

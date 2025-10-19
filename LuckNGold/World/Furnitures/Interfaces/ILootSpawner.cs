@@ -1,6 +1,6 @@
 ﻿using SadRogue.Integration;
 
-namespace LuckNGold.World.Furniture.Interfaces;
+namespace LuckNGold.World.Furnitures.Interfaces;
 
 /// <summary>
 /// It can spawn item entities.

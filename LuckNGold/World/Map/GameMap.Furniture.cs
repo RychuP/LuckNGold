@@ -1,8 +1,7 @@
-﻿using LuckNGold.Generation.Furniture;
-using LuckNGold.Generation.Map;
-using LuckNGold.World.Furniture;
-using LuckNGold.World.Furniture.Components;
-using LuckNGold.World.Furniture.Enums;
+﻿using LuckNGold.Generation.Furnitures;
+using LuckNGold.World.Furnitures;
+using LuckNGold.World.Furnitures.Components;
+using LuckNGold.World.Furnitures.Enums;
 using LuckNGold.World.Items.Components;
 using LuckNGold.World.Items.Enums;
 using SadRogue.Integration;
@@ -11,30 +10,26 @@ namespace LuckNGold.World.Map;
 
 partial class GameMap
 {
-    public void PlaceFurniture(IReadOnlyList<Entity> furniture)
+    public void PlaceFurniture(Furniture furniture)
     {
-        foreach (var entity in furniture)
-        {
-            if (entity.Position == Point.None)
-                throw new InvalidOperationException("All entities in the list should have " +
-                    "a valid position.");
+        if (furniture.Position == Point.None)
+            throw new InvalidOperationException("Valid position is needed.");
 
-            var temp = GetEntityAt<RogueLikeEntity>(entity.Position);
-            if (temp is not null && !temp.IsWalkable)
-                throw new InvalidOperationException("Non walkable entity already at location.");
+        var entity = GetEntityAt<RogueLikeEntity>(furniture.Position);
+        if (entity is not null)
+            throw new InvalidOperationException("Another entity already at location.");
 
-            if (entity is Door door)
-                Place(door);
-            else if (entity is Chest chest)
-                Place(chest);
-        }
+        if (furniture is Door door)
+            Place(door);
+        else if (furniture is Chest chest)
+            Place(chest);
     }
 
     void Place(Chest data)
     {
         var items = new List<RogueLikeEntity>(data.Items.Count);
         foreach (var item in data.Items)
-            items.Add(GetItem(item));
+            items.Add(CreateItem(item));
 
         var chest = FurnitureFactory.Chest(items);
         AddEntity(chest, data.Position);

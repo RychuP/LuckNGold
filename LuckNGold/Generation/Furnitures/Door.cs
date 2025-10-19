@@ -1,11 +1,9 @@
-﻿using LuckNGold.Generation.Map;
-
-namespace LuckNGold.Generation.Furniture;
+﻿namespace LuckNGold.Generation.Furnitures;
 
 /// <summary>
 /// Entity separating two different rooms.
 /// </summary>
-record Door : Entity
+record Door : Furniture
 {
     public bool IsDouble { get; init; }
     public Direction Direction { get; init; }

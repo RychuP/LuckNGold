@@ -58,8 +58,8 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
         AddDeadEnds(mainPath.FirstRoom);
         AddDeadEnds(mainPath.LastRoom);
 
-        mainPath.FirstRoom.Type = RoomType.DungeonEntrance;
-        mainPath.LastRoom.Type = RoomType.DungeonExit;
+        //mainPath.FirstRoom.Type = RoomType.DungeonEntrance;
+        //mainPath.LastRoom.Type = RoomType.DungeonExit;
 
         // Update context.
         AddPathsToContext(context, mainPath);

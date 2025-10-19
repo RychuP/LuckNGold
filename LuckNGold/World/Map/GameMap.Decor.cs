@@ -1,22 +1,22 @@
-﻿using LuckNGold.Generation.Decor;
-using LuckNGold.Generation.Map;
-using LuckNGold.World.Decor;
+﻿using LuckNGold.Generation.Decors;
+using LuckNGold.World.Decors;
+using SadRogue.Integration;
 
 namespace LuckNGold.World.Map;
 
 partial class GameMap
 {
-    public void PlaceDecor(IReadOnlyList<Entity> decor)
+    public void PlaceDecor(Decor decor)
     {
-        foreach (var entity in decor)
-        {
-            if (entity.Position == Point.None)
-                throw new InvalidOperationException("All entities in the list should have " +
-                    "a valid position.");
+        if (decor.Position == Point.None)
+            throw new InvalidOperationException("Valid position is needed.");
 
-            if (entity is Steps steps)
-                Place(steps);
-        }
+        var entity = GetEntityAt<RogueLikeEntity>(decor.Position);
+        if (entity is not null)
+            throw new InvalidOperationException("Another entity already at location.");
+
+        if (decor is Steps steps)
+            Place(steps);
     }
 
     /// <summary>

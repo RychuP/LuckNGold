@@ -1,4 +1,4 @@
-﻿namespace LuckNGold.World.Furniture.Enums;
+﻿namespace LuckNGold.World.Furnitures.Enums;
 
 /// <summary>
 /// Orientation of a door depending on its position at the boundary of a room.

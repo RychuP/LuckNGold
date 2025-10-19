@@ -168,5 +168,12 @@
 "StepsUpLeft" : {"Glyph": 129, "Mirror": 0},
 "StepsUpRight" : {"Glyph": 129, "Mirror": 2},
 
-
+"LeverOn" : {"Glyph": 135, "Mirror": 0},
+"LeverOff" : {"Glyph": 133, "Mirror": 0},
+"LeverTurningOn1": {"Glyph": 133, "Mirror": 0},
+"LeverTurningOn2": {"Glyph": 134, "Mirror": 0},
+"LeverTurningOn3": {"Glyph": 135, "Mirror": 0},
+"LeverTurningOff1": {"Glyph": 135, "Mirror": 0},
+"LeverTurningOff2": {"Glyph": 134, "Mirror": 0},
+"LeverTurningOff3": {"Glyph": 133, "Mirror": 0},
 }}

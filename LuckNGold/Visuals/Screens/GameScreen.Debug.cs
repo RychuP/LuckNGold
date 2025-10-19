@@ -5,11 +5,14 @@ namespace LuckNGold.Visuals.Screens;
 
 partial class GameScreen
 {
+    public static readonly bool DebugEnabled = true;
     public static DebugConsole DebugConsole { get; } = new();
     public static MapLayout MapLayout { get; } = new();
 
     void AddDebugOverlays(SurfaceComponentFollowTarget followTargetComponent)
     {
+        if (!DebugEnabled) return;
+
         MapLayout.DrawOverlay(Map);
         MapLayout.SadComponents.Clear();
         MapLayout.SadComponents.Add(followTargetComponent);

@@ -1,11 +1,11 @@
-﻿using LuckNGold.World.Furniture.Interfaces;
+﻿using LuckNGold.World.Furnitures.Interfaces;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Items.Interfaces;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
-namespace LuckNGold.World.Furniture.Components;
+namespace LuckNGold.World.Furnitures.Components;
 
 /// <summary>
 /// Component for entities that need to be unlocked before access is granted.

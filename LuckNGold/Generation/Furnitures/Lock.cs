@@ -1,7 +1,7 @@
 ﻿using LuckNGold.Generation.Items;
 using LuckNGold.World.Items.Enums;
 
-namespace LuckNGold.Generation.Furniture;
+namespace LuckNGold.Generation.Furnitures;
 
 record Lock(Difficulty Difficulty)
 {

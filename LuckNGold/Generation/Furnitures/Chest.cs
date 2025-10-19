@@ -1,14 +1,11 @@
 ﻿using LuckNGold.Generation.Items;
-using LuckNGold.Generation.Map;
 
-namespace LuckNGold.Generation.Furniture;
+namespace LuckNGold.Generation.Furnitures;
 
-record Chest : Entity
+record Chest : Furniture
 {
     public List<Item> Items { get; } = [];
 
     public Chest(Point position) : base(position)
-    {
-        
-    }
+    { }
 }

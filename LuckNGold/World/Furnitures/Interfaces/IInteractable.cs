@@ -1,6 +1,6 @@
 ﻿using SadRogue.Integration;
 
-namespace LuckNGold.World.Furniture.Interfaces;
+namespace LuckNGold.World.Furnitures.Interfaces;
 
 /// <summary>
 /// It can be interacted with (usually by standing next to it and pressing interact

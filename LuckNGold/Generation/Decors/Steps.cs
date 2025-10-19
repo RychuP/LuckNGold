@@ -1,11 +1,9 @@
-﻿using LuckNGold.Generation.Map;
-
-namespace LuckNGold.Generation.Decor;
+﻿namespace LuckNGold.Generation.Decors;
 
 /// <summary>
 /// Steps leading to other levels.
 /// </summary>
-record Steps : Entity
+record Steps : Decor
 { 
     /// <summary>
     /// Whether the steps lead down or up.

@@ -1,8 +1,8 @@
 ﻿using GoRogue.Components;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
-using LuckNGold.Generation.Decor;
-using LuckNGold.Generation.Furniture;
+using LuckNGold.Generation.Decors;
+using LuckNGold.Generation.Furnitures;
 using LuckNGold.Generation.Items;
 using LuckNGold.Generation.Map;
 using LuckNGold.Visuals.Screens;
@@ -28,9 +28,6 @@ internal class SectionGenerator() : GenerationStep("Sections",
         var paths = context.GetFirst<ItemList<RoomPath>>("Paths");
         var rooms = context.GetFirst<ItemList<Room>>("Rooms");
         var sections = context.GetFirstOrNew(() => new ItemList<Section>(), "Sections");
-        var decor = context.GetFirstOrNew(() => new ItemList<Entity>(), "Decor");
-        var furniture = context.GetFirstOrNew(() => new ItemList<Entity>(), "Furniture");
-        var items = context.GetFirstOrNew(() => new ItemList<Item>(), "Items");
 
         var mainPath = paths.Items[0];
         int gemstoneCount = Enum.GetNames(typeof(Difficulty)).Length - 1;
@@ -113,7 +110,7 @@ internal class SectionGenerator() : GenerationStep("Sections",
             var doorDirection = exitToNextRoom.Direction;
             var @lock = new Lock((Difficulty)currentGemstone);
             var door = new Door(doorPosition, doorDirection, isDouble, @lock);
-            furniture.Add(door, Name);
+            currentRoom.AddEntity(door);
 
             // Save current room as the exit from the section.
             currentSection.Exit = currentRoom;
@@ -140,7 +137,7 @@ internal class SectionGenerator() : GenerationStep("Sections",
             && Math.Abs(exit.Position.X - p.X) > 1).First();
         var stepsUp = new Steps(position, leadDown: false,
             faceRight: exit.Direction.GetOpposite() == Direction.Right);
-        decor.Add(stepsUp, Name);
+        firstRoom.AddEntity(stepsUp);
 
         // Create steps leading to a lower level.
         var lastRoom = mainPath.LastRoom;
@@ -151,7 +148,7 @@ internal class SectionGenerator() : GenerationStep("Sections",
             exit.Direction.GetOpposite() : Direction.Left;
         var stepsDown = new Steps(position, leadDown: true,
             faceRight: direction == Direction.Right);
-        decor.Add(stepsDown, Name);
+        lastRoom.AddEntity(stepsDown);
 
         yield break;
     }

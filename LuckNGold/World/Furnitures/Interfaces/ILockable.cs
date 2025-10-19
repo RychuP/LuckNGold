@@ -1,7 +1,7 @@
 ﻿using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Items.Interfaces;
 
-namespace LuckNGold.World.Furniture.Interfaces;
+namespace LuckNGold.World.Furnitures.Interfaces;
 
 /// <summary>
 /// It can be locked. Must be unlocked before access is granted.

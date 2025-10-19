@@ -1,32 +1,14 @@
 ﻿using GoRogue.Random;
-using LuckNGold.World.Items.Enums;
-using SadRogue.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LuckNGold.Generation.Map;
 
-class Room
+/// <summary>
+/// Simple, square, walled space with four available exits placed centrally on each wall.
+/// Basic building block of the dungeon map.
+/// </summary>
+partial class Room
 {
-    /// <summary>
-    /// Min odd wall size.
-    /// </summary>
-    /// <remarks>Cannot be set to less than 3.</remarks>
-    public const int MinOddSize = 3;
-
-    /// <summary>
-    /// Max odd wall size.
-    /// </summary>
-    public const int MaxOddSize = 9;
-
-    public const int MinEvenSize = MinOddSize + 1;
-
-    public const int MaxEvenSize = MaxOddSize + 1;
-
-    /// <summary>
-    /// Minimum ratio of shorter length to longer length. 
-    /// </summary>
-    public const double MinSizeRatio = 0.65d;
-
     /// <summary>
     /// Inner area of the room.
     /// </summary>
@@ -53,19 +35,26 @@ class Room
     public Point Position => Area.Position;
 
     /// <summary>
+    /// Wall directions.
+    /// </summary>
+    public static Direction[] Directions =>
+        AdjacencyRule.Cardinals.DirectionsOfNeighborsCache;
+
+    /// <summary>
     /// Number of rooms between this room and the exit room of the section.
     /// </summary>
     public int DistanceToSectionExit { get; set; }
 
     /// <summary>
-    /// List of exits and dead ends.
-    /// </summary>
-    public List<IWallConnection> Connections { get; } = new(4);
-
-    /// <summary>
     /// <see cref="RoomPath"/> that this room belongs to.
     /// </summary>
     public RoomPath Path { get; private set; }
+
+    readonly List<Entity> _contents = [];
+    /// <summary>
+    /// List of entities placed in the room.
+    /// </summary>
+    public IReadOnlyList<Entity> Contents { get => _contents; }
 
     RoomType _type;
     public RoomType Type
@@ -87,12 +76,6 @@ class Room
             _type = value;
         }
     }
-
-    /// <summary>
-    /// Wall directions.
-    /// </summary>
-    public static Direction[] Directions =>
-        AdjacencyRule.Cardinals.DirectionsOfNeighborsCache;
 
     Section? _section = null;
     /// <summary>
@@ -133,101 +116,6 @@ class Room
     /// <param name="parent">Path this room belongs to.</param>
     public Room(Point position, int width, int height, RoomPath parent) :
         this(position.X, position.Y, width, height, parent) { }
-
-    public static int GetRandomOddSize(int min = MinOddSize, int max = MaxOddSize)
-    {
-        int size;
-        do { size = GlobalRandom.DefaultRNG.NextInt(min, max + 1); }
-        while (size.IsEven());
-        return size;
-    }
-
-    public static int GetRandomEvenSize(int min = MinEvenSize, int max = MaxEvenSize)
-    {
-        int size;
-        do { size = GlobalRandom.DefaultRNG.NextInt(min, max + 1); }
-        while (size.IsOdd());
-        return size;
-    }
-
-    public static int GetRandomSize(int min = MinOddSize, int max = MaxEvenSize) =>
-        GlobalRandom.DefaultRNG.NextInt(min, max + 1);
-
-    /// <summary>
-    /// Creates a new <see cref="Exit"/> in the given direction.
-    /// </summary>
-    /// <param name="direction">Direction of the wall where the exit is located.</param>
-    /// <returns>Instance of the new <see cref="Exit"/>.</returns>
-    /// <exception cref="ArgumentException">Thrown if a connection already exists.</exception>
-    public Exit AddExit(Direction direction)
-    {
-        if (Connections.Any(c => c.Direction == direction))
-            throw new ArgumentException($"Connection to the {nameof(direction)} already exists.");
-
-        var position = GetConnectionPoint(direction);
-        var exit = new Exit(position, this);
-        Connections.Add(exit);
-        return exit;
-    }
-
-    /// <summary>
-    /// Checks if the room has walls that can accept new exits.
-    /// </summary>
-    public bool HasAvailableConnections() =>
-        Connections.Count < 4;
-
-    public bool IsConnectedTo(Room room)
-    {
-        foreach (var connection in Connections)
-        {
-            if (connection is Exit exit && exit.End?.Room == room) return true;
-        }
-        return false;
-    }
-
-    public bool TryGetExit(Direction direction, [NotNullWhen(true)] out Exit? exit)
-    {
-        var connection = Connections.Find(c => c.Direction == direction);
-        exit = connection is Exit e ? e : null;
-        return exit is not null;
-    }
-
-    /// <summary>
-    /// Tries to get <see cref="Exit"/> to the given <see cref="Room"/>.
-    /// </summary>
-    /// <param name="room">Room to which exit needs to be found.</param>
-    /// <param name="exit">Exit to the room if found.</param>
-    /// <returns>True if exit was found, false otherwise.</returns>
-    public bool TryGetExit(Room room, [NotNullWhen(true)] out Exit? exit)
-    {
-        exit = Exits.Where(e => e.End!.Room == room).First();
-        return exit is not null;
-    }
-
-    /// <summary>
-    /// Gets the direction to a random wall of the room available to add a connection.
-    /// </summary>
-    public Direction GetRandomAvailableConnection()
-    {
-        var availableDirections = Directions.Except(Connections.Select(c => c.Direction));
-        List<Direction> directionPool = [.. availableDirections];
-        if (directionPool.Count == 0)
-            throw new InvalidOperationException("No available connections left to choose from.");
-        var index = GlobalRandom.DefaultRNG.NextInt(directionPool.Count);
-        return directionPool[index];
-    }
-
-    /// <summary>
-    /// Adds a new <see cref="DeadEnd"/> to <see cref="Connections"/> in the given direction.
-    /// </summary>
-    /// <param name="direction"></param>
-    public void AddDeadEnd(Direction direction)
-    {
-        if (Connections.Any(c => c.Direction == direction))
-            throw new ArgumentException($"Connection to the {nameof(direction)} already exists.");
-
-        Connections.Add(new DeadEnd(direction));
-    }
 
     /// <summary>
     /// Calculates position for an adjacent area (new room or probe).
@@ -270,32 +158,6 @@ class Room
     public Point GetAdjacentAreaPosition(Direction direction, int pathLength, int size) =>
         GetAdjacentAreaPosition(direction, pathLength, size, size);
 
-    /// <summary>
-    /// Returns the size of the wall in the given direction from the center.
-    /// </summary>
-    public int GetWallSize(Direction direction) =>
-        direction.IsHorizontal() ? Height : Width;
-
-    /// <summary>
-    /// Gets the point on the wall in the given direction where a connection can be placed.
-    /// </summary>
-    /// <param name="direction">Direction from the center of the room
-    /// to the wall to be checked.</param>
-    /// <returns>Position for the connection.</returns>
-    public Point GetConnectionPoint(Direction direction)
-    {
-        int horizontalWallMiddleX = Position.X + (Width.IsOdd() ? Width / 2 : Width / 2 - 1);
-        int verticalWallMiddleY = Position.Y + Height / 2;
-
-        return direction.Type switch
-        {
-            Direction.Types.Up => (horizontalWallMiddleX, Position.Y - 1),
-            Direction.Types.Down => (horizontalWallMiddleX, Area.MaxExtentY + 1),
-            Direction.Types.Left => (Position.X - 1, verticalWallMiddleY),
-            _ => (Area.MaxExtentX + 1, verticalWallMiddleY)
-        };
-    }
-
     public bool TransferToPath(RoomPath newPath)
     {
         if (newPath == Path)
@@ -315,30 +177,17 @@ class Room
         return false;
     }
 
-    /// <summary>
-    /// Checks if this room is the start room of side paths.
-    /// </summary>
-    /// <returns>True if the room is a start room of another path, false otherwise.</returns>
-    public bool IsStartRoom() =>
-        SidePathExits.Any();
+    public void AddEntity(Entity entity)
+    {
+        if (entity.Position == Point.None)
+            throw new ArgumentException("Entity needs to have a valid position.");
 
-    /// <summary>
-    /// Exits leading to other paths
-    /// not including the parent path of the room's path.
-    /// </summary>
-    public IEnumerable<Exit> SidePathExits => Exits.
-        Where(e => e.End!.Room.Path != Path && e.End!.Room.Path != Path.Parent);
+        if (!Bounds.Contains(entity.Position))
+            throw new ArgumentException("Entity position is outside the bounds of the room.");
 
-    /// <summary>
-    /// Side paths connected directly to the room.
-    /// </summary>
-    public IEnumerable<RoomPath> SidePaths => SidePathExits
-        .Select(e => e.End!.Room.Path);
+        _contents.Add(entity);
+    }
 
-    /// <summary>
-    /// Exits leading out of the room.
-    /// </summary>
-    public IEnumerable<Exit> Exits => Connections
-        .Where(c => c is Exit)
-        .Cast<Exit>();
+    public bool RemoveEntity(Entity entity) =>
+        _contents.Remove(entity);
 }

@@ -1,4 +1,4 @@
-﻿using LuckNGold.World.Furniture.Interfaces;
+﻿using LuckNGold.World.Furnitures.Interfaces;
 using LuckNGold.World.Items.Enums;
 
 namespace LuckNGold.World.Items.Interfaces;

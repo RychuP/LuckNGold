@@ -2,9 +2,11 @@
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using LuckNGold.Generation;
+using LuckNGold.Generation.Decors;
+using LuckNGold.Generation.Furnitures;
 using LuckNGold.Generation.Items;
 using LuckNGold.Generation.Map;
-using LuckNGold.World.Furniture.Components;
+using LuckNGold.World.Furnitures.Components;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
 using LuckNGold.World.Terrain;
@@ -51,15 +53,20 @@ partial class GameScreen
         map.ApplyTerrainOverlay(generatedMap, (pos, val) => val ?
             new Floor(pos) : new Wall(pos, generatedMap));
 
-        // Get generated entities.
-        var decor = generator.Context.GetFirst<ItemList<Entity>>("Decor").Items;
-        var furniture = generator.Context.GetFirst<ItemList<Entity>>("Furniture").Items;
-        var items = generator.Context.GetFirst<ItemList<Item>>("Items").Items;
-
-        // Place generated entities on the map.
-        map.PlaceDecor(decor);
-        map.PlaceFurniture(furniture);
-        map.PlaceItems(items);
+        // Place entities on the map.
+        var rooms = generator.Context.GetFirst<ItemList<Room>>("Rooms").Items;
+        foreach (var room in rooms)
+        {
+            foreach (var entity in room.Contents)
+            {
+                if (entity is Decor decor)
+                    map.PlaceDecor(decor);
+                else if (entity is Furniture furniture)
+                    map.PlaceFurniture(furniture);
+                else if (entity is Item item)
+                    map.PlaceItem(item);
+            }
+        }
 
         return map;
     }
@@ -70,7 +77,7 @@ partial class GameScreen
 
         if (entity.Name == "Door")
         {
-            // Recalculates FOV when transparency of the door changes.
+            // Recalculate FOV when transparency of the door changes.
             entity.TransparencyChanged += RogueLikeEntity_OnTransparencyChanged;
         }
         else if (entity.Name == "Chest")
@@ -96,7 +103,7 @@ partial class GameScreen
         }
     }
 
-    // Recalculates player FOV if an entity that changed its transparency is in view
+    // Recalculates player FOV if an entity that changed its transparency is in view.
     void RogueLikeEntity_OnTransparencyChanged(object? o, ValueChangedEventArgs<bool> e)
     {
         if (o is not RogueLikeEntity door || door.Name != "Door")

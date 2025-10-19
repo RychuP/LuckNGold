@@ -4,7 +4,7 @@ using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
 
-namespace LuckNGold.World.Decor;
+namespace LuckNGold.World.Decors;
 
 static class DecorFactory
 {

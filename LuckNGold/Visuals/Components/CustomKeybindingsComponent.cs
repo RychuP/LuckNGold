@@ -1,6 +1,6 @@
 ﻿using GoRogue.GameFramework;
 using LuckNGold.Visuals.Screens;
-using LuckNGold.World.Furniture.Interfaces;
+using LuckNGold.World.Furnitures.Interfaces;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
 using SadConsole.Input;
@@ -38,25 +38,12 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
     public CustomKeybindingsComponent(GameMap map, RogueLikeEntity player)
     {
         _player = player;
-        _map = map;
-
         _quickAccess = _player.AllComponents.GetFirst<QuickAccessComponent>();
+        _map = map;
 
         AddMapControls();
         AddPlayerControls();
-
-        // Info screen on and off
-        var inputKey = new InputKey(Keys.OemTilde, KeyModifiers.LeftShift);
-        SetAction(inputKey, () => GameScreen.DebugConsole.IsVisible 
-            = !GameScreen.DebugConsole.IsVisible);
-
-        // Debug screen on and off
-        inputKey = new InputKey(Keys.OemTilde, KeyModifiers.LeftCtrl);
-        SetAction(inputKey, () =>
-        {
-            if (GameScreen.MapLayout is null) return;
-            GameScreen.MapLayout.IsVisible = !GameScreen.MapLayout.IsVisible;
-        });
+        AddDebugControls();
     }
 
     void AddPlayerControls()
@@ -77,6 +64,25 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
         // Add pick up action
         SetAction(Keys.G, () => _quickAccess.PickUp());
         SetAction(Keys.F, Interact);
+    }
+
+    // Adds keyboard shortcuts to show debug overlay screens.
+    void AddDebugControls()
+    {
+        if (!GameScreen.DebugEnabled) return;
+
+        // Debug console on and off
+        var inputKey = new InputKey(Keys.OemTilde, KeyModifiers.LeftShift);
+        SetAction(inputKey, () => GameScreen.DebugConsole.IsVisible
+            = !GameScreen.DebugConsole.IsVisible);
+
+        // Map layout on and off
+        inputKey = new InputKey(Keys.OemTilde, KeyModifiers.LeftCtrl);
+        SetAction(inputKey, () =>
+        {
+            if (GameScreen.MapLayout is null) return;
+            GameScreen.MapLayout.IsVisible = !GameScreen.MapLayout.IsVisible;
+        });
     }
 
     // Adds action that will use the item on pressing the given key

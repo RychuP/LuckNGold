@@ -1,8 +1,8 @@
 ﻿using LuckNGold.Generation.Map;
 using LuckNGold.Visuals.Components;
 using LuckNGold.Visuals.Windows;
-using LuckNGold.World.Decor;
-using LuckNGold.World.Furniture;
+using LuckNGold.World.Decors;
+using LuckNGold.World.Furnitures;
 using LuckNGold.World.Items;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
@@ -110,7 +110,11 @@ partial class GameScreen : ScreenObject
             coins.Add(ItemFactory.Coin());
 
         var chest = FurnitureFactory.Chest(coins);
-        chest.Position = Player.Position + Direction.Down;
+        chest.Position = Player.Position + Direction.DownLeft;
         Map.AddEntity(chest);
+
+        var lever = FurnitureFactory.Lever();
+        lever.Position = Player.Position + Direction.DownRight;
+        Map.AddEntity(lever);
     }
 }

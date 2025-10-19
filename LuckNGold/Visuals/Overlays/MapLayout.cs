@@ -6,7 +6,7 @@ namespace LuckNGold.Visuals.Overlays;
 
 /// <summary>
 /// Overlay screen that shows visual layout of the map with all rooms, paths
-/// and sections drawn.
+/// and sections drawn. Used for debugging.
 /// </summary>
 internal class MapLayout : ScreenSurface
 {
@@ -78,7 +78,7 @@ internal class MapLayout : ScreenSurface
 
     public void DrawPath(RoomPath path)
     {
-        var color = Program.RandomBrightColor;
+        var color = path.Name == "MainPath" ? Color.LightBlue : Program.RandomBrightColor;
         int glyph = path.Name == "MainPath" ? MainPathGlyph : SidePathGlyph;
 
         // draw lines between each room
@@ -103,9 +103,14 @@ internal class MapLayout : ScreenSurface
         // and the first room of the path
         if (path.StartRoom != null)
         {
-            var start = path.StartRoom.Area.Center;
-            var end = path.Rooms[0].Area.Center;
-            Surface.DrawLine(start, end, glyph, color);
+            var startRoom = path.StartRoom;
+            var endRoom = path.Rooms[0];
+            if (startRoom.TryGetExit(endRoom, out var exit))
+            {
+                var startPoint = startRoom.Area.Center + exit.Direction;
+                var endPoint = endRoom.Area.Center;
+                Surface.DrawLine(startPoint, endPoint, glyph, color);
+            }
         }
     }
 }

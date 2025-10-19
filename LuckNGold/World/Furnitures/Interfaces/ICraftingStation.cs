@@ -1,4 +1,4 @@
-﻿namespace LuckNGold.World.Furniture.Interfaces;
+﻿namespace LuckNGold.World.Furnitures.Interfaces;
 
 /// <summary>
 /// It can be used to craft items.

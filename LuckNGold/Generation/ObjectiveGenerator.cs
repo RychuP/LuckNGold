@@ -2,11 +2,9 @@
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
-using LuckNGold.Generation.Furniture;
+using LuckNGold.Generation.Furnitures;
 using LuckNGold.Generation.Items;
 using LuckNGold.Generation.Map;
-using LuckNGold.World.Items.Enums;
-using SadRogue.Integration;
 using ShaiRandom.Generators;
 
 namespace LuckNGold.Generation;
@@ -18,96 +16,103 @@ namespace LuckNGold.Generation;
 /// which is placed in the final room of the map.
 /// </summary>
 internal class ObjectiveGenerator() : GenerationStep("Objectives",
-    new ComponentTypeTagPair(typeof(ItemList<Item>), "Items"),
     new ComponentTypeTagPair(typeof(ItemList<RoomPath>), "Paths"),
     new ComponentTypeTagPair(typeof(ItemList<Section>), "Sections"))
 {
+    readonly IEnhancedRandom _rnd = GlobalRandom.DefaultRNG;
+
     protected override IEnumerator<object?> OnPerform(GenerationContext context)
     {
-        var paths = context.GetFirst<ItemList<RoomPath>>("Paths");
-        var sections = context.GetFirst<ItemList<Section>>("Sections");
-        var furniture = context.GetFirst<ItemList<Entity>>("Furniture");
-        var items = context.GetFirst<ItemList<Item>>("Items");
+        var paths = context.GetFirst<ItemList<RoomPath>>("Paths").Items;
+        var sections = context.GetFirst<ItemList<Section>>("Sections").Items;
 
-        // Get doors created so far.
-        var doors = furniture.Items.Where(e => e is Door).Cast<Door>().ToArray();
-
-        var rnd = GlobalRandom.DefaultRNG;
-        Room room;
-        Key key;
-        Coin coin;
-
-        // Create matching door keys.
-        foreach (var door in doors)
+        // Create and hide the keys to section doors.
+        for (int i = 0; i < sections.Count; i++)
         {
-            if (door.Lock is not Lock @lock)
-                continue;
-
-            var section = sections.Items
-                .Where(s => s.Gemstone == @lock.Gemstone)
-                .First();
-
-            switch (@lock.Gemstone)
+            var section = sections[i];
+            if (i == 0)
             {
-                // Place the key in one of the further single rooms.
-                case Gemstone.Onyx:
-                    var singleRoomCount = section.SingleRooms.Length;
-                    int startIndex = singleRoomCount / 2;
+                if (section.SingleRooms.Length >= 5)
+                    PlaceKeyInRandomRoom(section);
+                else
+                    PlaceKeyInChests(section);
+            }
+            else if (i == 1)
+            {
 
-                    int index;
-                    do
-                    {
-                        index = rnd.NextInt(startIndex, singleRoomCount);
-                        room = section.SingleRooms[index];
-                    }
-                    while (room.Section!.Entrance == room);
-
-                    var keyPosition = room.Area.Center;
-                    key = new Key(keyPosition, @lock.Gemstone);
-                    items.Add(key, Name);
-                    break;
-
-                // Place a few chests and the key in one of them
-                case Gemstone.Amber:
-                    int chestsNeeded = 3;
-                    if (section.SingleRooms.Length < chestsNeeded)
-                        chestsNeeded = section.SingleRooms.Length;
-                    int chestWithKeyIndex = rnd.NextInt(chestsNeeded);
-                    var roomIndicesUsed = new List<int>(chestsNeeded);
-
-                    // Create chests.
-                    for (int i = 0; i < chestsNeeded; i++)
-                    {
-                        int roomIndex;
-                        do roomIndex = rnd.RandomIndex(section.SingleRooms);
-                        while (roomIndicesUsed.Contains(roomIndex));
-                        roomIndicesUsed.Add(roomIndex);
-                        room = section.SingleRooms[roomIndex];
-
-                        // Create current chest.
-                        var chestPosition = room.Area.Center;
-                        var chest = new Chest(chestPosition);
-
-                        // Put some coins in the chest.
-                        int coinsNeeded = rnd.NextInt(5);
-                        for (int j = 0; j < coinsNeeded; j++)
-                        {
-                            coin = new Coin(Point.None);
-                            chest.Items.Add(coin);
-                        }
-
-                        if (chestWithKeyIndex == i)
-                        {
-                            key = new Key(Point.None, @lock.Gemstone);
-                            chest.Items.Add(key);
-                        }
-
-                        furniture.Add(chest, Name);
-                    }
-                    break;
             }
         }
 
         yield break;
+    }
+
+    /// <summary>
+    /// Places the key in one of the further rooms in the section.
+    /// </summary>
+    void PlaceKeyInRandomRoom(Section section)
+    {
+        var singleRoomCount = section.SingleRooms.Length;
+        int startIndex = singleRoomCount / 2;
+
+        int index;
+        Room room;
+        do
+        {
+            index = _rnd.NextInt(startIndex, singleRoomCount);
+            room = section.SingleRooms[index];
+        }
+        while (room.Section!.Entrance == room);
+
+        var keyPosition = room.Area.Center;
+        var key = new Key(keyPosition, section.Gemstone);
+        room.AddEntity(key);
+    }
+
+    /// <summary>
+    /// Places a few chests in the section and the key in one of them.
+    /// </summary>
+    /// <param name="section"></param>
+    void PlaceKeyInChests(Section section)
+    {
+        int chestsNeeded = 3;
+        if (section.SingleRooms.Length < chestsNeeded)
+            chestsNeeded = section.SingleRooms.Length;
+        int chestWithKeyIndex = _rnd.NextInt(chestsNeeded);
+        var roomIndicesUsed = new List<int>(chestsNeeded);
+
+        // Create chests.
+        for (int i = 0; i < chestsNeeded; i++)
+        {
+            int roomIndex;
+            do roomIndex = _rnd.RandomIndex(section.SingleRooms);
+            while (roomIndicesUsed.Contains(roomIndex));
+            roomIndicesUsed.Add(roomIndex);
+            var room = section.SingleRooms[roomIndex];
+
+            // Create current chest.
+            var chestPosition = room.Area.Center;
+            var chest = new Chest(chestPosition);
+
+            // Put some coins in the chest.
+            int coinsNeeded = _rnd.NextInt(5);
+            for (int j = 0; j < coinsNeeded; j++)
+            {
+                var coin = new Coin(Point.None);
+                chest.Items.Add(coin);
+            }
+
+            if (chestWithKeyIndex == i)
+            {
+                var key = new Key(Point.None, section.Gemstone);
+                chest.Items.Add(key);
+            }
+
+            room.AddEntity(chest);
+        }
+    }
+
+    void PlaceKeyInBarredRoom(Section section, IList<Section> sections)
+    {
+
     }
 }
