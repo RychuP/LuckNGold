@@ -1,9 +1,6 @@
-﻿using LuckNGold.World.Items.Components;
-using LuckNGold.World.Map;
+﻿using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
-using SadConsole.Input;
 using SadRogue.Integration;
-using SadRogue.Integration.Keybindings;
 
 namespace LuckNGold.World.Monsters;
 

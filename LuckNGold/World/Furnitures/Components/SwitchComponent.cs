@@ -12,7 +12,6 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
     string turningOnAnimation = "", string turningOffAnimation = "") :
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), ISwitch
 {
-    //public event EventHandler<ValueChangedEventArgs<SwitchState>>? StateChanged;
     public event EventHandler? StateChanged;
 
     bool _isOn = false;
@@ -50,14 +49,19 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
         if (IsOn) return;
 
         // Check the parent is animated
-        if (Parent is AnimatedRogueLikeEntity animated)
+        if (Parent is AnimatedRogueLikeEntity animatedEntity)
         {
             // Refuse to act if a turning animation is already playing.
-            if (!animated.IsPlaying)
+            if (!animatedEntity.IsPlaying)
             {
                 // Play turning animation.
-                // Actual state change will happen in the animation changed event handler.
-                animated.PlayAnimation(turningOnAnimation);
+                animatedEntity.PlayAnimation(turningOnAnimation);
+
+                // Unlike opening component, we need the immediate signal response.
+                IsOn = true;
+
+                // Default animation has to be changed so that out of view appearance is correct.
+                animatedEntity.DefaultAnimation = onAnimation;
             }
 
             return;
@@ -77,8 +81,13 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
             if (!animatedEntity.IsPlaying)
             {
                 // Play turning animation.
-                // Actual state change will happen in the animation changed event handler.
                 animatedEntity.PlayAnimation(turningOffAnimation);
+
+                // Unlike opening component, we need the immediate signal response.
+                IsOn = false;
+
+                // Default animation has to be changed so that out of view appearance is correct.
+                animatedEntity.DefaultAnimation = offAnimation;
             }
 
             return;
@@ -124,12 +133,10 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
         {
             if (animatedEntity.CurrentAnimation == turningOnAnimation)
             {
-                IsOn = true;
                 animatedEntity.PlayAnimation(onAnimation);
             }
             else if (animatedEntity.CurrentAnimation == turningOffAnimation)
             {
-                IsOn = false;
                 animatedEntity.PlayAnimation(offAnimation);
             }
         }

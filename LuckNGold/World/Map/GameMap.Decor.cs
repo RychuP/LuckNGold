@@ -4,6 +4,7 @@ using SadRogue.Integration;
 
 namespace LuckNGold.World.Map;
 
+// Translates generated decor entities to RogueLike entities.
 partial class GameMap
 {
     public void PlaceDecor(Decor decor)

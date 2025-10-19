@@ -1,8 +1,11 @@
-﻿using LuckNGold.Generation.Map;
+﻿using GoRogue.GameFramework;
+using LuckNGold.Generation.Map;
 using LuckNGold.Visuals.Components;
 using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Decors;
 using LuckNGold.World.Furnitures;
+using LuckNGold.World.Furnitures.Enums;
+using LuckNGold.World.Furnitures.Interfaces;
 using LuckNGold.World.Items;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
@@ -10,6 +13,7 @@ using LuckNGold.World.Monsters.Components;
 using SadConsole.Components;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LuckNGold.Visuals.Screens;
 
@@ -41,6 +45,19 @@ partial class GameScreen : ScreenObject
 
         // Create the player and place it in the first room of the main path.
         Player = GeneratePlayer();
+        var entities = Map.GetEntitiesAt<RogueLikeEntity>(Player.Position);
+        if (entities.Any())
+        {
+            foreach (var entity in entities)
+            {
+                if (entity.CanMoveIn(Direction.Up))
+                {
+                    entity.Position += Direction.Up;
+                }
+                else
+                    Map.RemoveEntity(entity);
+            }
+        }
         Map.AddEntity(Player);
 
         // Sample entities for testing.
@@ -84,12 +101,11 @@ partial class GameScreen : ScreenObject
         Map.AddEntity(flag);
 
         // Add sample candles
-        var topSideOfRoom = firstRoom.Area.PositionsOnSide(Direction.Up);
         var candle = DecorFactory.Candle(Size.Small);
-        candle.Position = topSideOfRoom.First();
+        candle.Position = firstRoom.Area.MinYPositions().First();
         Map.AddEntity(candle);
         candle = DecorFactory.Candle(Size.Small);
-        candle.Position = topSideOfRoom.Last();
+        candle.Position = firstRoom.Area.MinYPositions().Last();
         Map.AddEntity(candle);
 
         // Add sample torches
@@ -101,20 +117,30 @@ partial class GameScreen : ScreenObject
         Map.AddEntity(torch);
 
         // Get an exit from the first room for the sample door
-        if (firstRoom.Connections.Find(c => c is Exit) is not Exit exit)
+        if (firstRoom.Exits.FirstOrDefault() is not Exit exit)
             throw new Exception("First room needs to have a valid exit.");
 
         // Add sample chest
         var coins = new List<RogueLikeEntity>(5);
         for (int i = 0; i < 5; i++)
             coins.Add(ItemFactory.Coin());
-
         var chest = FurnitureFactory.Chest(coins);
-        chest.Position = Player.Position + Direction.DownLeft;
+        chest.Position = firstRoom.Area.MaxYPositions().First();
         Map.AddEntity(chest);
 
+        // Add sample gate.
+        DoorOrientation gateOrientation = exit.Direction == Direction.Left ?
+            DoorOrientation.Left : DoorOrientation.Right;
+        var gate = FurnitureFactory.RemoteGate(gateOrientation);
+        var signalReceiverComponent = gate.AllComponents.GetFirst<ISignalReceiver>();
+        gate.Position = exit.Position;
+        Map.AddEntity(gate);
+
+        // Add sample lever.
         var lever = FurnitureFactory.Lever();
-        lever.Position = Player.Position + Direction.DownRight;
+        lever.Position = firstRoom.Area.MaxYPositions().Last();
+        var switchComponent = lever.AllComponents.GetFirst<ISwitch>();
+        switchComponent.StateChanged += (o, e) => signalReceiverComponent.ReceiveSignal();
         Map.AddEntity(lever);
     }
 }

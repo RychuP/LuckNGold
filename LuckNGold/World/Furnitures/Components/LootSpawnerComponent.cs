@@ -33,38 +33,58 @@ class LootSpawnerComponent : RogueLikeComponentBase<RogueLikeEntity>, ILootSpawn
         if (Parent is null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
-        if (Parent.Layer <= (int)GameMap.Layer.Furniture && Parent.CurrentMap is null)
-            throw new InvalidOperationException("Furniture or below has to be on the map.");
+        if (Parent.CurrentMap is not GameMap map)
+            throw new InvalidOperationException("Parent entity has to be on the map.");
 
-        // Get surrounding points
+        // Get points surrounding parent entity.
         var neighbours = Program.Adjacency.Neighbors(Parent.Position);
-        var freeNeighbours = neighbours.Where(p =>
+
+        // Create a list for valid spawn positions.
+        List<Point> spawnPositions = [];
+
+        // Sieve through neighbour positions to find valid spawn cells.
+        foreach (var point in neighbours)
         {
-            return !Parent.CurrentMap!.GetEntitiesAt<RogueLikeEntity>(p).Any();
-            //var entities = Parent.CurrentMap!.GetEntitiesAt<RogueLikeEntity>(p);
-            //return entities.Where(e => e.AllComponents.GetFirstOrDefault<ICarryable>() 
-            //    != null).Any();
-        }).ToList();
+            if (!map.GetTerrainAt<RogueLikeCell>(point)!.IsWalkable)
+                continue;
+
+            var entities = map.GetEntitiesAt<RogueLikeEntity>(point);
+            bool cellCanAcceptLoot = true;
+
+            foreach (var entity in entities)
+            {
+                if (entity.Layer <= (int)GameMap.Layer.Items)
+                {
+                    cellCanAcceptLoot = false;
+                    break;
+                }
+            }
+
+            if (cellCanAcceptLoot)
+                spawnPositions.Add(point);
+        }
 
         var rnd = GlobalRandom.DefaultRNG;
         List<RogueLikeEntity> toBeRemoved = [];
+
+        // Place loot in random valid positions around the parent entity.
         foreach (var item in Contents)
         {
             if (item.CurrentMap != null)
                 throw new InvalidOperationException("Loot item should not be on the map yet.");
 
             // Break from dropping loot when no empty spaces are available
-            if (freeNeighbours.Count == 0)
+            if (spawnPositions.Count == 0)
                 break;
 
-            var index = rnd.RandomIndex(freeNeighbours);
-            item.Position = freeNeighbours[index];
-            Parent.CurrentMap!.AddEntity(item);
+            var index = rnd.RandomIndex(spawnPositions);
+            item.Position = spawnPositions[index];
+            map.AddEntity(item);
             toBeRemoved.Add(item);
-            freeNeighbours.RemoveAt(index);
+            spawnPositions.RemoveAt(index);
         }
 
-        // Remove spawned items from loot spawner contents
+        // Remove spawned loot from spawner contents.
         foreach (var item in toBeRemoved)
             Contents.Remove(item);
     }

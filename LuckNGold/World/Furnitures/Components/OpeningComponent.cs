@@ -45,15 +45,19 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         if (!IsOpen)
             return true;
 
-        // Check for presence of componets that prevent opening
-        var lockable = Parent.AllComponents.GetFirstOrDefault<ILockable>();
+        // Check if lock component is present -> can only open once lock is removed.
+        if (Parent.AllComponents.GetFirstOrDefault<ILockable>() is not null)
+            return false;
 
-        // Can something be locked open? Someone is trying to close it 
-        // while being locked open? Probably not a valid operation.
-        if (lockable is not null)
-            throw new InvalidOperationException("Entity is locked open. This is not a valid state.");
+        // Check if signal receiver is present -> can only open remotely.
+        if (Parent.AllComponents.GetFirstOrDefault<ISignalReceiver>() is
+            ISignalReceiver signalReceiver)
+        {
+            if (!signalReceiver.HasUnconsumedSignal)
+                return false;
+        }
 
-        // Check the parent is animated
+        // Check if parent is animated.
         if (Parent is AnimatedRogueLikeEntity animated)
         {
             // Refuse to act if an opening/closing animation is already playing.
@@ -85,10 +89,17 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         if (IsOpen)
             return true;
 
-        // Check for presence of any components that could prevent the entity being opened.
-        var lockable = Parent.AllComponents.GetFirstOrDefault<ILockable>();
-        if (lockable is not null)
-            return false;
+        // Check if lock component is present -> this should not happen in open state.
+        if (Parent.AllComponents.GetFirstOrDefault<ILockable>() is not null)
+            throw new InvalidOperationException("Locked open is not a valid state.");
+
+        // Check if signal receiver is present -> can only close remotely.
+        if (Parent.AllComponents.GetFirstOrDefault<ISignalReceiver>() is
+            ISignalReceiver signalReceiver)
+        {
+            if (!signalReceiver.HasUnconsumedSignal)
+                return false;
+        }
 
         // Check the parent is animated
         if (Parent is AnimatedRogueLikeEntity animated)
@@ -132,11 +143,19 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
     void OnOpened()
     {
         Opened?.Invoke(this, EventArgs.Empty);
+
+        if (Parent!.AllComponents.GetFirstOrDefault<ISignalReceiver>() is
+            ISignalReceiver signalReceiver && signalReceiver.HasUnconsumedSignal)
+            signalReceiver.ConsumeSignal();
     }
 
     public void OnClosed()
     {
         Closed?.Invoke(this, EventArgs.Empty);
+
+        if (Parent!.AllComponents.GetFirstOrDefault<ISignalReceiver>() is
+            ISignalReceiver signalReceiver && signalReceiver.HasUnconsumedSignal)
+            signalReceiver.ConsumeSignal();
     }
 
     public override void OnAdded(IScreenObject host)
@@ -153,6 +172,13 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
 
             animatedEntity.Finished += AnimatedRogueLikeEntity_OnFinished;
         }
+
+        if (host is RogueLikeEntity entity &&
+            entity.AllComponents.GetFirstOrDefault<SignalReceiverComponent>() is 
+            SignalReceiverComponent signalReceiver)
+        {
+            signalReceiver.SignalReceived += SignalReceiver_OnSignalReceived;
+        }
     }
 
     public override void OnRemoved(IScreenObject host)
@@ -163,6 +189,21 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         {
             animatedEntity.Finished -= AnimatedRogueLikeEntity_OnFinished;
         }
+
+        if (host is RogueLikeEntity entity &&
+            entity.AllComponents.GetFirstOrDefault<SignalReceiverComponent>() is
+            SignalReceiverComponent signalReceiver)
+        {
+            signalReceiver.SignalReceived -= SignalReceiver_OnSignalReceived;
+        }
+    }
+
+    void SignalReceiver_OnSignalReceived(object? o, EventArgs e)
+    {
+        if (IsOpen)
+            Close();
+        else
+            Open();
     }
 
     void AnimatedRogueLikeEntity_OnFinished(object? o, EventArgs e)

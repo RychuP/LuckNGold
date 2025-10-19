@@ -5,6 +5,8 @@
 /// </summary>
 internal interface ISwitch : IInteractable
 {
+    event EventHandler? StateChanged;
+
     /// <summary>
     /// Current state.
     /// </summary>

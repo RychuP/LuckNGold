@@ -14,18 +14,14 @@ namespace LuckNGold.World.Furnitures;
 internal class FurnitureFactory
 {
     /// <summary>
-    /// Entity that seperates one room from another.
+    /// Door like entity that seperates one room from another.
     /// </summary>
-    /// <param name="orientation"></param>
-    /// <param name="locked"></param>
-    /// <param name="lockDifficulty"></param>
-    /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
     public static RogueLikeEntity Door(DoorOrientation orientation,
         bool locked = false, Difficulty lockDifficulty = Difficulty.None)
     {
         if (orientation == DoorOrientation.None)
-            throw new ArgumentException("Door requires an orientation.", nameof(orientation));
+            throw new ArgumentException("Door requires an orientation.");
 
         // Get appearances
         var glyphDef = Program.Font.GetGlyphDefinition($"ClosedDoor{orientation}");
@@ -70,7 +66,49 @@ internal class FurnitureFactory
     }
 
     /// <summary>
-    /// Entity that drops loot when opened.
+    /// Gate like entity that can be operated remotely.
+    /// </summary>
+    public static RogueLikeEntity RemoteGate(DoorOrientation orientation)
+    {
+        if (orientation == DoorOrientation.None)
+            throw new ArgumentException("Gate requires an orientation.");
+
+        // Get appearances.
+        var glyphDef = Program.Font.GetGlyphDefinition($"ClosedRemoteGate");
+        var closedAppearance = glyphDef.CreateColoredGlyph();
+        var appearance = glyphDef.CreateColoredGlyph();
+        glyphDef = Program.Font.GetGlyphDefinition($"OpenDoor{orientation}");
+        var openAppearance = glyphDef.CreateColoredGlyph(98);
+
+        // Create entity.
+        var gate = new RogueLikeEntity(appearance, false, true, (int)GameMap.Layer.Furniture)
+        {
+            Name = "Remote Gate"
+        };
+
+        // Add signal receiver component.
+        var signalReceiverComponent = new SignalReceiverComponent();
+        gate.AllComponents.Add(signalReceiverComponent);
+
+        // Add opening component.
+        var openingComponent = new OpeningComponent();
+        openingComponent.Closed += (o, e) =>
+        {
+            closedAppearance.CopyAppearanceTo(gate.AppearanceSingle!.Appearance);
+            gate.IsWalkable = false;
+        };
+        openingComponent.Opened += (o, e) =>
+        {
+            openAppearance.CopyAppearanceTo(gate.AppearanceSingle!.Appearance);
+            gate.IsWalkable = true;
+        };
+        gate.AllComponents.Add(openingComponent);
+
+        return gate;
+    }
+
+    /// <summary>
+    /// Chest like entity that drops loot when opened.
     /// </summary>
     /// <param name="items">Item entities that will drop as loot when chest is open.</param>
     public static AnimatedRogueLikeEntity Chest(List<RogueLikeEntity> items)
@@ -81,14 +119,6 @@ internal class FurnitureFactory
         {
             Name = "Chest"
         };
-
-        //chest.Finished += (o, e) =>
-        //{
-        //    if (chest.CurrentAnimation == "ChestOpening")
-        //        chest.CurrentAnimation = "OpenChest";
-        //    else if (chest.CurrentAnimation == "ChestClosing")
-        //        chest.CurrentAnimation = "ClosedChest";
-        //};
 
         // Add loot spawner
         var loot = new LootSpawnerComponent(items);
@@ -106,6 +136,9 @@ internal class FurnitureFactory
         return chest;
     }
 
+    /// <summary>
+    /// Lever like entity that can be switched on and off.
+    /// </summary>
     public static AnimatedRogueLikeEntity Lever()
     {
         string[] animations = ["LeverOff", "LeverOn", "LeverTurningOff", "LeverTurningOn"];

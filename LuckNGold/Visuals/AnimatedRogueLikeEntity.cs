@@ -21,8 +21,23 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
     /// </summary>
     public event EventHandler? Finished;
 
-    // Default animation that can be played when idle
-    readonly string _defaultAnimation;
+    string _defaultAnimation = string.Empty;
+    /// <summary>
+    /// Default animation that can be played when idle.
+    /// </summary>
+    public string DefaultAnimation
+    {
+        get => _defaultAnimation;
+        set
+        {
+            if (_defaultAnimation == value) return;
+
+            if (!HasAnimation(value))
+                throw new InvalidOperationException("Default animation is not in the animations.");
+            
+            _defaultAnimation = value;
+        }
+    }
 
     // List of all animations available to be played
     readonly Dictionary<string, ColoredGlyph[]> _animations;
@@ -51,7 +66,7 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
     /// Appearance of the entity for the purpose of displaying it in various information windows.
     /// </summary>
     public ColoredGlyphBase StaticAppearance =>
-        _animations[_defaultAnimation][0];
+        _animations[DefaultAnimation][0];
 
     string _currentAnimation = string.Empty;
     /// <summary>
@@ -128,9 +143,6 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
         : base(new ColoredGlyph(Color.White, Color.Transparent, 2), 
             walkable, transparent, (int) layer)
     {
-        _defaultAnimation = defaultAnimation;
-        DefaultAnimationIsReversable = defaultAnimIsReversable;
-
         // Get all the animations for future reference
         _animations = [];
         foreach (var animation in animations)
@@ -138,6 +150,9 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
             var frames = GetFrames(animation);
             _animations[animation] = frames;
         }
+
+        DefaultAnimation = defaultAnimation;
+        DefaultAnimationIsReversable = defaultAnimIsReversable;
 
         // Create the component to play the animations
         _animationComponent = new AnimationComponent();
@@ -197,7 +212,7 @@ internal class AnimatedRogueLikeEntity : RogueLikeEntity
     }
 
     public void PlayDefaultAnimation() =>
-        PlayAnimation(_defaultAnimation, true, DefaultAnimationIsReversable);
+        PlayAnimation(DefaultAnimation, true, DefaultAnimationIsReversable);
 
     /// <summary>
     /// Retrieves an array of frames for the specified animation.

@@ -43,6 +43,14 @@ static class IntExtensions
 
 static class GlyphDefinitionExtensions
 {
-    public static ColoredGlyph CreateColoredGlyph(this GlyphDefinition glyphDefinition) =>
-        new(Color.White, Color.Transparent, glyphDefinition.Glyph, glyphDefinition.Mirror);
+    /// <summary>
+    /// Converts <see cref="GlyphDefinition"/> to a <see cref="ColoredGlyph"/>.
+    /// </summary>
+    /// <param name="glyphIndexOffset">Offset added to glyph index 
+    /// from <see cref="GlyphDefinition"/>.</param>
+    /// <returns></returns>
+    public static ColoredGlyph CreateColoredGlyph(this GlyphDefinition glyphDefinition, 
+        int glyphIndexOffset = 0) =>
+        new(Color.White, Color.Transparent, glyphDefinition.Glyph + glyphIndexOffset, 
+            glyphDefinition.Mirror);
 }

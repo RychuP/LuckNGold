@@ -1,11 +1,10 @@
-﻿using GoRogue.DiceNotation.Terms;
-using LuckNGold.Generation.Furnitures;
-using LuckNGold.Generation.Items;
+﻿using LuckNGold.Generation.Items;
 using LuckNGold.World.Items;
 using SadRogue.Integration;
 
 namespace LuckNGold.World.Map;
 
+// Translates generated item entities to RogueLike entities.
 partial class GameMap
 {
     public void PlaceItem(Item item)

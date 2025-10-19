@@ -8,6 +8,7 @@ using SadRogue.Integration;
 
 namespace LuckNGold.World.Map;
 
+// Translates generated furniture entities to RogueLike entities.
 partial class GameMap
 {
     public void PlaceFurniture(Furniture furniture)

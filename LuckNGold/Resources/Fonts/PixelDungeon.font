@@ -176,4 +176,6 @@
 "LeverTurningOff1": {"Glyph": 135, "Mirror": 0},
 "LeverTurningOff2": {"Glyph": 134, "Mirror": 0},
 "LeverTurningOff3": {"Glyph": 133, "Mirror": 0},
+
+"ClosedRemoteGate" : {"Glyph": 130, "Mirror": 0},
 }}

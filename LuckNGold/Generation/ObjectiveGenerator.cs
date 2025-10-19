@@ -5,6 +5,7 @@ using GoRogue.Random;
 using LuckNGold.Generation.Furnitures;
 using LuckNGold.Generation.Items;
 using LuckNGold.Generation.Map;
+using LuckNGold.World.Items.Enums;
 using ShaiRandom.Generators;
 
 namespace LuckNGold.Generation;
@@ -79,6 +80,11 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
             chestsNeeded = section.SingleRooms.Length;
         int chestWithKeyIndex = _rnd.NextInt(chestsNeeded);
         var roomIndicesUsed = new List<int>(chestsNeeded);
+        if (section.Gemstone == Gemstone.Onyx)
+        {
+            int dungeonEntranceRoomIndex = Array.IndexOf(section.SingleRooms, section.Entrance);
+            roomIndicesUsed.Add(dungeonEntranceRoomIndex);
+        }
 
         // Create chests.
         for (int i = 0; i < chestsNeeded; i++)
@@ -89,8 +95,8 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
             roomIndicesUsed.Add(roomIndex);
             var room = section.SingleRooms[roomIndex];
 
-            // Create current chest.
-            var chestPosition = room.Area.Center;
+        // Create current chest.
+        var chestPosition = room.Area.Center;
             var chest = new Chest(chestPosition);
 
             // Put some coins in the chest.
