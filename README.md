@@ -10,8 +10,8 @@ Dungeon exploration game in very early stages of development. I don't think this
 6. F = interact
 
 ## Debug Controls:
-1. Shift + Tilde = Section generation info
-1. Ctrl + Tilde = Debug screen showing layout of the dungeon (zoom out to sync views first)
+1. Shift + Tilde = Debug console
+1. Ctrl + Tilde = Map layout (zoom out to sync views first)
 
 ## Screenshots:
 
