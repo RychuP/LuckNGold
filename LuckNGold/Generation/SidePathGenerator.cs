@@ -7,7 +7,7 @@ using LuckNGold.Generation.Map;
 namespace LuckNGold.Generation;
 
 /// <summary>
-/// Secondary paths of rooms that branch out directly from the main path.
+/// Generator that creates cecondary paths of rooms that branch out directly from the main path.
 /// </summary>
 internal class SidePathGenerator() : PathGenerator("SidePath", 
     new ComponentTypeTagPair(typeof(ItemList<RoomPath>), "Paths"))

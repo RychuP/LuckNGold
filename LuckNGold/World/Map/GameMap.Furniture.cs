@@ -8,7 +8,7 @@ using SadRogue.Integration;
 
 namespace LuckNGold.World.Map;
 
-// Translates generated furniture entities to RogueLike entities.
+// Translates furniture data objects from generator to RogueLike entities.
 partial class GameMap
 {
     public void PlaceFurniture(Furniture furniture)
@@ -26,35 +26,35 @@ partial class GameMap
             Place(chest);
     }
 
-    void Place(Chest data)
+    void Place(Chest chestData)
     {
-        var items = new List<RogueLikeEntity>(data.Items.Count);
-        foreach (var item in data.Items)
+        var items = new List<RogueLikeEntity>(chestData.Items.Count);
+        foreach (var item in chestData.Items)
             items.Add(CreateItem(item));
 
         var chest = FurnitureFactory.Chest(items);
-        AddEntity(chest, data.Position);
+        AddEntity(chest, chestData.Position);
     }
 
-    void Place(Door data)
+    void Place(Door doorData)
     {
         // Establish orientation of the door
         DoorOrientation doorOrientation;
-        if (data.Direction.IsHorizontal())
+        if (doorData.Direction.IsHorizontal())
         {
-            doorOrientation = data.Direction == Direction.Left ?
+            doorOrientation = doorData.Direction == Direction.Left ?
                 DoorOrientation.Left : DoorOrientation.Right;
         }
         else
         {
-            doorOrientation = data.Direction == Direction.Up ?
+            doorOrientation = doorData.Direction == Direction.Up ?
                 DoorOrientation.TopLeft : DoorOrientation.BottomLeft;
         }
 
         // Check if the door is locked.
         bool isLocked = false;
         Difficulty difficulty = Difficulty.None;
-        if (data.Lock is Lock @lock)
+        if (doorData.Lock is Lock @lock)
         {
             isLocked = true;
             difficulty = @lock.Difficulty;
@@ -62,15 +62,15 @@ partial class GameMap
 
         // Create the door.
         var door = FurnitureFactory.Door(doorOrientation, isLocked, difficulty);
-        AddEntity(door, data.Position);
+        AddEntity(door, doorData.Position);
 
         // Add aditional door to wide corridors.
-        if (data.IsDouble)
+        if (doorData.IsDouble)
         {
-            if (!data.Direction.IsVertical())
+            if (!doorData.Direction.IsVertical())
                 throw new InvalidOperationException("Double door can only be vertical.");
 
-            doorOrientation = data.Direction == Direction.Up ?
+            doorOrientation = doorData.Direction == Direction.Up ?
                 DoorOrientation.TopRight : DoorOrientation.BottomRight;
             var door2 = FurnitureFactory.Door(doorOrientation, isLocked, difficulty);
             AddEntity(door2, door.Position + Direction.Right);

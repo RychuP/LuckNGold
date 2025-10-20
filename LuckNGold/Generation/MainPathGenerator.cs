@@ -7,8 +7,8 @@ using ShaiRandom.Generators;
 namespace LuckNGold.Generation;
 
 /// <summary>
-/// Generates main path of rooms from which all the other paths branch out.
-/// It holds the start room, where the player spawns and the exit room,
+/// Generator that creates a path of rooms from which all the other paths branch out.
+/// Main path holds the start room, where the player spawns and the exit room,
 /// where the entrance to next level is placed.
 /// </summary>
 /// <param name="roomCount">Number of rooms to be generated.</param>
@@ -57,9 +57,6 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
         // accept any further connections.
         AddDeadEnds(mainPath.FirstRoom);
         AddDeadEnds(mainPath.LastRoom);
-
-        //mainPath.FirstRoom.Type = RoomType.DungeonEntrance;
-        //mainPath.LastRoom.Type = RoomType.DungeonExit;
 
         // Update context.
         AddPathsToContext(context, mainPath);

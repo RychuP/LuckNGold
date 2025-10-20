@@ -95,11 +95,6 @@ partial class GameScreen : ScreenObject
     {
         var firstRoom = Map.Paths[0].FirstRoom;
 
-        // Add sample decor
-        var flag = DecorFactory.Flag(Gemstone.Onyx);
-        flag.Position = (Player.Position.X, firstRoom.Area.Y - 1);
-        Map.AddEntity(flag);
-
         // Add sample candles
         var candle = DecorFactory.Candle(Size.Small);
         candle.Position = firstRoom.Area.MinYPositions().First();
@@ -109,12 +104,12 @@ partial class GameScreen : ScreenObject
         Map.AddEntity(candle);
 
         // Add sample torches
-        var torch = DecorFactory.Torch();
-        torch.Position = flag.Position + Direction.Right;
-        Map.AddEntity(torch);
-        torch = DecorFactory.Torch();
-        torch.Position = flag.Position + Direction.Left;
-        Map.AddEntity(torch);
+        //var torch = DecorFactory.Torch();
+        //torch.Position = flag.Position + Direction.Right;
+        //Map.AddEntity(torch);
+        //torch = DecorFactory.Torch();
+        //torch.Position = flag.Position + Direction.Left;
+        //Map.AddEntity(torch);
 
         // Get an exit from the first room for the sample door
         if (firstRoom.Exits.FirstOrDefault() is not Exit exit)
@@ -131,8 +126,8 @@ partial class GameScreen : ScreenObject
         // Add sample gate.
         DoorOrientation gateOrientation = exit.Direction == Direction.Left ?
             DoorOrientation.Left : DoorOrientation.Right;
-        var gate = FurnitureFactory.RemoteGate(gateOrientation);
-        var signalReceiverComponent = gate.AllComponents.GetFirst<ISignalReceiver>();
+        var gate = FurnitureFactory.Gate(gateOrientation);
+        var actuatorComponent = gate.AllComponents.GetFirst<IActuator>();
         gate.Position = exit.Position;
         Map.AddEntity(gate);
 
@@ -140,7 +135,13 @@ partial class GameScreen : ScreenObject
         var lever = FurnitureFactory.Lever();
         lever.Position = firstRoom.Area.MaxYPositions().Last();
         var switchComponent = lever.AllComponents.GetFirst<ISwitch>();
-        switchComponent.StateChanged += (o, e) => signalReceiverComponent.ReceiveSignal();
+        switchComponent.StateChanged += (o, e) =>
+        {
+            if (switchComponent.IsOn)
+                actuatorComponent.Extend();
+            else
+                actuatorComponent.Retract();
+        };
         Map.AddEntity(lever);
     }
 }

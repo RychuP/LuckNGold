@@ -1,7 +1,4 @@
-﻿using GoRogue.Random;
-using System.Diagnostics.CodeAnalysis;
-
-namespace LuckNGold.Generation.Map;
+﻿namespace LuckNGold.Generation.Map;
 
 /// <summary>
 /// Simple, square, walled space with four available exits placed centrally on each wall.
@@ -55,27 +52,6 @@ partial class Room
     /// List of entities placed in the room.
     /// </summary>
     public IReadOnlyList<Entity> Contents { get => _contents; }
-
-    RoomType _type;
-    public RoomType Type
-    {
-        get => _type;
-        set
-        {
-            if (_type != RoomType.None)
-                throw new InvalidOperationException("Room type doesn't change once set.");
-
-            if (value == RoomType.DungeonEntrance
-                && (Path.Name != "MainPath" || Path.FirstRoom != this))
-                throw new InvalidOperationException("This room is not the dungeon entrance.");
-            else if (value == RoomType.DungeonExit &&
-                (Path.Name != "MainPath" || Path.LastRoom != this))
-                throw new InvalidOperationException("This room is not the dungeon exit.");
-
-
-            _type = value;
-        }
-    }
 
     Section? _section = null;
     /// <summary>
@@ -184,6 +160,9 @@ partial class Room
 
         if (!Bounds.Contains(entity.Position))
             throw new ArgumentException("Entity position is outside the bounds of the room.");
+
+        if (Contents.Where(e => e.Position == entity.Position).Any())
+            throw new ArgumentException("Another entity already at location.");
 
         _contents.Add(entity);
     }

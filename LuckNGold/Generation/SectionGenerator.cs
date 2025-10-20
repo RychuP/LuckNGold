@@ -3,7 +3,6 @@ using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
 using LuckNGold.Generation.Decors;
 using LuckNGold.Generation.Furnitures;
-using LuckNGold.Generation.Items;
 using LuckNGold.Generation.Map;
 using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Items.Enums;
@@ -11,7 +10,8 @@ using LuckNGold.World.Items.Enums;
 namespace LuckNGold.Generation;
 
 /// <summary>
-/// Generates sections of the dungeon with locked doors and steps leading to other levels.
+/// Generator that creates sections of the dungeon with locked doors, steps leading to other levels
+/// and section flags placed in most of the rooms.
 /// </summary>
 internal class SectionGenerator() : GenerationStep("Sections",
     new ComponentTypeTagPair(typeof(ItemList<RoomPath>), "Paths"),
@@ -104,13 +104,8 @@ internal class SectionGenerator() : GenerationStep("Sections",
             if (!currentRoom.TryGetExit(nextRoom, out Exit? exitToNextRoom))
                 throw new MissingOrNotValidExitException();
 
-            // Create the door to the next section.
-            var doorPosition = exitToNextRoom.Position;
-            var isDouble = exitToNextRoom.IsDouble;
-            var doorDirection = exitToNextRoom.Direction;
-            var @lock = new Lock((Difficulty)currentGemstone);
-            var door = new Door(doorPosition, doorDirection, isDouble, @lock);
-            currentRoom.AddEntity(door);
+            CreateLockedDoor(exitToNextRoom, currentGemstone);
+            CreateSectionFlags(currentSection);
 
             // Save current room as the exit from the section.
             currentSection.Exit = currentRoom;
@@ -129,27 +124,109 @@ internal class SectionGenerator() : GenerationStep("Sections",
                 sidePathCountRequired += sidePathsPerSection;
         }
 
-        // Create steps leading to a higher level.
-        var firstRoom = mainPath.FirstRoom;
-        var exit = firstRoom.Exits.FirstOrDefault() ??
+        CreateStepsUp(mainPath.FirstRoom);
+        CreateStepsDown(mainPath.LastRoom);       
+
+        yield break;
+    }
+
+    /// <summary>
+    /// Creates flags with a <see cref="Gemstone"/> color placed in <see cref="Section"/> rooms.
+    /// </summary>
+    static void CreateSectionFlags(Section section)
+    {
+        Point flagPosition;
+
+        foreach (var room in section.Rooms)
+        {
+            // Skip placing flags in small, even sized rooms.
+            if (room.Width == 4)
+                continue;
+
+            // Check if there is an exit in the given direction.
+            if (room.TryGetExit(Direction.Up, out Exit? exit))
+            {
+                // Room is small enough. Is there a point to clog space with flags? Maybe..
+                if (room.Width == 3)
+                    continue;
+
+                // Place flag to the left of the exit.
+                CreateFlag(section.Gemstone, exit.Position + Direction.Left, room);
+
+                // Place flag to the right of the exit.
+                flagPosition = exit.IsDouble ? exit.Position + (2, 0):
+                    exit.Position + Direction.Right;
+                CreateFlag(section.Gemstone, flagPosition, room);
+            }
+            else
+            {
+                var wallCenter = room.GetConnectionPoint(Direction.Up);
+
+                if (room.Width.IsOdd())
+                {
+                    CreateFlag(section.Gemstone, wallCenter, room);
+                }
+                else
+                {
+                    CreateFlag(section.Gemstone, wallCenter + Direction.Left, room);
+                    flagPosition = wallCenter + (2, 0);
+                    CreateFlag(section.Gemstone, flagPosition, room);
+                }
+            }
+        }
+    }
+
+    static void CreateFlag(Gemstone gemstone, Point position, Room room)
+    {
+        var flag = new Flag(position, gemstone);
+        room.AddEntity(flag);
+    }
+
+    /// <summary>
+    /// Creates locked door leading to the next dungeon <see cref="Section"/>.
+    /// </summary>
+    /// <param name="exit"><see cref="Exit"/> where door will be placed.</param>
+    /// <param name="gemstone"><see cref="Gemstone"/> of the curent section.</param>
+    static void CreateLockedDoor(Exit exit, Gemstone gemstone)
+    {
+        var doorPosition = exit.Position;
+        var isDouble = exit.IsDouble;
+        var doorDirection = exit.Direction;
+        var @lock = new Lock((Difficulty)gemstone);
+        var door = new Door(doorPosition, doorDirection, isDouble, @lock);
+        exit.Room.AddEntity(door);
+    }
+
+    /// <summary>
+    /// Creates <see cref="Steps"/> leading to the previous level.
+    /// </summary>
+    /// <param name="room">Room where steps will be placed.</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    static void CreateStepsUp(Room room)
+    {
+        var exit = room.Exits.FirstOrDefault() ??
             throw new InvalidOperationException("No valid exits in the first room.");
-        var position = firstRoom.Area.PerimeterPositions().Where(p => p.Y == exit.Position.Y
+        var position = room.Area.PerimeterPositions().Where(p => p.Y == exit.Position.Y
             && Math.Abs(exit.Position.X - p.X) > 1).First();
         var stepsUp = new Steps(position, leadDown: false,
             faceRight: exit.Direction.GetOpposite() == Direction.Right);
-        firstRoom.AddEntity(stepsUp);
+        room.AddEntity(stepsUp);
+    }
 
-        // Create steps leading to a lower level.
-        var lastRoom = mainPath.LastRoom;
-        exit = lastRoom.Exits.FirstOrDefault() ??
-            throw new InvalidOperationException("No valid exits in the last room.");
-        position = lastRoom.Area.Center;
+    /// <summary>
+    /// Creates <see cref="Steps"/> leading to the next level.
+    /// </summary>
+    /// <param name="room">Room where steps will be placed.</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    static void CreateStepsDown(Room room)
+    {
+        var exit = room.Exits.FirstOrDefault() ??
+            throw new InvalidOperationException("No valid exits in the room.");
+        var position = room.Area.Center;
         var direction = exit.Direction.IsHorizontal() ?
             exit.Direction.GetOpposite() : Direction.Left;
         var stepsDown = new Steps(position, leadDown: true,
             faceRight: direction == Direction.Right);
-        lastRoom.AddEntity(stepsDown);
-
-        yield break;
+        room.AddEntity(stepsDown);
     }
 }

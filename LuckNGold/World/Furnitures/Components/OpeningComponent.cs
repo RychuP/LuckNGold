@@ -1,4 +1,5 @@
 ﻿using LuckNGold.Visuals;
+using LuckNGold.World.Furnitures.Enums;
 using LuckNGold.World.Furnitures.Interfaces;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
@@ -7,8 +8,8 @@ using SadRogue.Integration.Components;
 namespace LuckNGold.World.Furnitures.Components;
 
 /// <summary>
-/// Component for entities that have some sort of opening that first needs to be
-/// opened in order for the entity to become accessible.
+/// Component for entities that have some sort of an opening that first needs 
+/// to be opened in order for the entity to become accessible.
 /// </summary>
 internal class OpeningComponent(string openAnimation = "", string closedAnimation = "",
     string openingAnimation = "", string closingAnimation = "", bool isOpen = false) 
@@ -34,7 +35,7 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         }
     }
 
-    public bool Close()
+    public void Close()
     {
         if (Parent is null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
@@ -42,20 +43,16 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         if (Parent.Layer <= (int)GameMap.Layer.Furniture && Parent.CurrentMap is null)
             throw new InvalidOperationException("Furniture or below has to be on the map.");
 
-        if (!IsOpen)
-            return true;
+        // Opening needs to be open before it can be closed.
+        if (!IsOpen) return;
 
-        // Check if lock component is present -> can only open once lock is removed.
+        // Check if lock component is present -> this should not happen in open state.
         if (Parent.AllComponents.GetFirstOrDefault<ILockable>() is not null)
-            return false;
+            throw new InvalidOperationException("Locked open is not a valid state.");
 
-        // Check if signal receiver is present -> can only open remotely.
-        if (Parent.AllComponents.GetFirstOrDefault<ISignalReceiver>() is
-            ISignalReceiver signalReceiver)
-        {
-            if (!signalReceiver.HasUnconsumedSignal)
-                return false;
-        }
+        // Check if actuator is present -> can't close if not retracted.
+        if (Parent.AllComponents.GetFirstOrDefault<IActuator>() is IActuator actuatorComponent
+            && actuatorComponent.State != ActuatorState.Retracted) return;
 
         // Check if parent is animated.
         if (Parent is AnimatedRogueLikeEntity animated)
@@ -67,18 +64,15 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
                 // Actual state change will happen in the animation changed event handler.
                 animated.PlayAnimation(closingAnimation);
             }
-
-            // Operation was successful but the access will only be granted 
-            // after the animation finished playing hence returning false.
-            return false;
         }
-
-        // Close the opening and report success.
-        IsOpen = false;
-        return true;
+        else
+        {
+            // Not animated -> close immediately.
+            IsOpen = false;
+        }
     }
 
-    public bool Open()
+    public void Open()
     {
         if (Parent is null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
@@ -86,20 +80,15 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         if (Parent.Layer <= (int)GameMap.Layer.Furniture && Parent.CurrentMap is null)
             throw new InvalidOperationException("Furniture or below has to be on the map.");
 
-        if (IsOpen)
-            return true;
+        // Opening needs to be closed before it can be closed.
+        if (IsOpen) return;
 
-        // Check if lock component is present -> this should not happen in open state.
-        if (Parent.AllComponents.GetFirstOrDefault<ILockable>() is not null)
-            throw new InvalidOperationException("Locked open is not a valid state.");
+        // Check if lock component is present -> can't open until lock is removed.
+        if (Parent.AllComponents.GetFirstOrDefault<ILockable>() is not null) return;
 
-        // Check if signal receiver is present -> can only close remotely.
-        if (Parent.AllComponents.GetFirstOrDefault<ISignalReceiver>() is
-            ISignalReceiver signalReceiver)
-        {
-            if (!signalReceiver.HasUnconsumedSignal)
-                return false;
-        }
+        // Check if actuator is present -> can't open if not extended.
+        if (Parent.AllComponents.GetFirstOrDefault<IActuator>() is IActuator actuatorComponent
+            && actuatorComponent.State != ActuatorState.Extended) return;
 
         // Check the parent is animated
         if (Parent is AnimatedRogueLikeEntity animated)
@@ -111,73 +100,72 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
                 // Actual state change will happen in the animation changed event handler.
                 animated.PlayAnimation(openingAnimation);
             }
-            
-            // Operation was successful but the access will only be granted 
-            // after the animation finished playing hence returning false.
-            return false;
-        }
-
-        // Grant access to entity and report success
-        IsOpen = true;
-        return true;
-    }
-
-    public bool Interact(RogueLikeEntity interactor)
-    {
-        if (Parent is null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
-
-        if (Parent.Layer <= (int)GameMap.Layer.Furniture && Parent.CurrentMap is null)
-            throw new InvalidOperationException("Furniture and below needs to be on the map.");
-
-        if (IsOpen)
-        {
-            return Close();
         }
         else
         {
-            return Open();
+            // Not animated -> open immediately.
+            IsOpen = true;
         }
+    }
+
+    public void Interact(RogueLikeEntity interactor)
+    {
+        if (IsOpen)
+            Close();
+        else
+            Open();
     }
 
     void OnOpened()
     {
         Opened?.Invoke(this, EventArgs.Empty);
 
-        if (Parent!.AllComponents.GetFirstOrDefault<ISignalReceiver>() is
-            ISignalReceiver signalReceiver && signalReceiver.HasUnconsumedSignal)
-            signalReceiver.ConsumeSignal();
+        if (Parent is AnimatedRogueLikeEntity animatedEntity 
+            && animatedEntity.AllComponents.GetFirstOrDefault<IActuator>()
+            is IActuator actuatorComponent && actuatorComponent.State == ActuatorState.Retracted)
+        {
+            // There is a chance, if the entity is animated, that the actuator may have retracted,
+            // but the animation playing prevented action.
+            Close();
+        }
     }
 
     public void OnClosed()
     {
         Closed?.Invoke(this, EventArgs.Empty);
 
-        if (Parent!.AllComponents.GetFirstOrDefault<ISignalReceiver>() is
-            ISignalReceiver signalReceiver && signalReceiver.HasUnconsumedSignal)
-            signalReceiver.ConsumeSignal();
+        if (Parent is AnimatedRogueLikeEntity animatedEntity
+            && animatedEntity.AllComponents.GetFirstOrDefault<IActuator>()
+            is IActuator actuatorComponent && actuatorComponent.State == ActuatorState.Extended)
+        {
+            // There is a chance, if the entity is animated, that the actuator may have extended,
+            // but the animation playing prevented action.
+            Open();
+        }
     }
 
     public override void OnAdded(IScreenObject host)
     {
         base.OnAdded(host);
 
-        if (host is AnimatedRogueLikeEntity animatedEntity)
+        if (host is RogueLikeEntity entity)
         {
-            if (!animatedEntity.HasAnimation(openAnimation) ||
-                !animatedEntity.HasAnimation(closedAnimation) ||
-                !animatedEntity.HasAnimation(openingAnimation) ||
-                !animatedEntity.HasAnimation(closingAnimation))
-                throw new InvalidOperationException("Host is missing switch animations.");
+            if (entity is AnimatedRogueLikeEntity animatedEntity)
+            {
+                if (!animatedEntity.HasAnimation(openAnimation) ||
+                    !animatedEntity.HasAnimation(closedAnimation) ||
+                    !animatedEntity.HasAnimation(openingAnimation) ||
+                    !animatedEntity.HasAnimation(closingAnimation))
+                    throw new InvalidOperationException("Host is missing switch animations.");
 
-            animatedEntity.Finished += AnimatedRogueLikeEntity_OnFinished;
-        }
+                animatedEntity.Finished += AnimatedRogueLikeEntity_OnFinished;
+            }
 
-        if (host is RogueLikeEntity entity &&
-            entity.AllComponents.GetFirstOrDefault<SignalReceiverComponent>() is 
-            SignalReceiverComponent signalReceiver)
-        {
-            signalReceiver.SignalReceived += SignalReceiver_OnSignalReceived;
+            if (entity.AllComponents.GetFirstOrDefault<IActuator>() is
+                IActuator actuator)
+            {
+                actuator.StateChanged += Actuator_OnStateChanged;
+            }
         }
     }
 
@@ -185,25 +173,30 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
     {
         base.OnRemoved(host);
 
-        if (host is AnimatedRogueLikeEntity animatedEntity)
+        if (host is RogueLikeEntity entity)
         {
-            animatedEntity.Finished -= AnimatedRogueLikeEntity_OnFinished;
-        }
+            if (entity is AnimatedRogueLikeEntity animatedEntity)
+            {
+                animatedEntity.Finished -= AnimatedRogueLikeEntity_OnFinished;
+            }
 
-        if (host is RogueLikeEntity entity &&
-            entity.AllComponents.GetFirstOrDefault<SignalReceiverComponent>() is
-            SignalReceiverComponent signalReceiver)
-        {
-            signalReceiver.SignalReceived -= SignalReceiver_OnSignalReceived;
+            if (entity.AllComponents.GetFirstOrDefault<IActuator>() is
+                IActuator actuator)
+            {
+                actuator.StateChanged -= Actuator_OnStateChanged;
+            }
         }
     }
 
-    void SignalReceiver_OnSignalReceived(object? o, EventArgs e)
+    void Actuator_OnStateChanged(object? o, EventArgs e)
     {
-        if (IsOpen)
-            Close();
-        else
-            Open();
+        if (o is IActuator actuator)
+        {
+            if (actuator.State == ActuatorState.Extended)
+                Open();
+            else
+                Close();
+        }
     }
 
     void AnimatedRogueLikeEntity_OnFinished(object? o, EventArgs e)

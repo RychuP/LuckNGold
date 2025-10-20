@@ -9,7 +9,6 @@ static class Program
     public const int Width = 84;
     public const int Height = 60;
 
-    public static RootScreen? RootScreen { get; private set; }
     public static IFont Font => Game.Instance.Fonts["PixelDungeon"];
     public static Distance Distance => Distance.Chebyshev;
     public static AdjacencyRule Adjacency => AdjacencyRule.EightWay;
@@ -34,19 +33,12 @@ static class Program
         Builder builder = new Builder()
                 .SetScreenSize(Width, Height)
                 .ConfigureFonts(FontLoader)
-                .OnStart(Init);
+                .SetStartingScreen<RootScreen>();
 
         // Setup the engine and start the game
         Game.Create(builder);
         Game.Instance.Run();
         Game.Instance.Dispose();
-    }
-
-    static void Init(object? s, GameHost host)
-    {
-        RootScreen = new RootScreen();
-        host.Screen = RootScreen;
-        //host.Screen = new Test();
     }
 
     static void FontLoader(FontConfig fontConfig, GameHost host)

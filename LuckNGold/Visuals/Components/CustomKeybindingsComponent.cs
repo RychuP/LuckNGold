@@ -113,7 +113,9 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
 
     void Interact()
     {
-        var neighbours = AdjacencyRule.EightWay.Neighbors(_player.Position);
+        var neighbours = Program.Adjacency.Neighbors(_player.Position);
+
+        // TODO: collect all interactable components and make the player choose one.
         foreach (var point in neighbours)
         {
             var entities = _map.GetEntitiesAt<RogueLikeEntity>(point);
@@ -122,10 +124,8 @@ internal class CustomKeybindingsComponent : KeybindingsComponent
                 if (entity.AllComponents.GetFirstOrDefault<IInteractable>()
                     is IInteractable interactable)
                 {
-                    if (interactable.Interact(_player))
-                    {
-                        return;
-                    }
+                    interactable.Interact(_player);
+                    return;
                 }
             }
         }

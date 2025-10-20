@@ -53,6 +53,13 @@ partial class Room
         return false;
     }
 
+    /// <summary>
+    /// Tries to get <see cref="Exit"/> in the given direction.
+    /// </summary>
+    /// <param name="direction"><see cref="Direction"/> to the <see cref="Exit"/>
+    /// from the center of the <see cref="Room"/>.</param>
+    /// <param name="exit"><see cref="Exit"/> if found.</param>
+    /// <returns>True if <see cref="Exit"/> exists, or false otherwise.</returns>
     public bool TryGetExit(Direction direction, [NotNullWhen(true)] out Exit? exit)
     {
         exit = Exits.Where(c => c.Direction == direction).FirstOrDefault();
@@ -69,6 +76,13 @@ partial class Room
     {
         exit = Exits.Where(e => e.End!.Room == room).FirstOrDefault();
         return exit is not null;
+    }
+
+    public bool TryGetConnection(Direction direction,
+        [NotNullWhen(true)] out IWallConnection? connection)
+    {
+        connection = Connections.Where(c => c.Direction == direction).FirstOrDefault();
+        return connection is not null;
     }
 
     /// <summary>

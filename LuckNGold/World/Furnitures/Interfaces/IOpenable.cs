@@ -6,6 +6,6 @@
 internal interface IOpenable : IInteractable
 {
     bool IsOpen { get; }
-    bool Open();
-    bool Close();
+    void Open();
+    void Close();
 }

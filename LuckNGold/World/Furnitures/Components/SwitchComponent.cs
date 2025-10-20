@@ -28,7 +28,7 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
     }
 
     /// <inheritdoc/>
-    public bool Interact(RogueLikeEntity interactor)
+    public void Interact(RogueLikeEntity interactor)
     {
         if (Parent is null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
@@ -40,8 +40,6 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
             TurnOff();
         else
             TurnOn();
-
-        return true;
     }
 
     void TurnOn()
@@ -57,17 +55,17 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
                 // Play turning animation.
                 animatedEntity.PlayAnimation(turningOnAnimation);
 
-                // Unlike opening component, we need the immediate signal response.
+                // Unlike other animated components, we need an immediate response.
                 IsOn = true;
 
                 // Default animation has to be changed so that out of view appearance is correct.
                 animatedEntity.DefaultAnimation = onAnimation;
             }
-
-            return;
         }
-
-        IsOn = true;
+        else
+        {
+            IsOn = true;
+        }
     }
 
     void TurnOff()
@@ -83,17 +81,17 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
                 // Play turning animation.
                 animatedEntity.PlayAnimation(turningOffAnimation);
 
-                // Unlike opening component, we need the immediate signal response.
+                // Unlike other animated components, we need an immediate response.
                 IsOn = false;
 
                 // Default animation has to be changed so that out of view appearance is correct.
                 animatedEntity.DefaultAnimation = offAnimation;
             }
-
-            return;
         }
-
-        IsOn = false;
+        else
+        {
+            IsOn = false;
+        }
     }
 
     void OnStateChanged()

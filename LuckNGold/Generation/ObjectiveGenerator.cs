@@ -11,10 +11,7 @@ using ShaiRandom.Generators;
 namespace LuckNGold.Generation;
 
 /// <summary>
-/// Generates objectives for the map by hiding section keys. Objective in this case
-/// is finding the keys, solving puzzles to free them up, if need be, and unlocking doors to 
-/// all sections in order to be able to reach the entrance to the next level,
-/// which is placed in the final room of the map.
+/// Generator that creates objectives for the map by hiding section keys. 
 /// </summary>
 internal class ObjectiveGenerator() : GenerationStep("Objectives",
     new ComponentTypeTagPair(typeof(ItemList<RoomPath>), "Paths"),
@@ -34,17 +31,30 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
             if (i == 0)
             {
                 if (section.SingleRooms.Length >= 5)
-                    PlaceKeyInRandomRoom(section);
-                else
                     PlaceKeyInChests(section);
+                else
+                    PlaceKeyInRandomRoom(section);
             }
-            else if (i == 1)
+            else //if (i == 1)
             {
-
+                PlaceKeyInExitRoom(section);
             }
         }
 
         yield break;
+    }
+
+    /// <summary>
+    /// Places the key in the same room as the locked door.
+    /// </summary>
+    static void PlaceKeyInExitRoom(Section section)
+    {
+        if (section.Exit is Room room)
+        {
+            var keyPosition = room.Area.Center;
+            var key = new Key(keyPosition, section.Gemstone);
+            room.AddEntity(key);
+        }
     }
 
     /// <summary>
@@ -72,7 +82,6 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
     /// <summary>
     /// Places a few chests in the section and the key in one of them.
     /// </summary>
-    /// <param name="section"></param>
     void PlaceKeyInChests(Section section)
     {
         int chestsNeeded = 3;

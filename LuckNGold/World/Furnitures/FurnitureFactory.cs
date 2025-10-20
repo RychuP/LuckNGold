@@ -68,7 +68,7 @@ internal class FurnitureFactory
     /// <summary>
     /// Gate like entity that can be operated remotely.
     /// </summary>
-    public static RogueLikeEntity RemoteGate(DoorOrientation orientation)
+    public static RogueLikeEntity Gate(DoorOrientation orientation)
     {
         if (orientation == DoorOrientation.None)
             throw new ArgumentException("Gate requires an orientation.");
@@ -83,12 +83,12 @@ internal class FurnitureFactory
         // Create entity.
         var gate = new RogueLikeEntity(appearance, false, true, (int)GameMap.Layer.Furniture)
         {
-            Name = "Remote Gate"
+            Name = "Gate"
         };
 
-        // Add signal receiver component.
-        var signalReceiverComponent = new SignalReceiverComponent();
-        gate.AllComponents.Add(signalReceiverComponent);
+        // Add actuator component to operate the gate.
+        var actuatorComponent = new ActuatorComponent();
+        gate.AllComponents.Add(actuatorComponent);
 
         // Add opening component.
         var openingComponent = new OpeningComponent();
