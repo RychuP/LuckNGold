@@ -38,6 +38,7 @@ partial class GameScreen
                 gen.AddStep(new MinorPathGenerator());
                 gen.AddStep(new SectionGenerator());
                 gen.AddStep(new ObjectiveGenerator());
+                gen.AddStep(new DecorGenerator());
             });
 
         // Create actual integration library map.

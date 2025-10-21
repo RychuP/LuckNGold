@@ -1,4 +1,6 @@
-﻿namespace LuckNGold.Generation.Map;
+﻿using SadConsole.Entities;
+
+namespace LuckNGold.Generation.Map;
 
 /// <summary>
 /// Simple, square, walled space with four available exits placed centrally on each wall.
@@ -46,12 +48,6 @@ partial class Room
     /// <see cref="RoomPath"/> that this room belongs to.
     /// </summary>
     public RoomPath Path { get; private set; }
-
-    readonly List<Entity> _contents = [];
-    /// <summary>
-    /// List of entities placed in the room.
-    /// </summary>
-    public IReadOnlyList<Entity> Contents { get => _contents; }
 
     Section? _section = null;
     /// <summary>
@@ -152,21 +148,4 @@ partial class Room
 
         return false;
     }
-
-    public void AddEntity(Entity entity)
-    {
-        if (entity.Position == Point.None)
-            throw new ArgumentException("Entity needs to have a valid position.");
-
-        if (!Bounds.Contains(entity.Position))
-            throw new ArgumentException("Entity position is outside the bounds of the room.");
-
-        if (Contents.Where(e => e.Position == entity.Position).Any())
-            throw new ArgumentException("Another entity already at location.");
-
-        _contents.Add(entity);
-    }
-
-    public bool RemoveEntity(Entity entity) =>
-        _contents.Remove(entity);
 }

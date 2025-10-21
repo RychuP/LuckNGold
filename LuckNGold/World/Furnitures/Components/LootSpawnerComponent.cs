@@ -1,8 +1,6 @@
 ﻿using GoRogue.Random;
 using LuckNGold.World.Furnitures.Interfaces;
-using LuckNGold.World.Items.Interfaces;
 using LuckNGold.World.Map;
-using SadConsole.Components;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 using ShaiRandom.Generators;
@@ -14,6 +12,8 @@ namespace LuckNGold.World.Furnitures.Components;
 /// </summary>
 class LootSpawnerComponent : RogueLikeComponentBase<RogueLikeEntity>, ILootSpawner
 {
+    public event EventHandler? Emptied;
+
     public List<RogueLikeEntity> Contents { get; }
 
     public LootSpawnerComponent(List<RogueLikeEntity> contents) 
@@ -87,5 +87,13 @@ class LootSpawnerComponent : RogueLikeComponentBase<RogueLikeEntity>, ILootSpawn
         // Remove spawned loot from spawner contents.
         foreach (var item in toBeRemoved)
             Contents.Remove(item);
+
+        if (Contents.Count == 0)
+            OnEmptied();
+    }
+
+    void OnEmptied()
+    {
+        Emptied?.Invoke(this, EventArgs.Empty);
     }
 }

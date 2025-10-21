@@ -30,14 +30,13 @@ partial class GameMap
     /// <exception cref="ArgumentException"></exception>
     static RogueLikeEntity CreateDecor(Decor decor) =>
         decor is Steps steps ? DecorFactory.Steps(steps.FaceRight, steps.LeadDown) :
-        decor is Flag flag ? GetFlag(flag.Gemstone) : // DecorFactory.Flag(flag.Gemstone) :
+        decor is Flag flag ? DecorFactory.Flag(flag.Gemstone) :
+        decor is SideTorch sideTorch ? DecorFactory.SideTorch(sideTorch.Orientation) :
+        decor is Torch ? DecorFactory.Torch() :
+        decor is FountainTop fountainTop ? DecorFactory.FountainTop(fountainTop.Color) :
+        decor is FountainBottom fountainBottom ? DecorFactory.FountainBottom(fountainBottom.Color) :
+        decor is Shackle shackle ? DecorFactory.Shackle(shackle.Size) :
         throw new ArgumentException("Item not implemented.");
-
-    static RogueLikeEntity GetFlag(Gemstone gem)
-    {
-        var flag = DecorFactory.Flag(gem);
-        return flag;
-    }
 
     /// <summary>
     /// Places steps to the upper and lower level.

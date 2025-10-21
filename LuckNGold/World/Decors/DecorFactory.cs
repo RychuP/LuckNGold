@@ -1,4 +1,5 @@
 ﻿using GoRogue.Random;
+using LuckNGold.Primitives;
 using LuckNGold.Visuals;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
@@ -8,43 +9,6 @@ namespace LuckNGold.World.Decors;
 
 static class DecorFactory
 {
-    /// <summary>
-    /// Animated flag that can be placed on the top wall of a room.
-    /// </summary>
-    /// <param name="color">Color of the inner portion of the flag that corresponds 
-    /// to the given <see cref="Gemstone"/>.</param>
-    public static RogueLikeEntity Flag(Gemstone color)
-    {
-        return new AnimatedRogueLikeEntity($"{color}Flag", false, GameMap.Layer.Decor)
-        {
-            Name = $"{color} Flag"
-        };
-    }
-
-    /// <summary>
-    /// Free standing, burning candle on a non walkable stand that can be placed on the floor.
-    /// </summary>
-    /// <param name="size">Size of the stand.</param>
-    public static RogueLikeEntity Candle(Size size)
-    {
-        return new AnimatedRogueLikeEntity($"{size}Candle", false, GameMap.Layer.Decor)
-        {
-            Name = $"{size} Candle",
-            IsWalkable = false
-        };
-    }
-
-    /// <summary>
-    /// Animated torch that can be placed on the top wall of a room.
-    /// </summary>
-    public static RogueLikeEntity Torch()
-    {
-        return new AnimatedRogueLikeEntity("Torch", false, GameMap.Layer.Decor)
-        {
-            Name = "Torch"
-        };
-    }
-
     /// <summary>
     /// Skull and bone that can be placed on the floor.
     /// </summary>
@@ -67,32 +31,14 @@ static class DecorFactory
     /// <summary>
     /// Spider web that can be placed on the floor in the corners of a room.
     /// </summary>
-    /// <param name="side">Horizontal appearance of the web.</param>
+    /// <param name="orientation">Horizontal appearance of the web.</param>
     /// <exception cref="ArgumentException">Fired when the wrong type 
     /// of direction is passed.</exception>
-    public static RogueLikeEntity SpiderWeb(Direction side)
-    {
-        if (!side.IsHorizontal())
-            throw new ArgumentException("Side needs to be horizontal.");
-        return GetEntity($"FloorSpideWeb{side}");
-    }
+    public static RogueLikeEntity SpiderWeb(HorizontalOrientation orientation) =>
+        GetEntity($"FloorSpideWeb{orientation}");
 
-    /// <summary>
-    /// Animated torch that can be placed on the side wall of a room.
-    /// </summary>
-    /// <param name="side">Either left or right side of the room.</param>
-    /// <exception cref="ArgumentException">Fired when the wrong type 
-    /// of direction is passed.</exception>
-    public static RogueLikeEntity SideTorch(Direction side)
-    {
-        if (!side.IsHorizontal())
-            throw new ArgumentException("Side needs to be horizontal.");
-
-        return new AnimatedRogueLikeEntity($"SideTorch{side}", false, GameMap.Layer.Decor)
-        {
-            Name = "Side Torch"
-        };
-    }
+    public static RogueLikeEntity Shackle(string size) =>
+        GetEntity($"Shackle{size}");
 
     /// <summary>
     /// Steps leading to upper or lower levels.
@@ -104,6 +50,46 @@ static class DecorFactory
         return GetEntity($"Steps{direction}{face}");
     }
 
+    /// <summary>
+    /// Animated torch that can be placed on the side wall of a room.
+    /// </summary>
+    /// <exception cref="ArgumentException">Fired when the wrong type 
+    /// of direction is passed.</exception>
+    public static AnimatedRogueLikeEntity SideTorch(HorizontalOrientation orientation) =>
+        GetAnimatedEntity($"SideTorch{orientation}");
+
+    /// <summary>
+    /// Animated torch that can be placed on the top wall of a room.
+    /// </summary>
+    public static AnimatedRogueLikeEntity Torch() =>
+        GetAnimatedEntity("Torch");
+
+    /// <summary>
+    /// Free standing, burning candle on a non walkable stand that can be placed on the floor.
+    /// </summary>
+    /// <param name="size">Size of the stand.</param>
+    public static AnimatedRogueLikeEntity Candle(Size size) =>
+        GetAnimatedEntity($"{size}Candle", false);
+
+    /// <summary>
+    /// Animated flag that can be placed on the top wall of a room.
+    /// </summary>
+    /// <param name="color">Color of the inner portion of the flag that corresponds 
+    /// to the given <see cref="Gemstone"/>.</param>
+    public static AnimatedRogueLikeEntity Flag(Gemstone color) =>
+        GetAnimatedEntity($"{color}Flag");
+
+    public static AnimatedRogueLikeEntity FountainTop(string color) =>
+        GetAnimatedEntity($"{color}FountainTop");
+
+    public static AnimatedRogueLikeEntity FountainBottom(string color) =>
+        GetAnimatedEntity($"{color}FountainBottom", false);
+
+    static AnimatedRogueLikeEntity GetAnimatedEntity(string animationName, 
+        bool isWalkable = true, string name = "") => 
+        new(animationName, false, GameMap.Layer.Decor, isWalkable) 
+            { Name = name != "" ? name : animationName};
+
     static RogueLikeEntity GetEntity(string name, bool isWalkable = true)
     {
         var glyphDef = Program.Font.GetGlyphDefinition(name);
@@ -114,11 +100,9 @@ static class DecorFactory
             IsWalkable = isWalkable
         };
     }
-
     static RogueLikeEntity GetEntityWithRandMirror(string name, bool isWalkable = true)
     {
-        var rand = GlobalRandom.DefaultRNG;
-        var mirror = rand.NextBool() ? 0 : 2;
+        var mirror = GlobalRandom.DefaultRNG.NextBool() ? 0 : 2;
         var entity = GetEntity(name, isWalkable);
         entity.AppearanceSingle!.Appearance.Mirror = (Mirror)mirror;
         return entity;

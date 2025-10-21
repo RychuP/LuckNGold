@@ -1,11 +1,13 @@
 ﻿using GoRogue.Components;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
+using GoRogue.Random;
 using LuckNGold.Generation.Decors;
 using LuckNGold.Generation.Furnitures;
 using LuckNGold.Generation.Map;
 using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Items.Enums;
+using ShaiRandom.Generators;
 
 namespace LuckNGold.Generation;
 
@@ -22,6 +24,8 @@ internal class SectionGenerator() : GenerationStep("Sections",
     /// the main path that is required in order to form one section of the dungeon
     /// </summary>
     const int MinNumberSidePathsPerSection = 2;
+
+    static readonly IEnhancedRandom _rnd = GlobalRandom.DefaultRNG;
 
     protected override IEnumerator<object?> OnPerform(GenerationContext context)
     {
@@ -135,10 +139,12 @@ internal class SectionGenerator() : GenerationStep("Sections",
     /// </summary>
     static void CreateSectionFlags(Section section)
     {
-        Point flagPosition;
-
         foreach (var room in section.Rooms)
         {
+            // Give it 50% chance to place flags in the room.
+            if (_rnd.NextBool())
+                continue;
+
             // Skip placing flags in small, even sized rooms.
             if (room.Width == 4)
                 continue;
@@ -150,35 +156,40 @@ internal class SectionGenerator() : GenerationStep("Sections",
                 if (room.Width == 3)
                     continue;
 
-                // Place flag to the left of the exit.
-                CreateFlag(section.Gemstone, exit.Position + Direction.Left, room);
-
-                // Place flag to the right of the exit.
-                flagPosition = exit.IsDouble ? exit.Position + (2, 0):
-                    exit.Position + Direction.Right;
-                CreateFlag(section.Gemstone, flagPosition, room);
+                CreateTwoEvenlySpacedFlags(room);
             }
             else
             {
-                var wallCenter = room.GetConnectionPoint(Direction.Up);
-
-                if (room.Width.IsOdd())
-                {
-                    CreateFlag(section.Gemstone, wallCenter, room);
-                }
+                if (room.Width.IsOdd() && (room.Width == 3 || _rnd.NextBool()))
+                    CreateOneCenteredFlag(room);
                 else
-                {
-                    CreateFlag(section.Gemstone, wallCenter + Direction.Left, room);
-                    flagPosition = wallCenter + (2, 0);
-                    CreateFlag(section.Gemstone, flagPosition, room);
-                }
+                    CreateTwoEvenlySpacedFlags(room);
             }
         }
     }
 
-    static void CreateFlag(Gemstone gemstone, Point position, Room room)
+    static void CreateOneCenteredFlag(Room room)
     {
-        var flag = new Flag(position, gemstone);
+        var wallCenter = room.GetConnectionPoint(Direction.Up);
+        CreateFlag(wallCenter, room);
+    }
+
+    static void CreateTwoEvenlySpacedFlags(Room room)
+    {
+        var wallCenter = room.GetConnectionPoint(Direction.Up);
+        var deltaX = room.Width / 2;
+        deltaX = _rnd.NextInt(1, deltaX);
+        var flagPosition = wallCenter - (deltaX, 0);
+        CreateFlag(flagPosition, room);
+        flagPosition = wallCenter + (deltaX, 0);
+        if (room.Width.IsEven())
+            flagPosition += Direction.Right;
+        CreateFlag(flagPosition, room);
+    }
+
+    static void CreateFlag(Point position, Room room)
+    {
+        var flag = new Flag(position, room.Section!.Gemstone);
         room.AddEntity(flag);
     }
 

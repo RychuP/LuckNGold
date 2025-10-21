@@ -18,6 +18,59 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
     public event EventHandler? Opened;
     public event EventHandler? Closed;
 
+    string _openAnimation = openAnimation;
+    public string OpenAnimation
+    {
+        get => _openAnimation;
+        set
+        {
+            if (_openAnimation == value) return;
+            if (!IsValidAnimation(value))
+                throw new InvalidOperationException("Parent entity is missing animation.");
+            _openAnimation = value;
+            OnOpenAnimationChanged();
+        }
+    }
+
+    string _closedAnimation = closedAnimation;
+    public string ClosedAnimation
+    {
+        get => _closedAnimation;
+        set
+        {
+            if (_closedAnimation == value) return;
+            if (!IsValidAnimation(value))
+                throw new InvalidOperationException("Parent entity is missing animation.");
+            _closedAnimation = value;
+        }
+    }
+
+    string _openingAnimation = openingAnimation;
+    public string OpeningAnimation
+    {
+        get => _openingAnimation;
+        set
+        {
+            if (_openingAnimation == value) return;
+            if (!IsValidAnimation(value))
+                throw new InvalidOperationException("Parent entity is missing animation.");
+            _openingAnimation = value;
+        }
+    }
+
+    string _closingAnimation = closingAnimation;
+    public string ClosingAnimation
+    {
+        get => _closingAnimation;
+        set
+        {
+            if (_closingAnimation == value) return;
+            if (!IsValidAnimation(value))
+                throw new InvalidOperationException("Parent entity is missing animation.");
+            _closingAnimation = value;
+        }
+    }
+
     bool _isOpen = isOpen;
     /// <summary>
     /// State of the opening.
@@ -29,7 +82,6 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         {
             if (value ==  _isOpen) return;
             _isOpen = value;
-
             if (_isOpen) OnOpened();
             else OnClosed();
         }
@@ -62,7 +114,7 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
             {
                 // Play closing animation.
                 // Actual state change will happen in the animation changed event handler.
-                animated.PlayAnimation(closingAnimation);
+                animated.PlayAnimation(ClosingAnimation);
             }
         }
         else
@@ -98,7 +150,7 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
             {
                 // Play opening animation.
                 // Actual state change will happen in the animation changed event handler.
-                animated.PlayAnimation(openingAnimation);
+                animated.PlayAnimation(OpeningAnimation);
             }
         }
         else
@@ -116,11 +168,19 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
             Open();
     }
 
+    bool IsValidAnimation(string animationName)
+    {
+        if (Parent is AnimatedRogueLikeEntity animatedEntity
+            && !animatedEntity.HasAnimation(animationName))
+            return false;
+        return true;
+    }
+
     void OnOpened()
     {
         Opened?.Invoke(this, EventArgs.Empty);
 
-        if (Parent is AnimatedRogueLikeEntity animatedEntity 
+        if (Parent is AnimatedRogueLikeEntity animatedEntity
             && animatedEntity.AllComponents.GetFirstOrDefault<IActuator>()
             is IActuator actuatorComponent && actuatorComponent.State == ActuatorState.Retracted)
         {
@@ -130,7 +190,7 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         }
     }
 
-    public void OnClosed()
+    void OnClosed()
     {
         Closed?.Invoke(this, EventArgs.Empty);
 
@@ -144,6 +204,15 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         }
     }
 
+    void OnOpenAnimationChanged()
+    {
+        if (Parent is AnimatedRogueLikeEntity animatedEntity)
+        {
+            animatedEntity.PlayAnimation(OpenAnimation);
+            animatedEntity.DefaultAnimation = OpenAnimation;
+        }
+    }
+
     public override void OnAdded(IScreenObject host)
     {
         base.OnAdded(host);
@@ -152,11 +221,11 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         {
             if (entity is AnimatedRogueLikeEntity animatedEntity)
             {
-                if (!animatedEntity.HasAnimation(openAnimation) ||
-                    !animatedEntity.HasAnimation(closedAnimation) ||
-                    !animatedEntity.HasAnimation(openingAnimation) ||
-                    !animatedEntity.HasAnimation(closingAnimation))
-                    throw new InvalidOperationException("Host is missing switch animations.");
+                if (!animatedEntity.HasAnimation(OpenAnimation) ||
+                    !animatedEntity.HasAnimation(ClosedAnimation) ||
+                    !animatedEntity.HasAnimation(OpeningAnimation) ||
+                    !animatedEntity.HasAnimation(ClosingAnimation))
+                    throw new InvalidOperationException("Host is missing animations.");
 
                 animatedEntity.Finished += AnimatedRogueLikeEntity_OnFinished;
             }
@@ -203,15 +272,17 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
     {
         if (o is AnimatedRogueLikeEntity animatedEntity)
         {
-            if (animatedEntity.CurrentAnimation == openingAnimation)
+            if (animatedEntity.CurrentAnimation == OpeningAnimation)
             {
                 IsOpen = true;
-                animatedEntity.PlayAnimation(openAnimation);
+                animatedEntity.PlayAnimation(OpenAnimation);
+                animatedEntity.DefaultAnimation = OpenAnimation;
             }
-            else if (animatedEntity.CurrentAnimation == closingAnimation)
+            else if (animatedEntity.CurrentAnimation == ClosingAnimation)
             {
                 IsOpen = false;
-                animatedEntity.PlayAnimation(closedAnimation);
+                animatedEntity.PlayAnimation(ClosedAnimation);
+                animatedEntity.DefaultAnimation = ClosedAnimation;
             }
         }
     }

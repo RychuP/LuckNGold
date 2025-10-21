@@ -1,4 +1,5 @@
-﻿using LuckNGold.Generation.Furnitures;
+﻿using GoRogue.Random;
+using LuckNGold.Generation.Furnitures;
 using LuckNGold.Visuals;
 using LuckNGold.World.Furnitures.Components;
 using LuckNGold.World.Furnitures.Enums;
@@ -74,11 +75,11 @@ internal class FurnitureFactory
             throw new ArgumentException("Gate requires an orientation.");
 
         // Get appearances.
-        var glyphDef = Program.Font.GetGlyphDefinition($"ClosedRemoteGate");
+        var glyphDef = Program.Font.GetGlyphDefinition($"ClosedGate");
         var closedAppearance = glyphDef.CreateColoredGlyph();
         var appearance = glyphDef.CreateColoredGlyph();
         glyphDef = Program.Font.GetGlyphDefinition($"OpenDoor{orientation}");
-        var openAppearance = glyphDef.CreateColoredGlyph(98);
+        var openAppearance = glyphDef.CreateColoredGlyph(10);
 
         // Create entity.
         var gate = new RogueLikeEntity(appearance, false, true, (int)GameMap.Layer.Furniture)
@@ -113,8 +114,13 @@ internal class FurnitureFactory
     /// <param name="items">Item entities that will drop as loot when chest is open.</param>
     public static AnimatedRogueLikeEntity Chest(List<RogueLikeEntity> items)
     {
-        string[] animations = ["ClosedChest", "OpenChest", "ChestOpening", "ChestClosing"];
-        var chest = new AnimatedRogueLikeEntity(animations, "ClosedChest", false,
+        var chestColor = GlobalRandom.DefaultRNG.NextBool() ? "Brown" : "Bronze";
+
+        string[] animations = [$"{chestColor}ClosedChest",
+            $"{chestColor}EmptyOpenChest", $"{chestColor}FullOpenChest",
+            $"{chestColor}EmptyChestOpening", $"{chestColor}FullChestOpening", 
+            $"{chestColor}EmptyChestClosing", $"{chestColor}FullChestClosing"];
+        var chest = new AnimatedRogueLikeEntity(animations, animations[0], false,
             GameMap.Layer.Furniture, false)
         {
             Name = "Chest"
@@ -124,14 +130,24 @@ internal class FurnitureFactory
         var loot = new LootSpawnerComponent(items);
         chest.AllComponents.Add(loot);
 
+        var prefix = items.Count > 0 ? $"{chestColor}Full" : $"{chestColor}Empty";
+
         // Add opening component
-        var openingComponent = new OpeningComponent("OpenChest", "ClosedChest", 
-            "ChestOpening", "ChestClosing");
+        var openingComponent = new OpeningComponent($"{prefix}OpenChest", animations[0],
+            $"{prefix}ChestOpening", $"{prefix}ChestClosing");
         openingComponent.Opened += (o, e) =>
         {
             loot.DropItems();
         };
         chest.AllComponents.Add(openingComponent);
+
+        // Add contents emptied handling
+        loot.Emptied += (o, e) =>
+        {
+            openingComponent.OpenAnimation = animations[1];
+            openingComponent.OpeningAnimation = animations[3];
+            openingComponent.ClosingAnimation = animations[5];
+        };
 
         return chest;
     }

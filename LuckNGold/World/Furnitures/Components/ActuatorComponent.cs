@@ -5,6 +5,9 @@ using SadRogue.Integration.Components;
 
 namespace LuckNGold.World.Furnitures.Components;
 
+/// <summary>
+/// Component for entities that need an actuator mechanism to operate some of its parts.
+/// </summary>
 internal class ActuatorComponent() : 
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IActuator
 {
