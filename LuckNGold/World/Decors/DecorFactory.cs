@@ -12,8 +12,8 @@ static class DecorFactory
     /// <summary>
     /// Skull and bone that can be placed on the floor.
     /// </summary>
-    public static RogueLikeEntity Skull() =>
-        GetEntityWithRandMirror("Skull");
+    public static RogueLikeEntity Skull(HorizontalOrientation orientation) =>
+        GetEntity($"Skull{orientation}");
 
     /// <summary>
     /// Bones that can be placed on the floor.
@@ -34,8 +34,8 @@ static class DecorFactory
     /// <param name="orientation">Horizontal appearance of the web.</param>
     /// <exception cref="ArgumentException">Fired when the wrong type 
     /// of direction is passed.</exception>
-    public static RogueLikeEntity SpiderWeb(HorizontalOrientation orientation) =>
-        GetEntity($"FloorSpideWeb{orientation}");
+    public static RogueLikeEntity SpiderWeb(Size size, HorizontalOrientation orientation) =>
+        GetEntity($"FloorSpiderWeb{size}{orientation}");
 
     public static RogueLikeEntity Shackle(string size) =>
         GetEntity($"Shackle{size}");
@@ -49,6 +49,15 @@ static class DecorFactory
         string face = faceRight ? "Right" : "Left";
         return GetEntity($"Steps{direction}{face}");
     }
+
+    public static RogueLikeEntity CandleStand(Size size) =>
+        GetEntity($"CandleStand{size}");
+
+    /// <summary>
+    /// Small prop with unknown use.
+    /// </summary>
+    public static RogueLikeEntity AmberStand() =>
+        GetEntity("AmberStand");
 
     /// <summary>
     /// Animated torch that can be placed on the side wall of a room.
@@ -79,11 +88,12 @@ static class DecorFactory
     public static AnimatedRogueLikeEntity Flag(Gemstone color) =>
         GetAnimatedEntity($"{color}Flag");
 
-    public static AnimatedRogueLikeEntity FountainTop(string color) =>
-        GetAnimatedEntity($"{color}FountainTop");
-
-    public static AnimatedRogueLikeEntity FountainBottom(string color) =>
-        GetAnimatedEntity($"{color}FountainBottom", false);
+    public static AnimatedRogueLikeEntity Fountain(VerticalOrientation orientation, bool isBlue)
+    {
+        var color = isBlue ? "Blue" : "Red";
+        bool isWalkable = orientation == VerticalOrientation.Top;
+        return GetAnimatedEntity($"{color}Fountain{orientation}", isWalkable);
+    }
 
     static AnimatedRogueLikeEntity GetAnimatedEntity(string animationName, 
         bool isWalkable = true, string name = "") => 

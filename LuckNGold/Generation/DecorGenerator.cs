@@ -4,6 +4,8 @@ using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
 using LuckNGold.Generation.Decors;
 using LuckNGold.Generation.Map;
+using LuckNGold.Primitives;
+using LuckNGold.World.Items.Enums;
 using ShaiRandom.Generators;
 
 namespace LuckNGold.Generation;
@@ -14,7 +16,7 @@ namespace LuckNGold.Generation;
 internal class DecorGenerator() : GenerationStep("Decorators",
     new ComponentTypeTagPair(typeof(ItemList<Room>), "Rooms"))
 {
-    static readonly IEnhancedRandom _rnd = GlobalRandom.DefaultRNG;
+    static readonly IEnhancedRandom s_rnd = GlobalRandom.DefaultRNG;
 
     protected override IEnumerator<object?> OnPerform(GenerationContext context)
     {
@@ -22,76 +24,231 @@ internal class DecorGenerator() : GenerationStep("Decorators",
 
         foreach (var room in rooms)
         {
-            var topWallCenter = room.GetConnectionPoint(Direction.Up);
+            AddDecorToTopWall(room);
 
-            // Place an entity in the middle of the top wall.
-            if (!room.TryGetExit(Direction.Up, out Exit? _) 
-                && room.PositionIsFree(topWallCenter)
-                && _rnd.NextBool())
-            {
-                if (room.Width.IsOdd())
-                {
-                    if (_rnd.NextBool())
-                        AddFountain(room);
-                    else
-                        AddTorch(topWallCenter, room);
-                }
-                else
-                {
-                    AddShackle(topWallCenter, room);
-                    AddShackle(topWallCenter + Direction.Right, room);
-                }
-            }
+            // Skip first room for now due to manual placement of test entities.
+            if (room.Path.Name != "MainPath" || room.Path.FirstRoom != room)
+                AddDecorToCorners(room);
 
-            // Fill the remaining top wall space.
-            var topWallEntities = room.GetEntitiesAtY(room.Bounds.MinExtentY);
-            if ((double)topWallEntities.Length / room.Width < 0.7d)
-            {
-                // Find two free top wall positions.
-                List<Point> freeTopWallPositions = [];
-                int x = 0;
-                do x = _rnd.NextInt(room.Position.X, topWallCenter.X);
-                while (Array.Find(topWallEntities, e => e.Position.X == x) is not null);
-                freeTopWallPositions.Add(new Point(x, room.Bounds.MinExtentY));
-                int delta = topWallCenter.X - x;
-                x = room.Width.IsOdd() ? topWallCenter.X + delta :
-                    topWallCenter.X + delta + 1;
-                freeTopWallPositions.Add(new Point(x, room.Bounds.MinExtentY));
-
-                // Place either shackles or torches depending what's already there.
-                bool placeShackles = true;
-                if (!room.Contains<Torch>() && !room.Contains<Shackle>())
-                {
-                    placeShackles = _rnd.NextBool();
-                }
-                else if (room.Contains<Shackle>())
-                {
-                    placeShackles = false;
-                }
-
-                foreach (var point in freeTopWallPositions)
-                {
-                    if (placeShackles)
-                        AddShackle(point, room);
-                    else
-                        AddTorch(point, room);
-                }
-            }
-
-            // Place side torches next to horizontal exits.
-            foreach (var exit in room.Exits)
-            {
-                if (exit.Direction.IsHorizontal() && _rnd.PercentageCheck(35f))
-                    AddSideTorches(exit);
-            }
+            AddDecorToSideWalls(room);
         }
 
         yield break;
     }
 
+    static void AddDecorToCorners(Room room)
+    {
+        // Iterate through all corners of the room.
+        for (int i = 0; i < 4; i++)
+        {
+            var cornerPosition = room.CornerPositions[i];
+            HorizontalOrientation orientation = i == 0 || i == 2 ?
+                HorizontalOrientation.Left : HorizontalOrientation.Right;
+            Size size = s_rnd.NextBool() ? Size.Small : Size.Large;
+
+            if (room.GetEntityAt(cornerPosition) is null)
+            {
+                // Add decor to corner of the room.
+                switch (s_rnd.NextInt(4))
+                {
+                    // Boxes.
+                    case 0:
+                        AddEntityOrWeb(room, orientation,
+                            new Boxes(cornerPosition, Size.Large));
+                        break;
+
+                    // Candle or candle stand.
+                    case 1:
+                        bool addCandle = true;
+                        if (cornerPosition.Y == room.Area.MinExtentY)
+                        {
+                            var testPosition = cornerPosition + Direction.Up;
+                            var entity = room.GetEntityAt(testPosition);
+                            addCandle = entity is Torch;
+                        }
+
+                        if (addCandle)
+                        {
+                            bool standAlone = s_rnd.NextBool();
+                            if (standAlone)
+                                AddEntityOrWeb(room, orientation,
+                                    new CandleStand(cornerPosition, size));
+                            else
+                                AddEntityOrWeb(room, orientation,
+                                    new Candle(cornerPosition, size));
+                        }
+                        else
+                        {
+                            room.AddEntity(new SpiderWeb(cornerPosition, 
+                                Size.Large, orientation));
+                        }
+                        break;
+
+                    // Skull.
+                    case 2:
+                        AddEntityOrWeb(room, orientation,
+                            new Skull(cornerPosition, orientation));
+                        break;
+
+                    // Spider web.
+                    default:
+                        room.AddEntity(new SpiderWeb(cornerPosition, 
+                            Size.Large, orientation));
+                        break;
+                };
+            }
+            
+            // Check size is sufficient and add decor to two neighbour positions
+            // of the corners of the room.
+            if (room.Width >= 5)
+            {
+                var entity = room.GetEntityAt(cornerPosition);
+                for (int j = 0; j < 2; j++)
+                {
+                    var delta =
+                        j == 0 && cornerPosition.Y == room.Area.MinExtentY ? (0, 1) :
+                        j == 0 && cornerPosition.Y == room.Area.MaxExtentY ? (0, -1) :
+                        j == 1 && cornerPosition.X == room.Area.MinExtentX ? (1, 0) :
+                        j == 1 && cornerPosition.X == room.Area.MaxExtentX ? (-1, 0) :
+                        (0, 0);
+                    var neighbourPosition = cornerPosition + delta;
+
+                    if (room.GetEntityAt(neighbourPosition) is null)
+                    {
+                        // Leave larger number in nextint to reduce chance
+                        // of generating decor.
+                        switch (s_rnd.NextInt(8))
+                        {
+                            // Skull.
+                            case 0:
+                                if (entity is Skull)
+                                    CheckCountAndAdd(room, new Bones(neighbourPosition));
+                                else
+                                    CheckCountAndAdd(room,
+                                        new Skull(neighbourPosition, orientation));
+                                break;
+
+                            // Bones.
+                            case 1:
+                                CheckCountAndAdd(room, new Bones(neighbourPosition));
+                                break;
+
+                            // Amber stand (don't ask me what this is).
+                            case 2:
+                                CheckCountAndAdd(room, new AmberStand(neighbourPosition));
+                                break;
+
+                            // Small boxes.
+                            case 3:
+                                if (entity is Boxes boxes && boxes.Size == Size.Small)
+                                    CheckCountAndAdd(room, new Bones(neighbourPosition));
+                                else
+                                    CheckCountAndAdd(room, 
+                                        new Boxes(neighbourPosition, Size.Small));
+                                break;
+
+                            // Nothing.
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    static void AddEntityOrWeb(Room room, HorizontalOrientation orientation, Entity entity)
+    {
+        if (EntityCountIsLessThan(room, entity.GetType(), 2))
+            room.AddEntity(entity);
+        else
+            room.AddEntity(new SpiderWeb(entity.Position, Size.Large, orientation));
+    }
+
+    static void CheckCountAndAdd(Room room, Entity entity)
+    {
+        if (EntityCountIsLessThan(room, entity.GetType(), 2))
+            room.AddEntity(entity);
+    }
+
+    static bool EntityCountIsLessThan(Room room, Type type, int count)
+    {
+        int entityCount = room.Contents.Where(e => e.GetType() == type).Count();
+        return entityCount < count;
+    }
+
+    static void AddDecorToSideWalls(Room room)
+    {
+        // Place side wall torches.
+        foreach (var exit in room.Exits)
+        {
+            if (exit.Direction.IsHorizontal() && s_rnd.PercentageCheck(35f))
+                AddSideTorches(exit);
+        }
+    }
+
+    static void AddDecorToTopWall(Room room)
+    {
+        var topWallCenter = room.GetConnectionPoint(Direction.Up);
+
+        // Place decor in the middle of the top wall.
+        if (!room.TryGetExit(Direction.Up, out Exit? _)
+            && room.PositionIsFree(topWallCenter)
+            && s_rnd.NextBool())
+        {
+            if (room.Width.IsOdd())
+            {
+                if (s_rnd.NextBool() && room.PositionIsFree(topWallCenter + Direction.Down))
+                    AddFountain(room);
+                else
+                    AddTorch(topWallCenter, room);
+            }
+            else
+            {
+                AddShackle(topWallCenter, room);
+                AddShackle(topWallCenter + Direction.Right, room);
+            }
+        }
+
+        // Fill the remaining top wall space.
+        var topWallEntities = room.GetEntitiesAtY(room.Bounds.MinExtentY);
+        if ((double)topWallEntities.Length / room.Width < 0.7d)
+        {
+            // Find two free top wall positions.
+            List<Point> freeTopWallPositions = [];
+            int x = 0;
+            do x = s_rnd.NextInt(room.Position.X, topWallCenter.X);
+            while (Array.Find(topWallEntities, e => e.Position.X == x) is not null);
+            freeTopWallPositions.Add(new Point(x, room.Bounds.MinExtentY));
+            int delta = topWallCenter.X - x;
+            x = room.Width.IsOdd() ? topWallCenter.X + delta :
+                topWallCenter.X + delta + 1;
+            freeTopWallPositions.Add(new Point(x, room.Bounds.MinExtentY));
+
+            // Place either shackles or torches depending what's already there.
+            bool placeShackles = true;
+            if (!room.Contains<Torch>() && !room.Contains<Shackle>())
+            {
+                placeShackles = s_rnd.NextBool();
+            }
+            else if (room.Contains<Shackle>())
+            {
+                placeShackles = false;
+            }
+
+            foreach (var point in freeTopWallPositions)
+            {
+                if (placeShackles)
+                    AddShackle(point, room);
+                else
+                    AddTorch(point, room);
+            }
+        }
+    }
+
     static void AddShackle(Point position, Room room)
     {
-        var shackleSize = _rnd.NextBool() ? "Small" : "Large";
+        var shackleSize = s_rnd.NextBool() ? "Small" : "Large";
         var shackle = new Shackle(position, shackleSize);
         room.AddEntity(shackle);
     }
@@ -105,23 +262,36 @@ internal class DecorGenerator() : GenerationStep("Decorators",
     static void AddFountain(Room room)
     {
         var wallCenter = room.GetConnectionPoint(Direction.Up);
-        if (room.PositionIsFree(wallCenter)
-            && room.PositionIsFree(wallCenter + Direction.Down))
+        bool isBlue = s_rnd.NextBool();
+
+        // Check neighbour rooms if they have any fountains
+        // and if so, change color to opposite.
+        foreach (var exit in room.Exits)
         {
-            var fountainTop = new FountainTop(wallCenter);
-            var fountainBottom = new FountainBottom(wallCenter + Direction.Down);
-            room.AddEntity(fountainTop);
-            room.AddEntity(fountainBottom);
+            var neighbourRoom = exit.End!.Room;
+            var neighbourRoomFountain = room.GetEntity<Fountain>();
+            if (neighbourRoomFountain is not null)
+            {
+                isBlue = !neighbourRoomFountain.IsBlue;
+                break;
+            }
         }
+
+        var fountainTop = new Fountain(wallCenter, VerticalOrientation.Top, isBlue);
+        var fountainBottom = new Fountain(wallCenter + Direction.Down,
+            VerticalOrientation.Bottom, isBlue);
+        room.AddEntity(fountainTop);
+        room.AddEntity(fountainBottom);
     }
 
     static void AddSideTorches(Exit exit)
     {
         var room = exit.Room;
-        var delta = exit.Direction.GetOpposite();
+        var horizontalDelta = exit.Direction.GetOpposite();
+        var verticalDelta = s_rnd.NextInt(1, (exit.Room.Height - 1) / 2);
 
-        Point[] positions = [exit.Position + delta + Direction.Up,
-            exit.Position + delta + Direction.Down];
+        Point[] positions = [exit.Position + horizontalDelta - (0, verticalDelta),
+            exit.Position + horizontalDelta + (0, verticalDelta)];
         var torches = new SideTorch[2];
 
         for (int i = 0; i < positions.Length; i++) 
@@ -145,10 +315,6 @@ internal class DecorGenerator() : GenerationStep("Decorators",
         }
 
         foreach (var torch in torches)
-        {
-            
-
             room.AddEntity(torch);
-        }
     }
 }

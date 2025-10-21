@@ -33,9 +33,15 @@ partial class GameMap
         decor is Flag flag ? DecorFactory.Flag(flag.Gemstone) :
         decor is SideTorch sideTorch ? DecorFactory.SideTorch(sideTorch.Orientation) :
         decor is Torch ? DecorFactory.Torch() :
-        decor is FountainTop fountainTop ? DecorFactory.FountainTop(fountainTop.Color) :
-        decor is FountainBottom fountainBottom ? DecorFactory.FountainBottom(fountainBottom.Color) :
+        decor is Fountain fountain ? DecorFactory.Fountain(fountain.Orientation, fountain.IsBlue) :
         decor is Shackle shackle ? DecorFactory.Shackle(shackle.Size) :
+        decor is Boxes boxes ? DecorFactory.Boxes(boxes.Size) :
+        decor is SpiderWeb spiderWeb ? DecorFactory.SpiderWeb(spiderWeb.Size, spiderWeb.Orientation) :
+        decor is CandleStand candleStand ? DecorFactory.CandleStand(candleStand.Size) :
+        decor is Candle candle ? DecorFactory.Candle(candle.Size) :
+        decor is Skull skull ? DecorFactory.Skull(skull.Orientation) :
+        decor is Bones ? DecorFactory.Bones() :
+        decor is AmberStand ? DecorFactory.AmberStand() :
         throw new ArgumentException("Item not implemented.");
 
     /// <summary>

@@ -47,4 +47,7 @@ partial class Room
 
     public Entity? GetEntityAt(Point position) =>
         Contents.Where(e => e.Position == position).FirstOrDefault();
+
+    public T? GetEntity<T>() where T : Entity =>
+        Contents.Where(e => e is T).FirstOrDefault() as T;
 }

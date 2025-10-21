@@ -149,10 +149,14 @@
 "Ruby" : {"Glyph": 107, "Mirror": 0},
 "Diamond" : {"Glyph": 108, "Mirror": 0},
 
-"Skull" : {"Glyph": 116, "Mirror": 0},
+"SkullRight" : {"Glyph": 116, "Mirror": 0},
+"SkullLeft" : {"Glyph": 116, "Mirror": 2},
 "Bones" : {"Glyph": 117, "Mirror": 0},
-"FloorSpiderWebLeft" : {"Glyph": 89, "Mirror": 0},
-"FloorSpiderWebRight" : {"Glyph": 89, "Mirror": 2},
+"AmberStand" : {"Glyph": 109, "Mirror": 0},
+"FloorSpiderWebLargeLeft" : {"Glyph": 89, "Mirror": 0},
+"FloorSpiderWebLargeRight" : {"Glyph": 89, "Mirror": 2},
+"FloorSpiderWebSmallLeft" : {"Glyph": 99, "Mirror": 0},
+"FloorSpiderWebSmallRight" : {"Glyph": 99, "Mirror": 2},
 "BoxesSmall" : {"Glyph": 115, "Mirror": 0},
 "BoxesLarge" : {"Glyph": 114, "Mirror": 0},
 "ShackleSmall": {"Glyph": 118, "Mirror": 0},
@@ -211,4 +215,10 @@
 "BlueFountainBottom2": {"Glyph": 161, "Mirror": 0},
 "BlueFountainBottom3": {"Glyph": 162, "Mirror": 0},
 
+"RedFountainTop1": {"Glyph": 153, "Mirror": 0},
+"RedFountainTop2": {"Glyph": 154, "Mirror": 0},
+"RedFountainTop3": {"Glyph": 155, "Mirror": 0},
+"RedFountainBottom1": {"Glyph": 163, "Mirror": 0},
+"RedFountainBottom2": {"Glyph": 164, "Mirror": 0},
+"RedFountainBottom3": {"Glyph": 165, "Mirror": 0},
 }}
