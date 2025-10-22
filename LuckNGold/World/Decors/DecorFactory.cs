@@ -59,6 +59,9 @@ static class DecorFactory
     public static RogueLikeEntity AmberStand() =>
         GetEntity("AmberStand");
 
+    public static AnimatedRogueLikeEntity Cauldron() =>
+        GetAnimatedEntity("Cauldron", false);
+
     /// <summary>
     /// Animated torch that can be placed on the side wall of a room.
     /// </summary>

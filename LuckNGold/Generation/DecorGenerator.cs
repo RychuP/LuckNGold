@@ -17,6 +17,7 @@ internal class DecorGenerator() : GenerationStep("Decorators",
     new ComponentTypeTagPair(typeof(ItemList<Room>), "Rooms"))
 {
     static readonly IEnhancedRandom s_rnd = GlobalRandom.DefaultRNG;
+    static Size s_webSizeTracker = Size.Large;
 
     protected override IEnumerator<object?> OnPerform(GenerationContext context)
     {
@@ -51,7 +52,7 @@ internal class DecorGenerator() : GenerationStep("Decorators",
                 // Add decor to corner of the room.
                 switch (s_rnd.NextInt(4))
                 {
-                    // Boxes.
+                    // Large boxes.
                     case 0:
                         AddEntityOrWeb(room, orientation,
                             new Boxes(cornerPosition, Size.Large));
@@ -79,8 +80,7 @@ internal class DecorGenerator() : GenerationStep("Decorators",
                         }
                         else
                         {
-                            room.AddEntity(new SpiderWeb(cornerPosition, 
-                                Size.Large, orientation));
+                            AddWeb(room, orientation, cornerPosition);
                         }
                         break;
 
@@ -90,10 +90,20 @@ internal class DecorGenerator() : GenerationStep("Decorators",
                             new Skull(cornerPosition, orientation));
                         break;
 
+                    // Cauldron:
+                    case 3:
+                        if (s_rnd.NextBool())
+                        {
+                            AddEntityOrWeb(room, orientation,
+                                new Cauldron(cornerPosition), 1);
+                        }
+                        else
+                            AddWeb(room, orientation, cornerPosition);
+                        break;
+
                     // Spider web.
                     default:
-                        room.AddEntity(new SpiderWeb(cornerPosition, 
-                            Size.Large, orientation));
+                        AddWeb(room, orientation, cornerPosition);
                         break;
                 };
             }
@@ -157,12 +167,19 @@ internal class DecorGenerator() : GenerationStep("Decorators",
         }
     }
 
-    static void AddEntityOrWeb(Room room, HorizontalOrientation orientation, Entity entity)
+    static void AddWeb(Room room, HorizontalOrientation orientation, Point position)
     {
-        if (EntityCountIsLessThan(room, entity.GetType(), 2))
+        s_webSizeTracker = s_webSizeTracker == Size.Large ? Size.Medium : Size.Large;
+        room.AddEntity(new SpiderWeb(position, s_webSizeTracker, orientation));
+    }
+
+    static void AddEntityOrWeb(Room room, HorizontalOrientation orientation, 
+        Entity entity, int maxCount = 2)
+    {
+        if (EntityCountIsLessThan(room, entity.GetType(), maxCount))
             room.AddEntity(entity);
         else
-            room.AddEntity(new SpiderWeb(entity.Position, Size.Large, orientation));
+            AddWeb(room, orientation, entity.Position);
     }
 
     static void CheckCountAndAdd(Room room, Entity entity)
@@ -212,7 +229,7 @@ internal class DecorGenerator() : GenerationStep("Decorators",
 
         // Fill the remaining top wall space.
         var topWallEntities = room.GetEntitiesAtY(room.Bounds.MinExtentY);
-        if ((double)topWallEntities.Length / room.Width < 0.7d)
+        if (((double)topWallEntities.Length + 2) / room.Width < 0.7d)
         {
             // Find two free top wall positions.
             List<Point> freeTopWallPositions = [];

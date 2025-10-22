@@ -97,7 +97,7 @@
 "LargeCandle2": {"Glyph": 91, "Mirror": 0},
 "LargeCandle3": {"Glyph": 92, "Mirror": 0},
 "LargeCandle4": {"Glyph": 93, "Mirror": 0},
-"CandleStandLarge": {"Glyph": 9, "Mirror": 0},
+"CandleStandLarge": {"Glyph": 94, "Mirror": 0},
 
 "SideTorchLeft1": {"Glyph": 85, "Mirror": 0},
 "SideTorchLeft2": {"Glyph": 86, "Mirror": 0},
@@ -153,8 +153,10 @@
 "SkullLeft" : {"Glyph": 116, "Mirror": 2},
 "Bones" : {"Glyph": 117, "Mirror": 0},
 "AmberStand" : {"Glyph": 109, "Mirror": 0},
-"FloorSpiderWebLargeLeft" : {"Glyph": 89, "Mirror": 0},
-"FloorSpiderWebLargeRight" : {"Glyph": 89, "Mirror": 2},
+"FloorSpiderWebLargeLeft" : {"Glyph": 32, "Mirror": 0},
+"FloorSpiderWebLargeRight" : {"Glyph": 32, "Mirror": 2},
+"FloorSpiderWebMediumLeft" : {"Glyph": 33, "Mirror": 0},
+"FloorSpiderWebMediumRight" : {"Glyph": 33, "Mirror": 2},
 "FloorSpiderWebSmallLeft" : {"Glyph": 99, "Mirror": 0},
 "FloorSpiderWebSmallRight" : {"Glyph": 99, "Mirror": 2},
 "BoxesSmall" : {"Glyph": 115, "Mirror": 0},
@@ -221,4 +223,9 @@
 "RedFountainBottom1": {"Glyph": 163, "Mirror": 0},
 "RedFountainBottom2": {"Glyph": 164, "Mirror": 0},
 "RedFountainBottom3": {"Glyph": 165, "Mirror": 0},
+
+"Cauldron1" : {"Glyph": 156, "Mirror": 0},
+"Cauldron2" : {"Glyph": 157, "Mirror": 0},
+"Cauldron3" : {"Glyph": 158, "Mirror": 0},
+"Cauldron4" : {"Glyph": 159, "Mirror": 0},
 }}

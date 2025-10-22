@@ -42,14 +42,6 @@ partial class GameMap
         decor is Skull skull ? DecorFactory.Skull(skull.Orientation) :
         decor is Bones ? DecorFactory.Bones() :
         decor is AmberStand ? DecorFactory.AmberStand() :
+        decor is Cauldron ? DecorFactory.Cauldron() :
         throw new ArgumentException("Item not implemented.");
-
-    /// <summary>
-    /// Places steps to the upper and lower level.
-    /// </summary>
-    void Place(Steps stepsData)
-    {
-        var steps = DecorFactory.Steps(stepsData.FaceRight, stepsData.LeadDown);
-        AddEntity(steps, stepsData.Position);
-    }
 }
