@@ -1,6 +1,6 @@
 ﻿namespace LuckNGold.Generation.Map;
 
-record Entity
+abstract record Entity
 {
     public Point Position { get; init; }
 

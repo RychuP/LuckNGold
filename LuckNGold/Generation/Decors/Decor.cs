@@ -2,7 +2,7 @@
 
 namespace LuckNGold.Generation.Decors;
 
-record Decor : Entity
+abstract record Decor : Entity
 {
     public Decor(Point position) : base(position)
     { }

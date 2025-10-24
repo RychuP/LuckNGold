@@ -2,6 +2,7 @@
 using LuckNGold.World.Furnitures;
 using LuckNGold.World.Furnitures.Components;
 using LuckNGold.World.Furnitures.Enums;
+using LuckNGold.World.Furnitures.Interfaces;
 using LuckNGold.World.Items.Components;
 using LuckNGold.World.Items.Enums;
 using SadRogue.Integration;
@@ -18,12 +19,50 @@ partial class GameMap
 
         var entity = GetEntityAt<RogueLikeEntity>(furniture.Position);
         if (entity is not null)
-            throw new InvalidOperationException("Another entity already at location.");
+        {
+            // Go through objects that may be created by other objects.
+            if (furniture is Gate gate && gate.IsOperateRemotely)
+                return;
+            else
+                throw new InvalidOperationException("Another entity already at location.");
+        }
 
         if (furniture is Door door)
             Place(door);
         else if (furniture is Chest chest)
             Place(chest);
+        else if (furniture is Gate gate && !gate.IsOperateRemotely)
+            Place(gate);
+        else if (furniture is Lever lever)
+            Place(lever);
+        
+    }
+
+    RogueLikeEntity Place(Gate gateData)
+    {
+        var gate = FurnitureFactory.Gate(gateData.Orientation);
+        AddEntity(gate, gateData.Position);
+        return gate;
+    }
+
+    void Place(Lever leverData)
+    {
+        var lever = FurnitureFactory.Lever();
+        var switchComponent = lever.AllComponents.GetFirst<ISwitch>();
+        AddEntity(lever, leverData.Position);
+
+        if (leverData.Target is Gate gateData)
+        {
+            var gate = Place(gateData);
+            var actuatorComponent = gate.AllComponents.GetFirst<IActuator>();
+            switchComponent.StateChanged += (o, e) =>
+            {
+                if (switchComponent.IsOn)
+                    actuatorComponent.Extend();
+                else
+                    actuatorComponent.Retract();
+            };
+        }
     }
 
     void Place(Chest chestData)
@@ -38,19 +77,6 @@ partial class GameMap
 
     void Place(Door doorData)
     {
-        // Establish orientation of the door
-        DoorOrientation doorOrientation;
-        if (doorData.Direction.IsHorizontal())
-        {
-            doorOrientation = doorData.Direction == Direction.Left ?
-                DoorOrientation.Left : DoorOrientation.Right;
-        }
-        else
-        {
-            doorOrientation = doorData.Direction == Direction.Up ?
-                DoorOrientation.TopLeft : DoorOrientation.BottomLeft;
-        }
-
         // Check if the door is locked.
         bool isLocked = false;
         Difficulty difficulty = Difficulty.None;
@@ -61,17 +87,17 @@ partial class GameMap
         }
 
         // Create the door.
-        var door = FurnitureFactory.Door(doorOrientation, isLocked, difficulty);
+        var door = FurnitureFactory.Door(doorData.Orientation, isLocked, difficulty);
         AddEntity(door, doorData.Position);
 
         // Add aditional door to wide corridors.
         if (doorData.IsDouble)
         {
-            if (!doorData.Direction.IsVertical())
+            var doorOrientation = 
+                doorData.Orientation == DoorOrientation.TopLeft ? DoorOrientation.TopRight : 
+                doorData.Orientation == DoorOrientation.BottomLeft ? DoorOrientation.BottomRight :
                 throw new InvalidOperationException("Double door can only be vertical.");
 
-            doorOrientation = doorData.Direction == Direction.Up ?
-                DoorOrientation.TopRight : DoorOrientation.BottomRight;
             var door2 = FurnitureFactory.Door(doorOrientation, isLocked, difficulty);
             AddEntity(door2, door.Position + Direction.Right);
 

@@ -1,12 +1,8 @@
 ﻿namespace LuckNGold.Generation.Furnitures;
 
-/// <summary>
-/// Entity separating two different rooms.
-/// </summary>
-record Door : Furniture
+record Door : Entryway
 {
     public bool IsDouble { get; init; }
-    public Direction Direction { get; init; }
     public Lock? Lock { get; init; }
 
     /// <summary>
@@ -18,10 +14,9 @@ record Door : Furniture
     /// or two tiles, in which case another door needs to be created and bound together.</param>
     /// <param name="lock">Object representing a padlock placed on <see cref="Door"/>.</param>
     public Door (Point position, Direction direction, bool isDouble = false, 
-        Lock? @lock = null) : base(position)
+        Lock? @lock = null) : base(position, direction)
     {
         IsDouble = isDouble;
-        Direction = direction;
         Lock = @lock;
     }
 }

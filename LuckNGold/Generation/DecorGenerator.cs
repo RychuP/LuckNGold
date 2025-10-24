@@ -92,7 +92,7 @@ internal class DecorGenerator() : GenerationStep("Decorators",
 
                     // Cauldron:
                     case 3:
-                        if (s_rnd.NextBool())
+                        if (s_rnd.PercentageCheck(20f))
                         {
                             AddEntityOrWeb(room, orientation,
                                 new Cauldron(cornerPosition), 1);
@@ -182,9 +182,9 @@ internal class DecorGenerator() : GenerationStep("Decorators",
             AddWeb(room, orientation, entity.Position);
     }
 
-    static void CheckCountAndAdd(Room room, Entity entity)
+    static void CheckCountAndAdd(Room room, Entity entity, int maxCount = 2)
     {
-        if (EntityCountIsLessThan(room, entity.GetType(), 2))
+        if (EntityCountIsLessThan(room, entity.GetType(), maxCount))
             room.AddEntity(entity);
     }
 

@@ -11,7 +11,6 @@ readonly struct HorizontalOrientation : IEquatable<HorizontalOrientation>
 
     private HorizontalOrientation(Types type) => Type = type;
 
-    //public static readonly HorizontalOrientation None = new(Types.None);
     public static readonly HorizontalOrientation Left = new(Types.Left);
     public static readonly HorizontalOrientation Right = new(Types.Right);
 

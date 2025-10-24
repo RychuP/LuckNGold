@@ -103,14 +103,6 @@ partial class GameScreen : ScreenObject
         candle.Position = firstRoom.Area.MinYPositions().Last();
         Map.AddEntity(candle);
 
-        // Add sample torches
-        //var torch = DecorFactory.Torch();
-        //torch.Position = flag.Position + Direction.Right;
-        //Map.AddEntity(torch);
-        //torch = DecorFactory.Torch();
-        //torch.Position = flag.Position + Direction.Left;
-        //Map.AddEntity(torch);
-
         // Get an exit from the first room for the sample door
         if (firstRoom.Exits.FirstOrDefault() is not Exit exit)
             throw new Exception("First room needs to have a valid exit.");

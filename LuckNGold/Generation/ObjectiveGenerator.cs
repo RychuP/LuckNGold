@@ -14,14 +14,12 @@ namespace LuckNGold.Generation;
 /// Generator that creates objectives for the map by hiding section keys. 
 /// </summary>
 internal class ObjectiveGenerator() : GenerationStep("Objectives",
-    new ComponentTypeTagPair(typeof(ItemList<RoomPath>), "Paths"),
     new ComponentTypeTagPair(typeof(ItemList<Section>), "Sections"))
 {
     readonly IEnhancedRandom _rnd = GlobalRandom.DefaultRNG;
 
     protected override IEnumerator<object?> OnPerform(GenerationContext context)
     {
-        var paths = context.GetFirst<ItemList<RoomPath>>("Paths").Items;
         var sections = context.GetFirst<ItemList<Section>>("Sections").Items;
 
         // Create and hide the keys to section doors.
@@ -29,53 +27,66 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
         {
             var section = sections[i];
             if (i == 0)
+                DoSimpleKeyPlacement(section);
+            else
             {
-                if (section.SingleRooms.Length >= 5)
-                    PlaceKeyInChests(section);
-                else
-                    PlaceKeyInRandomRoom(section);
-            }
-            else //if (i == 1)
-            {
-                PlaceKeyInExitRoom(section);
+                bool keyPlacementSucceded = _rnd.NextInt(2) switch
+                {
+                    0 => TryPlaceKeyInBarredRoom(section, sections),
+                    _ => false
+                };
+
+                if (!keyPlacementSucceded)
+                    DoSimpleKeyPlacement(section);
             }
         }
 
         yield break;
     }
 
-    /// <summary>
-    /// Places the key in the same room as the locked door.
-    /// </summary>
-    static void PlaceKeyInExitRoom(Section section)
+    void DoSimpleKeyPlacement(Section section)
     {
-        if (section.Exit is Room room)
-        {
-            var keyPosition = room.Area.Center;
-            var key = new Key(keyPosition, section.Gemstone);
-            room.AddEntity(key);
-        }
+        if (section.SingleRooms.Count >= 5)
+            PlaceKeyInChests(section);
+        else
+            PlaceKeyInFarRoom(section);
     }
 
     /// <summary>
     /// Places the key in one of the further rooms in the section.
     /// </summary>
-    void PlaceKeyInRandomRoom(Section section)
+    void PlaceKeyInFarRoom(Section section)
     {
-        var singleRoomCount = section.SingleRooms.Length;
-        int startIndex = singleRoomCount / 2;
-
-        int index;
         Room room;
-        do
+        var singleRoomCount = section.SingleRooms.Count;
+        if (singleRoomCount > 1)
         {
-            index = _rnd.NextInt(startIndex, singleRoomCount);
+            // Select a random room from a selection of distant, single rooms in the section.
+            int startIndex = singleRoomCount / 2;
+            int index = _rnd.NextInt(startIndex, singleRoomCount);
             room = section.SingleRooms[index];
         }
-        while (room.Section!.Entrance == room);
+        else
+        {
+            // Select any room but first.
+            int index = _rnd.NextInt(1, section.Rooms.Count);
+            room = section.Rooms[index];
+        }
 
-        var keyPosition = room.Area.Center;
-        var key = new Key(keyPosition, section.Gemstone);
+        PlaceKeyInRoom(room, section.Gemstone);
+    }
+
+    void PlaceKeyInRoom(Room room, Gemstone gemstone)
+    {
+        // Find a random, free spot in the room not aligned with the room center.
+        Point keyPosition;
+        do keyPosition = _rnd.RandomPosition(room.Area);
+        while (room.Contents.Where(e => e.Position == keyPosition).Any() ||
+            keyPosition.X == room.Area.Center.X ||
+            keyPosition.Y == room.Area.Center.Y);
+
+        // Create the key.
+        var key = new Key(keyPosition, gemstone);
         room.AddEntity(key);
     }
 
@@ -85,15 +96,10 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
     void PlaceKeyInChests(Section section)
     {
         int chestsNeeded = 3;
-        if (section.SingleRooms.Length < chestsNeeded)
-            chestsNeeded = section.SingleRooms.Length;
+        if (section.SingleRooms.Count < chestsNeeded)
+            chestsNeeded = section.SingleRooms.Count;
         int chestWithKeyIndex = _rnd.NextInt(chestsNeeded);
         var roomIndicesUsed = new List<int>(chestsNeeded);
-        if (section.Gemstone == Gemstone.Onyx)
-        {
-            int dungeonEntranceRoomIndex = Array.IndexOf(section.SingleRooms, section.Entrance);
-            roomIndicesUsed.Add(dungeonEntranceRoomIndex);
-        }
 
         // Create chests.
         for (int i = 0; i < chestsNeeded; i++)
@@ -104,8 +110,8 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
             roomIndicesUsed.Add(roomIndex);
             var room = section.SingleRooms[roomIndex];
 
-        // Create current chest.
-        var chestPosition = room.Area.Center;
+            // Create current chest.
+            var chestPosition = room.Area.Center;
             var chest = new Chest(chestPosition);
 
             // Put some coins in the chest.
@@ -116,6 +122,7 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
                 chest.Items.Add(coin);
             }
 
+            // Put key in the chest.
             if (chestWithKeyIndex == i)
             {
                 var key = new Key(Point.None, section.Gemstone);
@@ -126,8 +133,59 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
         }
     }
 
-    void PlaceKeyInBarredRoom(Section section, IList<Section> sections)
+    /// <summary>
+    /// Places the <see cref="Key"/> in a single, barred room from a lower <see cref="Section"/>
+    /// and a lever to open the barred gate in the current <see cref="Section"/>.
+    /// </summary>
+    /// <param name="section">Current <see cref="Section"/> where lever needs to be placed.</param>
+    /// <param name="sections">List of all sections.</param>
+    bool TryPlaceKeyInBarredRoom(Section section, IReadOnlyList<Section> sections)
     {
+        if (section.IsFirst())
+            return false;
 
+        var lowerSection = sections.Where(s => s.Gemstone == section.Gemstone - 1).First();
+
+        // Check section sizes are sufficient for the task.
+        int smallSectionSize = 6;
+        if (section.Rooms.Count <= smallSectionSize && lowerSection.Rooms.Count <= smallSectionSize)
+        {
+            // Try to go lower in sections but not too far.
+            if (lowerSection.IsFirst()) 
+                return false;
+            lowerSection = sections.Where(s => s.Gemstone == section.Gemstone - 1).First();
+            if (lowerSection.Rooms.Count <= smallSectionSize ) 
+                return false;
+        }
+
+        // Check there is a free single room in the lower section.
+        var freeSingleRooms = lowerSection.SingleRooms
+            .Where(r => r.GetEntity<Furniture>() is null && r.GetEntity<Item>() is null)
+            .ToArray();
+        if (freeSingleRooms.Length < 1) return false;
+
+        // Select a room for the key.
+        int singleRoomIndex = _rnd.RandomIndex(freeSingleRooms);
+        var room = freeSingleRooms[singleRoomIndex];
+        PlaceKeyInRoom(room, section.Gemstone);
+
+        // Place a gate at the room's exit.
+        var exit = room.Exits.First();
+        var gate = new Gate(exit.Position, exit.Direction);
+        room.AddEntity(gate);
+
+        // Select a room for the lever.
+        int roomIndex = _rnd.RandomIndex(section.Rooms);
+        room = section.Rooms[roomIndex];
+
+        // Pick a position for the lever.
+        int cornerIndex = _rnd.NextInt(4);
+        var leverPosition = room.CornerPositions[cornerIndex];
+
+        // Create the lever.
+        var lever = new Lever(leverPosition, gate);
+        room.AddEntity(lever);
+
+        return true;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LuckNGold.World.Items.Enums;
+using static System.Collections.Specialized.BitVector32;
 
 namespace LuckNGold.Generation.Map;
 
@@ -41,17 +42,21 @@ internal class Section(Gemstone gemstone)
     public IReadOnlyList<Room> Rooms => _rooms;
 
 
-    Room[] _singleRooms = [];
+    List<Room> _singleRooms = [];
     /// <summary>
-    /// Cache of <see cref="GetSingleRooms"/> query.
     /// All rooms with a single entrance ordered by distance to section exit.
     /// </summary>
-    public Room[] SingleRooms
+    /// <remarks>Dungeon entrance room is removed from that list.</remarks>
+    public IReadOnlyList<Room> SingleRooms
     {
         get
         {
-            if (_singleRooms.Length == 0)
-                _singleRooms = [.. GetSingleRooms()];
+            if (_singleRooms.Count == 0)
+            {
+                _singleRooms = GetSingleRooms();
+                if (IsFirst())
+                    _singleRooms.Remove(Entrance);
+            }
             return _singleRooms;
         }
     }
@@ -102,9 +107,9 @@ internal class Section(Gemstone gemstone)
     /// <summary>
     /// Gets all rooms with a single entrance ordered by distance to section exit.
     /// </summary>
-    public IEnumerable<Room> GetSingleRooms() => Rooms
+    List<Room> GetSingleRooms() => [.. Rooms
         .Where(r => r.Exits.Count() == 1)
-        .OrderBy(r => r.DistanceToSectionExit);
+        .OrderBy(r => r.DistanceToSectionExit)];
 
     /// <summary>
     /// Gets distance to the room either from <see cref="Entrance"/> 
@@ -142,4 +147,11 @@ internal class Section(Gemstone gemstone)
         
         return count + path.GetDistance(room, startRoom);
     }
+
+    /// <summary>
+    /// Whether the <see cref="Section"/> is the first in the dungeon.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsFirst() =>
+        Gemstone == Gemstone.Onyx;
 }

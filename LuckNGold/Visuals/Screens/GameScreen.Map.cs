@@ -56,6 +56,7 @@ partial class GameScreen
 
         // Place entities on the map.
         var rooms = generator.Context.GetFirst<ItemList<Room>>("Rooms").Items;
+        int gateCount = 0;
         foreach (var room in rooms)
         {
             foreach (var entity in room.Contents)
@@ -63,11 +64,16 @@ partial class GameScreen
                 if (entity is Decor decor)
                     map.PlaceDecor(decor);
                 else if (entity is Furniture furniture)
+                {
                     map.PlaceFurniture(furniture);
+                    if (furniture is Gate)
+                        gateCount++;
+                }
                 else if (entity is Item item)
                     map.PlaceItem(item);
             }
         }
+        Print($"Gate count: {gateCount}");
 
         return map;
     }

@@ -2,7 +2,7 @@
 
 namespace LuckNGold.Generation.Items;
 
-record Item : Entity
+abstract record Item : Entity
 {
     public Item(Point position) : base(position)
     { }

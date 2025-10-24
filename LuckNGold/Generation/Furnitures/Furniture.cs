@@ -2,7 +2,7 @@
 
 namespace LuckNGold.Generation.Furnitures;
 
-record Furniture : Entity
+abstract record Furniture : Entity
 {
     public Furniture(Point position) : base(position)
     { }

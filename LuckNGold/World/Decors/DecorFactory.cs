@@ -26,7 +26,7 @@ static class DecorFactory
     /// </summary>
     /// <param name="size">Size of the boxes: either large or small.</param>
     public static RogueLikeEntity Boxes(Size size) =>
-        GetEntityWithRandMirror($"Boxes{size}", false);
+        GetEntityWithRandMirror($"Boxes{size}", size == Size.Small);
 
     /// <summary>
     /// Spider web that can be placed on the floor in the corners of a room.
@@ -51,7 +51,7 @@ static class DecorFactory
     }
 
     public static RogueLikeEntity CandleStand(Size size) =>
-        GetEntity($"CandleStand{size}");
+        GetEntity($"CandleStand{size}", false);
 
     /// <summary>
     /// Small prop with unknown use.
