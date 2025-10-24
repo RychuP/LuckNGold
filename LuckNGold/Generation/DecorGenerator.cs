@@ -17,7 +17,7 @@ internal class DecorGenerator() : GenerationStep("Decorators",
     new ComponentTypeTagPair(typeof(ItemList<Room>), "Rooms"))
 {
     static readonly IEnhancedRandom s_rnd = GlobalRandom.DefaultRNG;
-    static Size s_webSizeTracker = Size.Large;
+    static Size s_webSizeTracker = Size.Small;
 
     protected override IEnumerator<object?> OnPerform(GenerationContext context)
     {
@@ -169,7 +169,8 @@ internal class DecorGenerator() : GenerationStep("Decorators",
 
     static void AddWeb(Room room, HorizontalOrientation orientation, Point position)
     {
-        s_webSizeTracker = s_webSizeTracker == Size.Large ? Size.Medium : Size.Large;
+        s_webSizeTracker = s_webSizeTracker == Size.Small ? Size.Medium :
+            s_webSizeTracker == Size.Medium ? Size.Large : Size.Small;
         room.AddEntity(new SpiderWeb(position, s_webSizeTracker, orientation));
     }
 
