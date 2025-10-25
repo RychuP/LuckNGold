@@ -94,4 +94,16 @@ partial class Room
 
         return false;
     }
+
+    /// <summary>
+    /// Checks if this is the first room of the main path.
+    /// </summary>
+    public bool IsLevelEntrance =>
+        Path.Name == "MainPath" && Path.FirstRoom == this;
+
+    /// <summary>
+    /// Checks if this is the last room of the main path.
+    /// </summary>
+    public bool IsLevelExit =>
+        Path.Name == "MainPath" && Path.LastRoom == this;
 }

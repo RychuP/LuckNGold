@@ -13,7 +13,6 @@ using LuckNGold.World.Monsters.Components;
 using SadConsole.Components;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LuckNGold.Visuals.Screens;
 
@@ -45,23 +44,7 @@ partial class GameScreen : ScreenObject
 
         // Create the player and place it in the first room of the main path.
         Player = GeneratePlayer();
-        var entities = Map.GetEntitiesAt<RogueLikeEntity>(Player.Position);
-        if (entities.Any())
-        {
-            foreach (var entity in entities)
-            {
-                if (entity.CanMoveIn(Direction.Up))
-                {
-                    entity.Position += Direction.Up;
-                }
-                else
-                    Map.RemoveEntity(entity);
-            }
-        }
         Map.AddEntity(Player);
-
-        // Sample entities for testing.
-        AddSampleEntities();
 
         // Add keyboard handler component.
         _keybindingsComponent = new CustomKeybindingsComponent(Map, Player);
@@ -93,47 +76,6 @@ partial class GameScreen : ScreenObject
 
     void AddSampleEntities()
     {
-        var firstRoom = Map.Paths[0].FirstRoom;
-
-        // Add sample candles
-        var candle = DecorFactory.Candle(Size.Small);
-        candle.Position = firstRoom.Area.MinYPositions().First();
-        Map.AddEntity(candle);
-        candle = DecorFactory.Candle(Size.Small);
-        candle.Position = firstRoom.Area.MinYPositions().Last();
-        Map.AddEntity(candle);
-
-        // Get an exit from the first room for the sample door
-        if (firstRoom.Exits.FirstOrDefault() is not Exit exit)
-            throw new Exception("First room needs to have a valid exit.");
-
-        // Add sample chest
-        var coins = new List<RogueLikeEntity>(5);
-        for (int i = 0; i < 5; i++)
-            coins.Add(ItemFactory.Coin());
-        var chest = FurnitureFactory.Chest(coins);
-        chest.Position = firstRoom.Area.MaxYPositions().First();
-        Map.AddEntity(chest);
-
-        // Add sample gate.
-        DoorOrientation gateOrientation = exit.Direction == Direction.Left ?
-            DoorOrientation.Left : DoorOrientation.Right;
-        var gate = FurnitureFactory.Gate(gateOrientation);
-        var actuatorComponent = gate.AllComponents.GetFirst<IActuator>();
-        gate.Position = exit.Position;
-        Map.AddEntity(gate);
-
-        // Add sample lever.
-        var lever = FurnitureFactory.Lever();
-        lever.Position = firstRoom.Area.MaxYPositions().Last();
-        var switchComponent = lever.AllComponents.GetFirst<ISwitch>();
-        switchComponent.StateChanged += (o, e) =>
-        {
-            if (switchComponent.IsOn)
-                actuatorComponent.Extend();
-            else
-                actuatorComponent.Retract();
-        };
-        Map.AddEntity(lever);
+       
     }
 }

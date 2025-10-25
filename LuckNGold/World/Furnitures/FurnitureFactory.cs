@@ -153,19 +153,21 @@ internal class FurnitureFactory
     }
 
     /// <summary>
-    /// Lever like entity that can be switched on and off.
+    /// Lever like entity that can be turned left (off) and right (on).
     /// </summary>
     public static AnimatedRogueLikeEntity Lever()
     {
-        string[] animations = ["LeverOff", "LeverOn", "LeverTurningOff", "LeverTurningOn"];
-        var lever = new AnimatedRogueLikeEntity(animations, "LeverOff", false,
+        string[] animations = ["LeverLeft", "LeverRight", 
+            "LeverTurningLeft", "LeverTurningRight",
+            "LeverAbortTurningLeft", "LeverAbortTurningRight"];
+        var lever = new AnimatedRogueLikeEntity(animations, animations[0], false,
             GameMap.Layer.Furniture, false)
         {
             Name = "Lever"
         };
 
-        var switchComponent = new SwitchComponent("LeverOn", "LeverOff",
-            "LeverTurningOn", "LeverTurningOff");
+        var switchComponent = new SwitchComponent(animations[1], animations[0],
+            animations[3], animations[2], animations[5], animations[4]);
         lever.AllComponents.Add(switchComponent);
 
         return lever;

@@ -34,7 +34,7 @@ class LootSpawnerComponent : RogueLikeComponentBase<RogueLikeEntity>, ILootSpawn
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
         if (Parent.CurrentMap is not GameMap map)
-            throw new InvalidOperationException("Parent entity has to be on the map.");
+            throw new InvalidOperationException("Parent needs to be on the map.");
 
         // Get points surrounding parent entity.
         var neighbours = Program.Adjacency.Neighbors(Parent.Position);

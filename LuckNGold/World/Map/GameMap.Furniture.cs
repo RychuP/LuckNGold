@@ -35,7 +35,6 @@ partial class GameMap
             Place(gate);
         else if (furniture is Lever lever)
             Place(lever);
-        
     }
 
     RogueLikeEntity Place(Gate gateData)
@@ -55,6 +54,19 @@ partial class GameMap
         {
             var gate = Place(gateData);
             var actuatorComponent = gate.AllComponents.GetFirst<IActuator>();
+
+            switchComponent.StateChanging += (o, e) =>
+            {
+                bool isTurningLeft = !e.NewValue;
+                var entitiesAtGate = GetEntitiesAt<RogueLikeEntity>(gate.Position);
+                bool gateIsBlocked = entitiesAtGate.Count() > 1;
+
+                // Lever is about to be put into On state, but the gate is blocked,
+                // so lever has to be stopped.
+                if (isTurningLeft && gateIsBlocked)
+                    switchComponent.StopStateChanging();
+            };
+
             switchComponent.StateChanged += (o, e) =>
             {
                 if (switchComponent.IsOn)
@@ -93,23 +105,47 @@ partial class GameMap
         // Add aditional door to wide corridors.
         if (doorData.IsDouble)
         {
+            // Calculate door orientation.
             var doorOrientation = 
                 doorData.Orientation == DoorOrientation.TopLeft ? DoorOrientation.TopRight : 
                 doorData.Orientation == DoorOrientation.BottomLeft ? DoorOrientation.BottomRight :
                 throw new InvalidOperationException("Double door can only be vertical.");
 
+            // Create 2nd door.
             var door2 = FurnitureFactory.Door(doorOrientation, isLocked, difficulty);
             AddEntity(door2, door.Position + Direction.Right);
 
-            // Add mirror behaviours to both doors
-            door.AllComponents.GetFirst<OpeningComponent>().Opened +=
-                (o, e) => door2.AllComponents.GetFirst<OpeningComponent>().Open();
-            door.AllComponents.GetFirst<OpeningComponent>().Closed +=
-                (o, e) => door2.AllComponents.GetFirst<OpeningComponent>().Close();
-            door2.AllComponents.GetFirst<OpeningComponent>().Opened +=
-                (o, e) => door.AllComponents.GetFirst<OpeningComponent>().Open();
-            door2.AllComponents.GetFirst<OpeningComponent>().Closed +=
-                (o, e) => door.AllComponents.GetFirst<OpeningComponent>().Close();
+            // Pull out opening components.
+            var openingComponent1 = door.AllComponents.GetFirst<OpeningComponent>();
+            var openingComponent2 = door2.AllComponents.GetFirst<OpeningComponent>();
+
+            // React to state changing and check for any entities blocking any of the doors.
+            openingComponent1.StateChanging += (o, e) =>
+            {
+                bool isClosing = !e.NewValue;
+                int entitiesCount = GetEntitiesAt<RogueLikeEntity>(door2.Position).Count();
+                bool otherDoorIsBlocked = entitiesCount > 1;
+
+                if (isClosing && otherDoorIsBlocked)
+                    openingComponent1.StopStateChanging();
+            };
+            openingComponent2.StateChanging += (o, e) =>
+            {
+                bool isClosing = !e.NewValue;
+                int entitiesCount = GetEntitiesAt<RogueLikeEntity>(door.Position).Count();
+                bool otherDoorIsBlocked = entitiesCount > 1;
+
+                if (isClosing && otherDoorIsBlocked)
+                    openingComponent2.StopStateChanging();
+            };
+
+            // React to open/close action and mirror on both.
+            openingComponent1.Opened += (o, e) => openingComponent2.Open();
+            openingComponent1.Closed += (o, e) => openingComponent2.Close();
+            openingComponent2.Opened += (o, e) => openingComponent1.Open();
+            openingComponent2.Closed += (o, e) => openingComponent1.Close();
+
+            // React to lock removal and mirror the action on both.
             door.AllComponents.ComponentRemoved += (o, e) =>
             {
 

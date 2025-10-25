@@ -26,11 +26,7 @@ internal class DecorGenerator() : GenerationStep("Decorators",
         foreach (var room in rooms)
         {
             AddDecorToTopWall(room);
-
-            // Skip first room for now due to manual placement of test entities.
-            if (room.Path.Name != "MainPath" || room.Path.FirstRoom != room)
-                AddDecorToCorners(room);
-
+            AddDecorToCorners(room);
             AddDecorToSideWalls(room);
         }
 

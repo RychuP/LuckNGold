@@ -17,6 +17,9 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
 {
     public event EventHandler? Opened;
     public event EventHandler? Closed;
+    public event EventHandler<ValueChangedEventArgs<bool>>? StateChanging;
+
+    bool _stateChangeCanGoAhead = false;
 
     string _openAnimation = openAnimation;
     public string OpenAnimation
@@ -87,16 +90,65 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         }
     }
 
+    /// <summary>
+    /// Check intended to be made before closing remotely.
+    /// </summary>
+    /// <returns></returns>
+    //public bool CanClose()
+    //{
+    //    if (Parent is null || Parent.CurrentMap is null)
+    //        return false;
+
+    //    // Opening needs to be open before it can be closed.
+    //    if (!IsOpen)
+    //        return false;
+
+    //    // Check if lock component is present -> this should not happen in open state.
+    //    if (Parent.AllComponents.GetFirstOrDefault<ILockable>() is not null)
+    //        return false;
+
+    //    // Check if actuator is present -> at the stage of the CanClose check,
+    //    // the actuator should be extended, meaning the opening is in Open state.
+    //    if (Parent.AllComponents.GetFirstOrDefault<IActuator>() is IActuator actuatorComponent
+    //        && actuatorComponent.State != ActuatorState.Extended) 
+    //        return false;
+
+    //    // Checks specific to walkable parents.
+    //    if (Parent.IsWalkable)
+    //    {
+    //        var map = Parent.CurrentMap;
+
+    //        // Walkable parent will most likely want to change walkability to false when closed.
+    //        if (map.GetEntitiesAt<RogueLikeEntity>(Parent.Position).Count() > 1)
+    //            // Can't close if there is another entity on top of the parent.
+    //            return;
+
+    //        // Checks specific to double doors and gates.
+    //        if (Parent.Name == "Door" || Parent.Name == "Gate")
+    //        {
+    //            var leftEntity = map.GetEntityAt<RogueLikeEntity>(Parent.Position + Direction.Left);
+    //            var rightEntity = map.GetEntityAt<RogueLikeEntity>(Parent.Position + Direction.Right);
+
+    //            if (leftEntity.
+    //        }
+    //    }
+    //}
+
     public void Close()
     {
         if (Parent is null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
-        if (Parent.Layer <= (int)GameMap.Layer.Furniture && Parent.CurrentMap is null)
-            throw new InvalidOperationException("Furniture or below has to be on the map.");
+        if (Parent.CurrentMap is null)
+            throw new InvalidOperationException("Parent needs to be on the map.");
 
         // Opening needs to be open before it can be closed.
         if (!IsOpen) return;
+
+        // Announce intention to close.
+        OnStateChanging(false);
+        if (!_stateChangeCanGoAhead)
+            return;
 
         // Check if lock component is present -> this should not happen in open state.
         if (Parent.AllComponents.GetFirstOrDefault<ILockable>() is not null)
@@ -105,6 +157,26 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         // Check if actuator is present -> can't close if not retracted.
         if (Parent.AllComponents.GetFirstOrDefault<IActuator>() is IActuator actuatorComponent
             && actuatorComponent.State != ActuatorState.Retracted) return;
+
+        // Checks specific to walkable parents.
+        //if (Parent.IsWalkable)
+        //{
+        //    var map = Parent.CurrentMap;
+
+        //    // Walkable parent will most likely want to change walkability to false when closed.
+        //    if (map.GetEntitiesAt<RogueLikeEntity>(Parent.Position).Count() > 1)
+        //        // Can't close if there is another entity on top of the parent.
+        //        return;
+
+        //    // Checks specific to double doors and gates.
+        //    if (Parent.Name == "Door" || Parent.Name == "Gate")
+        //    {
+        //        var leftEntity = map.GetEntityAt<RogueLikeEntity>(Parent.Position + Direction.Left);
+        //        var rightEntity = map.GetEntityAt<RogueLikeEntity> (Parent.Position + Direction.Right);
+
+        //        if (leftEntity.
+        //    }
+        //}
 
         // Check if parent is animated.
         if (Parent is AnimatedRogueLikeEntity animated)
@@ -129,11 +201,16 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
         if (Parent is null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
-        if (Parent.Layer <= (int)GameMap.Layer.Furniture && Parent.CurrentMap is null)
-            throw new InvalidOperationException("Furniture or below has to be on the map.");
+        if (Parent.CurrentMap is null)
+            throw new InvalidOperationException("Parent needs to be on the map.");
 
         // Opening needs to be closed before it can be closed.
         if (IsOpen) return;
+
+        // Announce intention to open.
+        OnStateChanging(true);
+        if (!_stateChangeCanGoAhead)
+            return;
 
         // Check if lock component is present -> can't open until lock is removed.
         if (Parent.AllComponents.GetFirstOrDefault<ILockable>() is not null) return;
@@ -174,6 +251,16 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
             && !animatedEntity.HasAnimation(animationName))
             return false;
         return true;
+    }
+
+    public void StopStateChanging() =>
+        _stateChangeCanGoAhead = false;
+
+    void OnStateChanging(bool desiredOpenState)
+    {
+        _stateChangeCanGoAhead = true;
+        var args = new ValueChangedEventArgs<bool>(!desiredOpenState, desiredOpenState);
+        StateChanging?.Invoke(this, args);
     }
 
     void OnOpened()

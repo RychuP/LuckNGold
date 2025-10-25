@@ -9,10 +9,14 @@ namespace LuckNGold.World.Furnitures.Components;
 /// Component for entities that can switch between on and off state.
 /// </summary>
 internal class SwitchComponent(string onAnimation = "", string offAnimation = "",
-    string turningOnAnimation = "", string turningOffAnimation = "") :
+    string turningOnAnimation = "", string turningOffAnimation = "",
+    string abortTurningOnAnimation = "", string abortTurningOffAnimation = "") :
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), ISwitch
 {
     public event EventHandler? StateChanged;
+    public event EventHandler<ValueChangedEventArgs<bool>>? StateChanging;
+
+    bool _stateChangeCanGoAhead = false;
 
     bool _isOn = false;
     /// <inheritdoc/>
@@ -34,7 +38,7 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
         if (Parent.CurrentMap is null)
-            throw new InvalidOperationException("Furniture and below needs to be on the map.");
+            throw new InvalidOperationException("Parent needs to be on the map.");
 
         if (IsOn)
             TurnOff();
@@ -52,6 +56,13 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
             // Refuse to act if a turning animation is already playing.
             if (!animatedEntity.IsPlaying)
             {
+                OnStateChanging(true);
+                if (!_stateChangeCanGoAhead)
+                {
+                    animatedEntity.PlayAnimation(abortTurningOnAnimation);
+                    return;
+                }
+
                 // Play turning animation.
                 animatedEntity.PlayAnimation(turningOnAnimation);
 
@@ -64,6 +75,10 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
         }
         else
         {
+            OnStateChanging(true);
+            if (!_stateChangeCanGoAhead)
+                return;
+
             IsOn = true;
         }
     }
@@ -78,6 +93,14 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
             // Refuse to act if a turning animation is already playing.
             if (!animatedEntity.IsPlaying)
             {
+                // Announce IsOn is about to change state.
+                OnStateChanging(false);
+                if (!_stateChangeCanGoAhead)
+                {
+                    animatedEntity.PlayAnimation(abortTurningOffAnimation);
+                    return;
+                }
+
                 // Play turning animation.
                 animatedEntity.PlayAnimation(turningOffAnimation);
 
@@ -90,13 +113,31 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
         }
         else
         {
+            // Announce IsOn is about to change state.
+            OnStateChanging(false);
+            if (!_stateChangeCanGoAhead)
+                return;
+
             IsOn = false;
         }
     }
 
+    /// <summary>
+    /// Stops the <see cref="IsOn"/> state changing when it is about to happen.
+    /// </summary>
+    public void StopStateChanging() =>
+        _stateChangeCanGoAhead = false;
+
     void OnStateChanged()
     {
         StateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    void OnStateChanging(bool desiredIsOnState)
+    {
+        _stateChangeCanGoAhead = true;
+        var args = new ValueChangedEventArgs<bool>(!desiredIsOnState, desiredIsOnState);
+        StateChanging?.Invoke(this, args);
     }
 
     public override void OnAdded(IScreenObject host)
@@ -108,7 +149,9 @@ internal class SwitchComponent(string onAnimation = "", string offAnimation = ""
             if (!animatedEntity.HasAnimation(onAnimation) ||
                 !animatedEntity.HasAnimation(offAnimation) ||
                 !animatedEntity.HasAnimation(turningOnAnimation) ||
-                !animatedEntity.HasAnimation(turningOffAnimation))
+                !animatedEntity.HasAnimation(turningOffAnimation) ||
+                !animatedEntity.HasAnimation(abortTurningOnAnimation) ||
+                !animatedEntity.HasAnimation(abortTurningOffAnimation))
                 throw new InvalidOperationException("Host is missing switch animations.");
 
             animatedEntity.Finished += AnimatedRogueLikeEntity_OnFinished;
