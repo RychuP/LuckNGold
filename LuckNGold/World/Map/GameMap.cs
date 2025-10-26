@@ -2,6 +2,7 @@
 using GoRogue.MapGeneration.ContextComponents;
 using LuckNGold.Generation.Map;
 using LuckNGold.Visuals;
+using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Map.Components;
 using SadRogue.Integration;
 using SadRogue.Integration.Maps;
@@ -13,6 +14,8 @@ namespace LuckNGold.World.Map;
 /// </summary>
 partial class GameMap : RogueLikeMap
 {
+    public event EventHandler? ViewZoomChanged;
+
     // Map width/height
     public const int DefaultWidth = 100;
     public const int DefaultHeight = 60;
@@ -23,9 +26,14 @@ partial class GameMap : RogueLikeMap
     // Effectively current view zoom level
     int _fontSizeMultiplier = 3;
 
-    // TODO: Generation data to be deleted in the future.
-    public IReadOnlyList<Room> Rooms { get; }
+    /// <summary>
+    /// List of paths from generator (available only if debugging is enabled).
+    /// </summary>
     public IReadOnlyList<RoomPath> Paths { get; }
+
+    /// <summary>
+    /// List of sections from generator (available only if debugging is enabled).
+    /// </summary>
     public IReadOnlyList<Section> Sections { get; }
 
     /// <summary>
@@ -56,11 +64,9 @@ partial class GameMap : RogueLikeMap
     public GameMap(GenerationContext context) : base(context.Width, context.Height, 
         null, Enum.GetValues<Layer>().Length - 1, Program.Distance)
     {
-        // TODO Delete this in the future when generation is sorted.
-        // Generated data saved mainly for testing and debugging purposes.
-        Paths = context.GetFirst<ItemList<RoomPath>>().Items;
-        Rooms = context.GetFirst<ItemList<Room>>().Items;
-        Sections = context.GetFirst<ItemList<Section>>().Items;
+        // Save generated data for testing and debugging purposes.
+        Paths = GameScreen.DebugEnabled ? context.GetFirst<ItemList<RoomPath>>().Items : [];
+        Sections = GameScreen.DebugEnabled ? context.GetFirst<ItemList<Section>>().Items : [];
 
         // Create renderer.
         Point viewSize = new(Program.Width / _fontSizeMultiplier,
@@ -89,6 +95,7 @@ partial class GameMap : RogueLikeMap
         DefaultRenderer!.Surface.View = new Rectangle(0, 0, width, height);
         var size = DefaultRenderer.Font.GetFontSize(IFont.Sizes.One) * fontSizeMultiplier;
         DefaultRenderer.FontSize = size;
+        OnViewZoomChanged();
     }
 
     public void ZoomViewIn()
@@ -111,5 +118,10 @@ partial class GameMap : RogueLikeMap
         entity.Position = position;
         entity.IsVisible = false;
         AddEntity(entity);
+    }
+
+    void OnViewZoomChanged()
+    {
+        ViewZoomChanged?.Invoke(this, EventArgs.Empty);
     }
 }

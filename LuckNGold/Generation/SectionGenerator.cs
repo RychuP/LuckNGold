@@ -6,6 +6,7 @@ using LuckNGold.Generation.Decors;
 using LuckNGold.Generation.Furnitures;
 using LuckNGold.Generation.Map;
 using LuckNGold.Visuals.Screens;
+using LuckNGold.World.Common.Enums;
 using LuckNGold.World.Items.Enums;
 using ShaiRandom.Generators;
 
@@ -96,7 +97,7 @@ internal class SectionGenerator() : GenerationStep("Sections",
                 currentSection.Add(currentRoom);
 
                 // Check room branches out to other paths.
-                if (currentRoom.IsStartRoom())
+                if (currentRoom.IsPathStartRoom())
                     sidePathCount += currentRoom.SidePathExits.Count();
 
                 GameScreen.Print($"- Room: {roomIndex++}, Paths: {sidePathCount}");

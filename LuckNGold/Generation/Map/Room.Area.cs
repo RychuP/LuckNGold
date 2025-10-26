@@ -28,11 +28,6 @@ partial class Room
     public Point Position => Area.Position;
 
     /// <summary>
-    /// Corner positions of the room.
-    /// </summary>
-    public Point[] CornerPositions { get; }
-
-    /// <summary>
     /// Calculates position for an adjacent area (new room or probe).
     /// </summary>
     /// <param name="direction">Direction to the area from the center of the room.</param>

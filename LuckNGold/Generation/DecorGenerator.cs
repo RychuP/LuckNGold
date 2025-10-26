@@ -5,7 +5,7 @@ using GoRogue.Random;
 using LuckNGold.Generation.Decors;
 using LuckNGold.Generation.Map;
 using LuckNGold.Primitives;
-using LuckNGold.World.Items.Enums;
+using LuckNGold.World.Common.Enums;
 using ShaiRandom.Generators;
 
 namespace LuckNGold.Generation;
@@ -109,15 +109,16 @@ internal class DecorGenerator() : GenerationStep("Decorators",
             if (room.Width >= 5)
             {
                 var entity = room.GetEntityAt(cornerPosition);
+                var cornerNeighbours = room.GetCornerNeighbours(cornerPosition);
                 for (int j = 0; j < 2; j++)
                 {
-                    var delta =
-                        j == 0 && cornerPosition.Y == room.Area.MinExtentY ? (0, 1) :
-                        j == 0 && cornerPosition.Y == room.Area.MaxExtentY ? (0, -1) :
-                        j == 1 && cornerPosition.X == room.Area.MinExtentX ? (1, 0) :
-                        j == 1 && cornerPosition.X == room.Area.MaxExtentX ? (-1, 0) :
-                        (0, 0);
-                    var neighbourPosition = cornerPosition + delta;
+                    //var delta =
+                    //    j == 0 && cornerPosition.Y == room.Area.MinExtentY ? (0, 1) :
+                    //    j == 0 && cornerPosition.Y == room.Area.MaxExtentY ? (0, -1) :
+                    //    j == 1 && cornerPosition.X == room.Area.MinExtentX ? (1, 0) :
+                    //    j == 1 && cornerPosition.X == room.Area.MaxExtentX ? (-1, 0) :
+                    //    (0, 0);
+                    var neighbourPosition = cornerNeighbours[j];
 
                     if (room.GetEntityAt(neighbourPosition) is null)
                     {

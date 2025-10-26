@@ -1,6 +1,7 @@
 ﻿using GoRogue.Random;
 using LuckNGold.Primitives;
 using LuckNGold.Visuals;
+using LuckNGold.World.Common.Enums;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
 using SadRogue.Integration;

@@ -1,18 +1,9 @@
-﻿using GoRogue.GameFramework;
-using LuckNGold.Generation.Map;
-using LuckNGold.Visuals.Components;
-using LuckNGold.Visuals.Windows;
-using LuckNGold.World.Decors;
-using LuckNGold.World.Furnitures;
-using LuckNGold.World.Furnitures.Enums;
-using LuckNGold.World.Furnitures.Interfaces;
-using LuckNGold.World.Items;
-using LuckNGold.World.Items.Enums;
+﻿using LuckNGold.Visuals.Windows;
+using LuckNGold.World.Common.Interfaces;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
 using SadConsole.Components;
 using SadRogue.Integration;
-using SadRogue.Integration.Keybindings;
 
 namespace LuckNGold.Visuals.Screens;
 
@@ -28,8 +19,10 @@ partial class GameScreen : ScreenObject
     // Window that displays player health, wealth and other stats
     readonly StatusWindow _statusWindow;
 
-    // Keyboard handler for the map and player
-    readonly KeybindingsComponent _keybindingsComponent;
+    // Component that keeps view centered at a target entity.
+    readonly SurfaceComponentFollowTarget _followTargetComponent;
+
+    readonly EntityInfoWindow _entityInfoWindow = new();
 
     /// <summary>
     /// Initializes an instance of <see cref="GameScreen"/> class with default parameters.
@@ -40,25 +33,30 @@ partial class GameScreen : ScreenObject
 
         // Generate the dungeon map.
         Map = GenerateMap(GameMap.DefaultWidth, GameMap.DefaultHeight, 16);
+        Map.ViewZoomChanged += Map_OnViewZoomChanged;
         Children.Add(Map);
 
         // Create the player and place it in the first room of the main path.
         Player = GeneratePlayer();
         Map.AddEntity(Player);
 
-        // Add keyboard handler component.
-        _keybindingsComponent = new CustomKeybindingsComponent(Map, Player);
-        SadComponents.Add(_keybindingsComponent);
+        // Attach event handler to pointer.
+        Pointer.PositionChanged += Pointer_OnPositionChanged;
+
+        // Create keyboard handler components.
+        _playerKeybindingsComponent = new(this);
+        _pointerKeybindingsComponent = new(this);
+        SadComponents.Add(_playerKeybindingsComponent);
 
         // Calculate initial FOV.
         Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
 
         // Create a component that centers view on player as they move.
-        var followTargetComponent = new SurfaceComponentFollowTarget { Target = Player };
-        Map.DefaultRenderer!.SadComponents.Add(followTargetComponent);
+        _followTargetComponent = new SurfaceComponentFollowTarget { Target = Player };
+        Map.DefaultRenderer!.SadComponents.Add(_followTargetComponent);
 
         // Debug screens with various testing info.
-        AddDebugOverlays(followTargetComponent);
+        AddDebugOverlays(_followTargetComponent);
 
         // Create a window to display player's inventory
         var quickAccess = Player.AllComponents.GetFirst<QuickAccessComponent>();
@@ -72,10 +70,8 @@ partial class GameScreen : ScreenObject
         var wallet = Player.AllComponents.GetFirst<WalletComponent>();
         _statusWindow = new StatusWindow(wallet) { Position = (0, 1) };
         Children.Add(_statusWindow);
-    }
 
-    void AddSampleEntities()
-    {
-       
+        // Add a window that displays information about the selected entity.
+        Children.Add(_entityInfoWindow);
     }
 }

@@ -38,7 +38,7 @@ partial class GameScreen
                 gen.AddStep(new MinorPathGenerator());
                 gen.AddStep(new SectionGenerator());
                 gen.AddStep(new ObjectiveGenerator());
-                gen.AddStep(new SamplesGenerator());
+                gen.AddStep(new FirstRoomGenerator());
                 gen.AddStep(new DecorGenerator());
             });
 
@@ -67,14 +67,15 @@ partial class GameScreen
                 else if (entity is Furniture furniture)
                 {
                     map.PlaceFurniture(furniture);
-                    if (furniture is Gate)
+                    if (DebugEnabled && furniture is Gate)
                         gateCount++;
                 }
                 else if (entity is Item item)
                     map.PlaceItem(item);
             }
         }
-        Print($"Gate count: {gateCount}");
+        if (DebugEnabled)
+            Print($"Gate count: {gateCount}");
 
         return map;
     }

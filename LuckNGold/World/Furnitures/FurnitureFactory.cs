@@ -1,9 +1,10 @@
 ﻿using GoRogue.Random;
 using LuckNGold.Generation.Furnitures;
 using LuckNGold.Visuals;
+using LuckNGold.World.Common.Components;
+using LuckNGold.World.Common.Enums;
 using LuckNGold.World.Furnitures.Components;
 using LuckNGold.World.Furnitures.Enums;
-using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
 
@@ -86,6 +87,12 @@ internal class FurnitureFactory
         {
             Name = "Gate"
         };
+
+        var description = "Several horizontal and vertical metal bars bonded together, " +
+            "that form a frame completely blocking the passage. No hinges are visible, however " +
+            "there is a space in the wall that the gate might retract to.";
+        var descriptionComponent = new DescriptionComponent(description);
+        gate.AllComponents.Add(descriptionComponent);
 
         // Add actuator component to operate the gate.
         var actuatorComponent = new ActuatorComponent();

@@ -1,5 +1,6 @@
 ﻿namespace LuckNGold.Generation.Map;
 
+// Properties and methods relating to room contents (entities added to the room).
 partial class Room
 {
     readonly List<Entity> _contents = [];
@@ -38,6 +39,12 @@ partial class Room
     public bool Contains<T>() where T : Entity =>
         Contents.Where(e => e is T).Any();
 
+    /// <summary>
+    /// Gets all entities which are placed on the given Y coordinate.
+    /// </summary>
+    /// <param name="y">Y coordinate of the map.</param>
+    /// <returns>Array of entities found.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public Entity[] GetEntitiesAtY(int y)
     {
         if (y < Bounds.MinExtentY || y > Bounds.MaxExtentY)
@@ -45,9 +52,19 @@ partial class Room
         return [.. Contents.Where(e => e.Position.Y == y)];
     }
 
+    /// <summary>
+    /// Gets an entity at the given position.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns>Entity if found, otherwise null.</returns>
     public Entity? GetEntityAt(Point position) =>
         Contents.Where(e => e.Position == position).FirstOrDefault();
 
+    /// <summary>
+    /// Gets the first found entity of the given type.
+    /// </summary>
+    /// <typeparam name="T">Type of the entity.</typeparam>
+    /// <returns>Entity if found, otherise null.</returns>
     public T? GetEntity<T>() where T : Entity =>
         Contents.Where(e => e is T).FirstOrDefault() as T;
 }

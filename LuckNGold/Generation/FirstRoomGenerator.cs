@@ -6,16 +6,13 @@ using LuckNGold.Generation.Decors;
 using LuckNGold.Generation.Furnitures;
 using LuckNGold.Generation.Items;
 using LuckNGold.Generation.Map;
-using LuckNGold.Tests;
-using LuckNGold.World.Items.Enums;
-using ShaiRandom.Generators;
 
 namespace LuckNGold.Generation;
 
 /// <summary>
-/// Generator that places sample entities in the entrance room of the current level.
+/// Generator that places entities in the first room of the current level.
 /// </summary>
-internal class SamplesGenerator() : GenerationStep("Samples",
+internal class FirstRoomGenerator() : GenerationStep("FirstRoom",
     new ComponentTypeTagPair(typeof(ItemList<Section>), "Sections"))
 {
     protected override IEnumerator<object?> OnPerform(GenerationContext context)
@@ -29,21 +26,16 @@ internal class SamplesGenerator() : GenerationStep("Samples",
         firstRoom.AddEntity(gate);
 
         // Place lever.
-        int cornerIndex = GlobalRandom.DefaultRNG.NextInt(4);
-        var leverPosition = firstRoom.CornerPositions[cornerIndex];
+        var leverPosition = firstRoom.GetRandomCorner();
         var lever = new Lever(leverPosition, gate);
         firstRoom.AddEntity(lever);
 
         // Calculate chest position.
-        Point chestPosition;
-        do
-        {
-            cornerIndex = GlobalRandom.DefaultRNG.NextInt(4);
-            chestPosition = firstRoom.CornerPositions[cornerIndex];
-        }
-        while (chestPosition == leverPosition);
-        chestPosition += cornerIndex == 0 || cornerIndex == 1 ?
-            Direction.Down : Direction.Up;
+        Point cornerPosition;
+        do cornerPosition = firstRoom.GetRandomCorner();
+        while (cornerPosition == leverPosition);
+        var cornerNeighbours = firstRoom.GetCornerNeighbours(cornerPosition);
+        var chestPosition = cornerNeighbours[1];
 
         // Place chest.
         var chest = new Chest(chestPosition);

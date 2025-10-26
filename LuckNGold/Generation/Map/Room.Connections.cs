@@ -12,6 +12,12 @@ partial class Room
     public List<IWallConnection> Connections { get; } = new(4);
 
     /// <summary>
+    /// Directions to the walls from room center.
+    /// </summary>
+    public static Direction[] WallDirections =>
+        AdjacencyRule.Cardinals.DirectionsOfNeighborsCache;
+
+    /// <summary>
     /// Creates a new <see cref="Exit"/> in the given direction.
     /// </summary>
     /// <param name="direction">Direction of the wall where the exit is located.</param>
@@ -90,7 +96,7 @@ partial class Room
     /// </summary>
     public Direction GetRandomAvailableConnection()
     {
-        var availableDirections = Directions.Except(Connections.Select(c => c.Direction));
+        var availableDirections = WallDirections.Except(Connections.Select(c => c.Direction));
         List<Direction> directionPool = [.. availableDirections];
         if (directionPool.Count == 0)
             throw new InvalidOperationException("No available connections left to choose from.");
@@ -122,7 +128,7 @@ partial class Room
     /// Checks if this room is the start room of side paths.
     /// </summary>
     /// <returns>True if the room is a start room of another path, false otherwise.</returns>
-    public bool IsStartRoom() =>
+    public bool IsPathStartRoom() =>
         SidePathExits.Any();
 
     /// <summary>

@@ -3,11 +3,15 @@ Dungeon exploration game in early stages of development. I don't think this will
 
 ## Game Controls:
 1. Arrow keys, numerical, wasd or vi = move
-2. C, Z = zoom in and out
-3. G = pick up
-4. 1 to 0 = use item
-5. Shift + 1 to 0 = drop item
-6. F = interact
+2. G = pick up
+3. 1 to 0 = use item
+4. Shift + 1 to 0 = drop item
+5. F = interact
+
+## Map Controls:
+1. C, Z = zoom in and out
+2. X = turn pointer on and off
+3. F = show entity description (if available)
 
 ## Debug Controls:
 1. Shift + Tilde = Debug console

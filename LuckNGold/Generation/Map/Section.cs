@@ -77,7 +77,7 @@ internal class Section(Gemstone gemstone)
         room.Section = this;
 
         // Check room has any side paths.
-        if (!room.IsStartRoom())
+        if (!room.IsPathStartRoom())
             return;
 
         // Prepare a queue of paths connected to the room from the main path.
@@ -92,7 +92,7 @@ internal class Section(Gemstone gemstone)
             {
                 _rooms.Add(sideRoom);
                 sideRoom.Section = this;
-                if (sideRoom.IsStartRoom())
+                if (sideRoom.IsPathStartRoom())
                     AddPathsToQueue(sideRoom.SidePaths);
             }
         }

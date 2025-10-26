@@ -1,4 +1,4 @@
-﻿namespace LuckNGold.World.Items.Enums;
+﻿namespace LuckNGold.World.Common.Enums;
 
 enum Difficulty
 {

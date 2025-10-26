@@ -2,7 +2,7 @@
 
 namespace LuckNGold.Generation.Map;
 
-// Properties and methods relating to the room size generation and retrieval.
+// Properties and methods relating to the room size.
 partial class Room
 {
     /// <summary>

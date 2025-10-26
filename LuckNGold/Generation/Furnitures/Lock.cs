@@ -1,4 +1,5 @@
 ﻿using LuckNGold.Generation.Items;
+using LuckNGold.World.Common.Enums;
 using LuckNGold.World.Items.Enums;
 
 namespace LuckNGold.Generation.Furnitures;

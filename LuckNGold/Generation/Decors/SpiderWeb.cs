@@ -1,5 +1,5 @@
 ﻿using LuckNGold.Primitives;
-using LuckNGold.World.Items.Enums;
+using LuckNGold.World.Common.Enums;
 
 namespace LuckNGold.Generation.Decors;
 

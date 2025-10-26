@@ -9,12 +9,6 @@ namespace LuckNGold.Generation.Map;
 partial class Room
 {
     /// <summary>
-    /// Wall directions.
-    /// </summary>
-    public static Direction[] Directions =>
-        AdjacencyRule.Cardinals.DirectionsOfNeighborsCache;
-
-    /// <summary>
     /// Number of rooms between this room and the exit room of the section.
     /// </summary>
     public int DistanceToSectionExit { get; set; }
@@ -52,13 +46,7 @@ partial class Room
         Area = new Rectangle(x, y, width, height);
         Bounds = Area.Expand(1, 1);
         Path = parent;
-
-        CornerPositions = [
-            Position,
-            (Area.MaxExtentX, Area.MinExtentY),
-            (Area.MinExtentX, Area.MaxExtentY),
-            (Area.MaxExtentX, Area.MaxExtentY)
-        ];
+        CornerPositions = GetCornerPositions();
     }
 
     /// <summary>
