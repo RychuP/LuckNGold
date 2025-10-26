@@ -10,7 +10,7 @@ Dungeon exploration game in early stages of development. I don't think this will
 
 ## Map Controls:
 1. C, Z = zoom in and out
-2. X = turn pointer on and off
+2. X = look around (turn pointer on and off)
 3. F = show entity description (if available)
 
 ## Debug Controls:

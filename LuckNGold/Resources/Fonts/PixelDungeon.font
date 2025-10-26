@@ -236,7 +236,9 @@
 "Cauldron4" : {"Glyph": 159, "Mirror": 0},
 
 "Pointer1" : {"Glyph": 166, "Mirror": 0},
-"Pointer2" : {"Glyph": 167, "Mirror": 0},
-"Pointer3" : {"Glyph": 168, "Mirror": 0},
-"Pointer4" : {"Glyph": 169, "Mirror": 0},
+"Pointer2" : {"Glyph": 166, "Mirror": 0},
+"Pointer3" : {"Glyph": 167, "Mirror": 0},
+"Pointer4" : {"Glyph": 168, "Mirror": 0},
+"Pointer5" : {"Glyph": 169, "Mirror": 0},
+"Pointer6" : {"Glyph": 169, "Mirror": 0},
 }}
