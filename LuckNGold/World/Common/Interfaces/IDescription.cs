@@ -6,4 +6,5 @@
 internal interface IDescription
 {
     string Description { get; }
+    string StateDescription { get; }
 }

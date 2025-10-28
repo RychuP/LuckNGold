@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BonesDescription" xml:space="preserve">
+    <value>Scattering of bones lying on the floor, a grim testament to the dungeon's past. Skulls stare from empty sockets, while ribs, femurs, and vertebrae lie haphazardly mixed with scraps of rotting cloth and rusted armor.</value>
+  </data>
+  <data name="GateClosedStateDescription" xml:space="preserve">
+    <value>This gate appears to be closed. No hinges are visible, however there is a space in the wall that the gate might retract to.</value>
+  </data>
+  <data name="GateDescription" xml:space="preserve">
+    <value>Horizontal and vertical metal bars bonded together that form a frame intended to completely block the passage.</value>
+  </data>
+  <data name="GateOpenStateDescription" xml:space="preserve">
+    <value>This gate appears to be open. Only a few ends of metal bars are visible in the wall opening where the gate retracted to.</value>
+  </data>
+  <data name="ShacklesDescription" xml:space="preserve">
+    <value>Rusting iron shackles hanging from a heavy iron ring set into the wall. A length of thick, corroded chain trails down from the cuff. The metal is rough and cold to the touch, and the clanking of the empty restraints echoes menacingly in the silence.</value>
+  </data>
+  <data name="SpiderWebDescription" xml:space="preserve">
+    <value>Thick, gray sheets of web hanging from the walls, catching the dim light in a way that suggests a sinister shimmer. Some webs are ancient and dusty, like tattered curtains. Others are freshly spun, glistening with sticky dew and ominously strong.</value>
+  </data>
+  <data name="StepsDownDescription" xml:space="preserve">
+    <value>An opening in the floor revealing a crude, moss-covered staircase leading down. Narrow stone steps are cold and uneven, slick with centuries of grime and cold moisture. A rusted iron handrail offers only a dubious grip as the stairs wind lower into the darkness.</value>
+  </data>
+  <data name="StepsUpDescription" xml:space="preserve">
+    <value>A crumbling stone staircase leading upward. Light from some unknown source filters down from above revealing a sheen of dampness on the slick, cold stones. A rusted iron handrail, covered with a fine layer of grime, offers only a dubious grip as the stairs wind higher into the gloom.</value>
+  </data>
+  <data name="TorchDescription" xml:space="preserve">
+    <value>A pitch-soaked torch jammed into a heavy iron sconce mounted on the wall. It casts a flickering light that dances across the bricks. Long, dancing shadows twist and stretch like phantom figures. A thin plume of dark smoke curls upward, leaving a dark, greasy soot stain on the wall above it.</value>
+  </data>
+</root>

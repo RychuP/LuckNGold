@@ -57,9 +57,11 @@ partial class GameScreen
         if (description.Length == 0)
             return;
 
+        string stateDescription = descriptionComponent.StateDescription;
+
         string name = entity.Name.Length > 0 ? entity.Name : "Entity";
 
-        _entityInfoWindow.ShowDescription(name, description);
+        _entityInfoWindow.ShowDescription(name, description, stateDescription);
         _entityInfoWindow.Position = GetEntityInfoWindowPosition();
 
         _entityInfoWindow.Show();
@@ -72,12 +74,33 @@ partial class GameScreen
 
     Point GetEntityInfoWindowPosition()
     {
-        var pointerPosition = Pointer.Position + Direction.Down 
-            - Map.DefaultRenderer!.Surface.ViewPosition;
-        var translatedPointerPosition = pointerPosition.TranslateFont(
+        Point windowPosition;
+
+        var mapViewMidPoint = Map.DefaultRenderer!.Surface.ViewHeight / 2;
+        var pointerPosition = Pointer.Position - Map.DefaultRenderer!.Surface.ViewPosition;
+        bool windowPositionIsBelowEntity = pointerPosition.Y <= mapViewMidPoint;
+
+        if (windowPositionIsBelowEntity)
+        {
+            pointerPosition = Pointer.Position + Direction.Down 
+                - Map.DefaultRenderer!.Surface.ViewPosition;
+            windowPosition = GetWindowPosition(pointerPosition);
+        }
+        else
+        {
+            windowPosition = GetWindowPosition(pointerPosition);
+            windowPosition += (0, -_entityInfoWindow.Height);
+        }
+
+        return windowPosition;
+
+        Point GetWindowPosition(Point pointerPosition)
+        {
+            var translatedPointerPosition = pointerPosition.TranslateFont(
             Map.DefaultRenderer!.FontSize, _entityInfoWindow.FontSize);
-        var delta = (_entityInfoWindow.Width / 2, 0);
-        return translatedPointerPosition - delta;
+            var delta = (_entityInfoWindow.Width / 2, 0);
+            return translatedPointerPosition - delta;
+        }
     }
 
     void Pointer_OnPositionChanged(object? o, ValueChangedEventArgs<Point> e)
@@ -89,9 +112,6 @@ partial class GameScreen
     void Map_OnViewZoomChanged(object? o, EventArgs e)
     {
         if (_entityInfoWindow.IsVisible)
-        {
-            //_entityInfoWindow.Position = GetEntityInfoWindowPosition();
             HideEntityInfo();
-        }
     }
 }

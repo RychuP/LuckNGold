@@ -11,24 +11,34 @@ internal class EntityInfoWindow : Window
     public EntityInfoWindow() : base(DesiredWidth, DesiredHeight)
     {
         Hide();
+        PositionChanged += OnPositionChanged;
     }
 
-    public void ShowDescription(string entityName, string description)
+    public void ShowDescription(string entityName, string description, string stateDescription)
     {
         Surface.Clear();
         Title = $"{entityName} Info";
 
-        var lines = BreakString(description, DesiredWidth, out int maxLineLength);
+        var descriptionLines = BreakString(description, DesiredWidth, 
+            out int descMaxLineLength);
+        var stateDescriptionLines = BreakString(stateDescription, DesiredWidth,
+            out int stateDescMaxLineLength);
+        int maxLineLength = descMaxLineLength > stateDescMaxLineLength ?
+            descMaxLineLength : stateDescMaxLineLength;
         int width = maxLineLength + 2;
-        int height = lines.Count + 4;
+        int height = descriptionLines.Count + 3;
+        if (!string.IsNullOrEmpty(stateDescription))
+            height += stateDescriptionLines.Count + 1;
+
         Resize(width, height, true);
-        PrintLines(lines);
+        PrintLines(descriptionLines, 2);
+        if (!string.IsNullOrEmpty(stateDescription))
+            PrintLines(stateDescriptionLines, stateDescriptionLines.Count + 2);
         DrawBorder();
     }
 
-    void PrintLines(List<string> lines)
+    void PrintLines(List<string> lines, int y)
     {
-        int y = 2;
         foreach (var line in lines)
             Surface.Print(1, y++, line);
     }
@@ -52,7 +62,7 @@ internal class EntityInfoWindow : Window
         List<string> lines = [];
         StringBuilder sb = new();
 
-        string[] articles = { "a", "an", "and", "is", "are", "were", "was", "i", "the" };
+        string[] articles = { "a", "an", "and", "is", "are", "were", "was", "i", "the", "it"};
         string lastWord = "";
 
         for (int i = 0; i < words.Length; i++)
@@ -94,5 +104,31 @@ internal class EntityInfoWindow : Window
             sb.Clear();
             return line.Length;
         }
+    }
+
+    /// <summary>
+    /// Moves position left or right to fit the window within the screen bounds.
+    /// </summary>
+    void OnPositionChanged(object? o, EventArgs e)
+    {
+        if (Width >= Program.Width) return;
+
+        Point horizontalDelta;
+        do
+        {
+            horizontalDelta = Point.Zero;
+
+            if (!Program.Bounds.Contains(Position.WithX(Surface.Area.MaxExtentX)))
+            {
+                horizontalDelta = Point.Zero + Direction.Left;
+            }
+            else if (!Program.Bounds.Contains(Position))
+            {
+                horizontalDelta = Point.Zero + Direction.Right;
+            }
+
+            Position += horizontalDelta;
+        }
+        while (horizontalDelta != Point.Zero);
     }
 }

@@ -9,6 +9,7 @@ static class Program
     public const int Width = 84;
     public const int Height = 60;
 
+    public static Rectangle Bounds => new(0, 0, Width, Height);
     public static IFont Font => Game.Instance.Fonts["PixelDungeon"];
     public static Distance Distance => Distance.Chebyshev;
     public static AdjacencyRule Adjacency => AdjacencyRule.EightWay;

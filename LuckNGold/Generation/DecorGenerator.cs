@@ -112,12 +112,6 @@ internal class DecorGenerator() : GenerationStep("Decorators",
                 var cornerNeighbours = room.GetCornerNeighbours(cornerPosition);
                 for (int j = 0; j < 2; j++)
                 {
-                    //var delta =
-                    //    j == 0 && cornerPosition.Y == room.Area.MinExtentY ? (0, 1) :
-                    //    j == 0 && cornerPosition.Y == room.Area.MaxExtentY ? (0, -1) :
-                    //    j == 1 && cornerPosition.X == room.Area.MinExtentX ? (1, 0) :
-                    //    j == 1 && cornerPosition.X == room.Area.MaxExtentX ? (-1, 0) :
-                    //    (0, 0);
                     var neighbourPosition = cornerNeighbours[j];
 
                     if (room.GetEntityAt(neighbourPosition) is null)

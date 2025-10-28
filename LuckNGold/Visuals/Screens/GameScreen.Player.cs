@@ -17,11 +17,16 @@ partial class GameScreen
         // Create player.
         var player = MonsterFactory.Player();
         var stepsUp = Map.Entities
-            .Where(el => el.Item is RogueLikeEntity e && e.Name.StartsWith("StepsUp"))
+            .Where(el => el.Item is RogueLikeEntity e && e.Name.StartsWith("Steps Up"))
             .Select(el => el.Item as RogueLikeEntity)
             .First() ?? throw new InvalidOperationException("Missing steps up.");
-        var delta = stepsUp.Name.EndsWith("Left") ? Direction.Right : Direction.Left;
-        player.Position = stepsUp.Position + delta;
+
+        // Find floor position next to the steps (assuming here that the steps are placed 
+        // either next to the left or the right wall).
+        var terrain = Map.GetTerrainAt(stepsUp.Position + Direction.Right);
+        player.Position = terrain!.IsWalkable ? terrain.Position :
+            stepsUp.Position + Direction.Left;
+        
         player.PositionChanged += Player_OnPositionChanged;
         return player;
     }

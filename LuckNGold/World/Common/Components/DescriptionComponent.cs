@@ -4,12 +4,9 @@ using SadRogue.Integration.Components;
 
 namespace LuckNGold.World.Common.Components;
 
-internal class DescriptionComponent : RogueLikeComponentBase<RogueLikeEntity>, IDescription
+internal class DescriptionComponent(string description, string stateDescription = "") : 
+    RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IDescription
 {
-    public string Description { get; init; }
-
-    public DescriptionComponent(string description) : base(false, false, false, false)
-    {
-        Description = description;
-    }
+    public string Description { get; init; } = description;
+    public string StateDescription { get; set; } = stateDescription;
 }

@@ -1,6 +1,8 @@
 ﻿using GoRogue.Random;
 using LuckNGold.Primitives;
+using LuckNGold.Resources;
 using LuckNGold.Visuals;
+using LuckNGold.World.Common.Components;
 using LuckNGold.World.Common.Enums;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
@@ -14,20 +16,22 @@ static class DecorFactory
     /// Skull and bone that can be placed on the floor.
     /// </summary>
     public static RogueLikeEntity Skull(HorizontalOrientation orientation) =>
-        GetEntity($"Skull{orientation}");
+        GetEntity($"Skull{orientation}", name: "Skull and Bones",
+            description: Strings.BonesDescription);
 
     /// <summary>
     /// Bones that can be placed on the floor.
     /// </summary>
     public static RogueLikeEntity Bones() =>
-        GetEntityWithRandMirror("Bones");
+        GetEntity("Bones", randomMirror: true, description: Strings.BonesDescription);
 
     /// <summary>
     /// Boxes that can be placed on the floor.
     /// </summary>
     /// <param name="size">Size of the boxes: either large or small.</param>
     public static RogueLikeEntity Boxes(Size size) =>
-        GetEntityWithRandMirror($"Boxes{size}", size == Size.Small);
+        GetEntity($"Boxes{size}", name: $"{size} Boxes",
+            isWalkable: size == Size.Small, randomMirror: true);
 
     /// <summary>
     /// Spider web that can be placed on the floor in the corners of a room.
@@ -36,10 +40,12 @@ static class DecorFactory
     /// <exception cref="ArgumentException">Fired when the wrong type 
     /// of direction is passed.</exception>
     public static RogueLikeEntity SpiderWeb(Size size, HorizontalOrientation orientation) =>
-        GetEntity($"FloorSpiderWeb{size}{orientation}");
+        GetEntity($"FloorSpiderWeb{size}{orientation}", name: "Spider Web",
+            description: Strings.SpiderWebDescription);
 
     public static RogueLikeEntity Shackle(string size) =>
-        GetEntity($"Shackle{size}");
+        GetEntity($"Shackle{size}", name: $"{size} Shackles", 
+            description: Strings.ShacklesDescription);
 
     /// <summary>
     /// Steps leading to upper or lower levels.
@@ -48,11 +54,15 @@ static class DecorFactory
     {
         string direction = leadDown ? "Down" : "Up";
         string face = faceRight ? "Right" : "Left";
-        return GetEntity($"Steps{direction}{face}");
+        string stepsName = $"Steps {direction}";
+        string stepsDescription = leadDown ? Strings.StepsDownDescription :
+            Strings.StepsUpDescription;
+        return GetEntity($"Steps{direction}{face}", name: stepsName, 
+            description: stepsDescription);
     }
 
     public static RogueLikeEntity CandleStand(Size size) =>
-        GetEntity($"CandleStand{size}", false);
+        GetEntity($"CandleStand{size}", name: $"{size} Candle Stand", false);
 
     /// <summary>
     /// Small prop with unknown use.
@@ -61,7 +71,7 @@ static class DecorFactory
         GetEntity("AmberStand");
 
     public static AnimatedRogueLikeEntity Cauldron() =>
-        GetAnimatedEntity("Cauldron", false);
+        GetAnimatedEntity("Cauldron", isWalkable: false);
 
     /// <summary>
     /// Animated torch that can be placed on the side wall of a room.
@@ -69,20 +79,21 @@ static class DecorFactory
     /// <exception cref="ArgumentException">Fired when the wrong type 
     /// of direction is passed.</exception>
     public static AnimatedRogueLikeEntity SideTorch(HorizontalOrientation orientation) =>
-        GetAnimatedEntity($"SideTorch{orientation}");
+        GetAnimatedEntity($"SideTorch{orientation}", "Side Torch", 
+            description: Strings.TorchDescription);
 
     /// <summary>
     /// Animated torch that can be placed on the top wall of a room.
     /// </summary>
     public static AnimatedRogueLikeEntity Torch() =>
-        GetAnimatedEntity("Torch");
+        GetAnimatedEntity("Torch", description: Strings.TorchDescription);
 
     /// <summary>
     /// Free standing, burning candle on a non walkable stand that can be placed on the floor.
     /// </summary>
     /// <param name="size">Size of the stand.</param>
     public static AnimatedRogueLikeEntity Candle(Size size) =>
-        GetAnimatedEntity($"{size}Candle", false);
+        GetAnimatedEntity($"{size}Candle", name: $"{size} Candle", isWalkable: false);
 
     /// <summary>
     /// Animated flag that can be placed on the top wall of a room.
@@ -96,29 +107,46 @@ static class DecorFactory
     {
         var color = isBlue ? "Blue" : "Red";
         bool isWalkable = orientation == VerticalOrientation.Top;
-        return GetAnimatedEntity($"{color}Fountain{orientation}", isWalkable);
+        return GetAnimatedEntity($"{color}Fountain{orientation}", isWalkable: isWalkable);
     }
 
-    static AnimatedRogueLikeEntity GetAnimatedEntity(string animationName, 
-        bool isWalkable = true, string name = "") => 
-        new(animationName, false, GameMap.Layer.Decor, isWalkable) 
-            { Name = name != "" ? name : animationName};
-
-    static RogueLikeEntity GetEntity(string name, bool isWalkable = true)
+    static AnimatedRogueLikeEntity GetAnimatedEntity(string animationName, string name = "",
+        bool isWalkable = true, string description = "", string stateDescription = "")
     {
-        var glyphDef = Program.Font.GetGlyphDefinition(name);
+        var entity = new AnimatedRogueLikeEntity(animationName, false, 
+            GameMap.Layer.Decor, isWalkable) 
+            { Name = name != "" ? name : animationName};
+        AddDescriptionComponent(entity, description, stateDescription);
+        return entity;
+    }
+
+    static RogueLikeEntity GetEntity(string definitionName, string name = "",
+        bool isWalkable = true, bool randomMirror = false,
+        string description = "", string stateDescription = "")
+    {
+        var glyphDef = Program.Font.GetGlyphDefinition(definitionName);
         var appearance = glyphDef.CreateColoredGlyph();
-        return new RogueLikeEntity(appearance, layer: (int)GameMap.Layer.Decor)
+        var entity = new RogueLikeEntity(appearance, layer: (int)GameMap.Layer.Decor)
         {
-            Name = name,
+            Name = !string.IsNullOrEmpty(name) ? name : definitionName,
             IsWalkable = isWalkable
         };
-    }
-    static RogueLikeEntity GetEntityWithRandMirror(string name, bool isWalkable = true)
-    {
-        var mirror = GlobalRandom.DefaultRNG.NextBool() ? 0 : 2;
-        var entity = GetEntity(name, isWalkable);
-        entity.AppearanceSingle!.Appearance.Mirror = (Mirror)mirror;
+        if (randomMirror)
+        {
+            var mirror = GlobalRandom.DefaultRNG.NextBool() ? 0 : 2;
+            entity.AppearanceSingle!.Appearance.Mirror = (Mirror)mirror;
+        }
+        AddDescriptionComponent(entity, description, stateDescription);
         return entity;
+    }
+
+    static void AddDescriptionComponent(RogueLikeEntity entity, string description,
+        string stateDescription)
+    {
+        if (!string.IsNullOrEmpty(description))
+        {
+            var descriptionComponent = new DescriptionComponent(description, stateDescription);
+            entity.AllComponents.Add(descriptionComponent);
+        }
     }
 } 

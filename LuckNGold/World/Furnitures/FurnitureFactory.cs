@@ -1,5 +1,5 @@
 ﻿using GoRogue.Random;
-using LuckNGold.Generation.Furnitures;
+using LuckNGold.Resources;
 using LuckNGold.Visuals;
 using LuckNGold.World.Common.Components;
 using LuckNGold.World.Common.Enums;
@@ -88,10 +88,8 @@ internal class FurnitureFactory
             Name = "Gate"
         };
 
-        var description = "Several horizontal and vertical metal bars bonded together, " +
-            "that form a frame completely blocking the passage. No hinges are visible, however " +
-            "there is a space in the wall that the gate might retract to.";
-        var descriptionComponent = new DescriptionComponent(description);
+        var descriptionComponent = new DescriptionComponent(Strings.GateDescription,
+            Strings.GateClosedStateDescription);
         gate.AllComponents.Add(descriptionComponent);
 
         // Add actuator component to operate the gate.
@@ -103,11 +101,13 @@ internal class FurnitureFactory
         openingComponent.Closed += (o, e) =>
         {
             closedAppearance.CopyAppearanceTo(gate.AppearanceSingle!.Appearance);
+            descriptionComponent.StateDescription = Strings.GateClosedStateDescription;
             gate.IsWalkable = false;
         };
         openingComponent.Opened += (o, e) =>
         {
             openAppearance.CopyAppearanceTo(gate.AppearanceSingle!.Appearance);
+            descriptionComponent.StateDescription = Strings.GateOpenStateDescription;
             gate.IsWalkable = true;
         };
         gate.AllComponents.Add(openingComponent);
