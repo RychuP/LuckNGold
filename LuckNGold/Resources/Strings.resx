@@ -154,7 +154,7 @@
     <value>An opening in the floor revealing a crude, moss-covered #0staircase leading #1down. Narrow stone steps are cold and uneven, slick with centuries of grime and cold moisture. A rusted iron handrail offers only a dubious grip as the stairs wind lower into the darkness.</value>
   </data>
   <data name="StepsUpDescription" xml:space="preserve">
-    <value>A crumbling stone #1staircase leading #2upward. Light from some unknown source filters down from above revealing a sheen of dampness on the slick, cold stones. A rusted iron handrail, covered with a fine layer of grime, offers only a dubious grip as the stairs wind higher into the gloom.</value>
+    <value>A crumbling stone #0staircase leading #1upward. Light from some unknown source filters down from above revealing a sheen of dampness on the slick, cold stones. A rusted iron handrail, covered with a fine layer of grime, offers only a dubious grip as the stairs wind higher into the gloom.</value>
   </data>
   <data name="TorchDescription" xml:space="preserve">
     <value>A pitch-soaked #0torch jammed into a heavy iron sconce mounted on the wall. It casts a flickering light that dances across the bricks. Long, dancing shadows twist and stretch like phantom figures. A thin plume of dark smoke curls upward, leaving a dark, greasy soot stain on the wall above it.</value>

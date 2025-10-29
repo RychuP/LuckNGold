@@ -169,7 +169,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A crumbling stone #1staircase leading #2upward. Light from some unknown source filters down from above revealing a sheen of dampness on the slick, cold stones. A rusted iron handrail, covered with a fine layer of grime, offers only a dubious grip as the stairs wind higher into the gloom..
+        ///   Looks up a localized string similar to A crumbling stone #0staircase leading #1upward. Light from some unknown source filters down from above revealing a sheen of dampness on the slick, cold stones. A rusted iron handrail, covered with a fine layer of grime, offers only a dubious grip as the stairs wind higher into the gloom..
         /// </summary>
         internal static string StepsUpDescription {
             get {
