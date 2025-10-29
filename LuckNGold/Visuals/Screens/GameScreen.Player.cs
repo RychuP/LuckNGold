@@ -1,7 +1,6 @@
 ﻿using LuckNGold.Visuals.Components;
 using LuckNGold.World.Monsters;
 using SadRogue.Integration;
-using SadRogue.Integration.Keybindings;
 
 namespace LuckNGold.Visuals.Screens;
 

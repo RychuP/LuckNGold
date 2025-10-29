@@ -1,30 +1,19 @@
-﻿using SadConsole.UI;
-using SadConsole.UI.Controls;
-
-namespace LuckNGold.Visuals.Screens;
+﻿namespace LuckNGold.Visuals.Screens;
 
 /// <summary>
 /// Screen that is displayed when the game first starts or when player chooses 
 /// to stop the game and go back to the main menu.
 /// </summary>
-internal class MainMenuScreen : ControlsConsole
+internal class MainMenuScreen : MenuScreen
 {
-    readonly RootScreen _root;
-
-    public MainMenuScreen(RootScreen root) : base(Program.Width, Program.Height)
+    public MainMenuScreen(RootScreen root) : base(root)
     {
-        _root = root;
+        // Create title.
+        PrintTitle("-= Luck N' Gold =-");
 
-        string title = "-= Luck N' Gold =-";
-        int x = (Width - title.Length) / 2;
-        Surface.Print(x, 10, title, Color.Yellow);
-
-        string buttonText = "Start Game";
-        var startButton = new Button(buttonText);
-        startButton.Click += (o, e) => _root.CreateNewGame();
-        x = (Width - buttonText.Length - 4) / 2;
-        int y = (Height - startButton.Surface.Height) / 2;
-        startButton.Position = (x, y);
-        Controls.Add(startButton);
+        // Create buttons.
+        AddButton("Start Game", RootScreen.CreateNewGame);
+        AddButton("Settings", RootScreen.Show<SettingsScreen>);
+        AddButton("Exit", RootScreen.Exit);
     }
 }

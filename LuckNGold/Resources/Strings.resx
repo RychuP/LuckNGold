@@ -117,31 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AmberBannerStateDescription" xml:space="preserve">
+    <value>A vibrant field of #1amber occupies the middle, its color suggesting something precious like solidified sunlight or ancient resin.</value>
+  </data>
+  <data name="BannerDescription" xml:space="preserve">
+    <value>A #0banner of heavy cloth hangs on the wall. The fabric is worn and fraying at the edges, giving it the appearance of an ancient relic. The image at its center, now faded, was once something significant, perhaps a symbol of rank, an elemental sigil, or a forgotten noble house. </value>
+  </data>
   <data name="BonesDescription" xml:space="preserve">
-    <value>Scattering of bones lying on the floor, a grim testament to the dungeon's past. Skulls stare from empty sockets, while ribs, femurs, and vertebrae lie haphazardly mixed with scraps of rotting cloth and rusted armor.</value>
+    <value>Scattering of #0bones lying on the floor, a grim testament to the dungeon's past. #0Skulls stare from empty sockets, while ribs, femurs, and vertebrae lie haphazardly mixed with scraps of rotting cloth and rusted armor.</value>
+  </data>
+  <data name="CandleDescription" xml:space="preserve">
+    <value>A lone #0candle flickers atop a wrought-iron stand, casting a small, dancing circle of amber light against the wall. The stand itself is not menacing, but functional. Wisps of smoke curl lazily from the flame, a tiny beacon of warmth and stability in the otherwise cool, still air.</value>
+  </data>
+  <data name="CauldronDescription" xml:space="preserve">
+    <value>An oversized #0iron #0cauldron with a fire crackling merrily beneath it. The contents of the cauldron gurgle and spit in a rhythmic, soothing pattern. A gentle steam rises from the bubbling liquid, swirling lazily and disappearing into the low-lit ceiling.</value>
   </data>
   <data name="GateClosedStateDescription" xml:space="preserve">
-    <value>This gate appears to be closed. No hinges are visible, however there is a space in the wall that the gate might retract to.</value>
+    <value>This #0gate appears to be #1closed. No hinges are visible, however there is a space in the wall that the gate might retract to.</value>
   </data>
   <data name="GateDescription" xml:space="preserve">
     <value>Horizontal and vertical metal bars bonded together that form a frame intended to completely block the passage.</value>
   </data>
   <data name="GateOpenStateDescription" xml:space="preserve">
-    <value>This gate appears to be open. Only a few ends of metal bars are visible in the wall opening where the gate retracted to.</value>
+    <value>This #0gate appears to be #1open. Only a few of metal bars ends are visible in the wall opening where the gate retracted to.</value>
+  </data>
+  <data name="OnyxBannerStateDescription" xml:space="preserve">
+    <value>Large, rectangular piece of pure #1onyx cloth has been meticulously sewn into the fabric, its polished grayness standing in contrast to the light background. </value>
   </data>
   <data name="ShacklesDescription" xml:space="preserve">
-    <value>Rusting iron shackles hanging from a heavy iron ring set into the wall. A length of thick, corroded chain trails down from the cuff. The metal is rough and cold to the touch, and the clanking of the empty restraints echoes menacingly in the silence.</value>
+    <value>Rusting iron #0shackles hanging from a heavy iron ring set into the wall. A length of thick, corroded chain trails down from the cuff. The metal is rough and cold to the touch, and the clanking of the empty restraints echoes menacingly in the silence.</value>
   </data>
   <data name="SpiderWebDescription" xml:space="preserve">
-    <value>Thick, gray sheets of web hanging from the walls, catching the dim light in a way that suggests a sinister shimmer. Some webs are ancient and dusty, like tattered curtains. Others are freshly spun, glistening with sticky dew and ominously strong.</value>
+    <value>Thick, gray sheets of #0web hanging from the walls, catching the dim light in a way that suggests a sinister shimmer. Some webs are ancient and dusty, like tattered curtains. Others are freshly spun, glistening with sticky dew and ominously strong.</value>
   </data>
   <data name="StepsDownDescription" xml:space="preserve">
-    <value>An opening in the floor revealing a crude, moss-covered staircase leading down. Narrow stone steps are cold and uneven, slick with centuries of grime and cold moisture. A rusted iron handrail offers only a dubious grip as the stairs wind lower into the darkness.</value>
+    <value>An opening in the floor revealing a crude, moss-covered #0staircase leading #1down. Narrow stone steps are cold and uneven, slick with centuries of grime and cold moisture. A rusted iron handrail offers only a dubious grip as the stairs wind lower into the darkness.</value>
   </data>
   <data name="StepsUpDescription" xml:space="preserve">
-    <value>A crumbling stone staircase leading upward. Light from some unknown source filters down from above revealing a sheen of dampness on the slick, cold stones. A rusted iron handrail, covered with a fine layer of grime, offers only a dubious grip as the stairs wind higher into the gloom.</value>
+    <value>A crumbling stone #1staircase leading #2upward. Light from some unknown source filters down from above revealing a sheen of dampness on the slick, cold stones. A rusted iron handrail, covered with a fine layer of grime, offers only a dubious grip as the stairs wind higher into the gloom.</value>
   </data>
   <data name="TorchDescription" xml:space="preserve">
-    <value>A pitch-soaked torch jammed into a heavy iron sconce mounted on the wall. It casts a flickering light that dances across the bricks. Long, dancing shadows twist and stretch like phantom figures. A thin plume of dark smoke curls upward, leaving a dark, greasy soot stain on the wall above it.</value>
+    <value>A pitch-soaked #0torch jammed into a heavy iron sconce mounted on the wall. It casts a flickering light that dances across the bricks. Long, dancing shadows twist and stretch like phantom figures. A thin plume of dark smoke curls upward, leaving a dark, greasy soot stain on the wall above it.</value>
   </data>
 </root>

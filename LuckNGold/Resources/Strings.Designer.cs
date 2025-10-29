@@ -61,7 +61,25 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scattering of bones lying on the floor, a grim testament to the dungeon&apos;s past. Skulls stare from empty sockets, while ribs, femurs, and vertebrae lie haphazardly mixed with scraps of rotting cloth and rusted armor..
+        ///   Looks up a localized string similar to A vibrant field of #1amber occupies the middle, its color suggesting something precious like solidified sunlight or ancient resin..
+        /// </summary>
+        internal static string AmberBannerStateDescription {
+            get {
+                return ResourceManager.GetString("AmberBannerStateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A #0banner of heavy cloth hangs on the wall. The fabric is worn and fraying at the edges, giving it the appearance of an ancient relic. The image at its center, now faded, was once something significant, perhaps a symbol of rank, an elemental sigil, or a forgotten noble house. .
+        /// </summary>
+        internal static string BannerDescription {
+            get {
+                return ResourceManager.GetString("BannerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scattering of #0bones lying on the floor, a grim testament to the dungeon&apos;s past. #0Skulls stare from empty sockets, while ribs, femurs, and vertebrae lie haphazardly mixed with scraps of rotting cloth and rusted armor..
         /// </summary>
         internal static string BonesDescription {
             get {
@@ -70,7 +88,25 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This gate appears to be closed. No hinges are visible, however there is a space in the wall that the gate might retract to..
+        ///   Looks up a localized string similar to A lone #0candle flickers atop a wrought-iron stand, casting a small, dancing circle of amber light against the wall. The stand itself is not menacing, but functional. Wisps of smoke curl lazily from the flame, a tiny beacon of warmth and stability in the otherwise cool, still air..
+        /// </summary>
+        internal static string CandleDescription {
+            get {
+                return ResourceManager.GetString("CandleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An oversized #0iron #0cauldron with a fire crackling merrily beneath it. The contents of the cauldron gurgle and spit in a rhythmic, soothing pattern. A gentle steam rises from the bubbling liquid, swirling lazily and disappearing into the low-lit ceiling..
+        /// </summary>
+        internal static string CauldronDescription {
+            get {
+                return ResourceManager.GetString("CauldronDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This #0gate appears to be #1closed. No hinges are visible, however there is a space in the wall that the gate might retract to..
         /// </summary>
         internal static string GateClosedStateDescription {
             get {
@@ -88,7 +124,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This gate appears to be open. Only a few ends of metal bars are visible in the wall opening where the gate retracted to..
+        ///   Looks up a localized string similar to This #0gate appears to be #1open. Only a few of metal bars ends are visible in the wall opening where the gate retracted to..
         /// </summary>
         internal static string GateOpenStateDescription {
             get {
@@ -97,7 +133,16 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rusting iron shackles hanging from a heavy iron ring set into the wall. A length of thick, corroded chain trails down from the cuff. The metal is rough and cold to the touch, and the clanking of the empty restraints echoes menacingly in the silence..
+        ///   Looks up a localized string similar to Large, rectangular piece of pure #1onyx cloth has been meticulously sewn into the fabric, its polished grayness standing in contrast to the light background. .
+        /// </summary>
+        internal static string OnyxBannerStateDescription {
+            get {
+                return ResourceManager.GetString("OnyxBannerStateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rusting iron #0shackles hanging from a heavy iron ring set into the wall. A length of thick, corroded chain trails down from the cuff. The metal is rough and cold to the touch, and the clanking of the empty restraints echoes menacingly in the silence..
         /// </summary>
         internal static string ShacklesDescription {
             get {
@@ -106,7 +151,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thick, gray sheets of web hanging from the walls, catching the dim light in a way that suggests a sinister shimmer. Some webs are ancient and dusty, like tattered curtains. Others are freshly spun, glistening with sticky dew and ominously strong..
+        ///   Looks up a localized string similar to Thick, gray sheets of #0web hanging from the walls, catching the dim light in a way that suggests a sinister shimmer. Some webs are ancient and dusty, like tattered curtains. Others are freshly spun, glistening with sticky dew and ominously strong..
         /// </summary>
         internal static string SpiderWebDescription {
             get {
@@ -115,7 +160,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An opening in the floor revealing a crude, moss-covered staircase leading down. Narrow stone steps are cold and uneven, slick with centuries of grime and cold moisture. A rusted iron handrail offers only a dubious grip as the stairs wind lower into the darkness..
+        ///   Looks up a localized string similar to An opening in the floor revealing a crude, moss-covered #0staircase leading #1down. Narrow stone steps are cold and uneven, slick with centuries of grime and cold moisture. A rusted iron handrail offers only a dubious grip as the stairs wind lower into the darkness..
         /// </summary>
         internal static string StepsDownDescription {
             get {
@@ -124,7 +169,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A crumbling stone staircase leading upward. Light from some unknown source filters down from above revealing a sheen of dampness on the slick, cold stones. A rusted iron handrail, covered with a fine layer of grime, offers only a dubious grip as the stairs wind higher into the gloom..
+        ///   Looks up a localized string similar to A crumbling stone #1staircase leading #2upward. Light from some unknown source filters down from above revealing a sheen of dampness on the slick, cold stones. A rusted iron handrail, covered with a fine layer of grime, offers only a dubious grip as the stairs wind higher into the gloom..
         /// </summary>
         internal static string StepsUpDescription {
             get {
@@ -133,7 +178,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A pitch-soaked torch jammed into a heavy iron sconce mounted on the wall. It casts a flickering light that dances across the bricks. Long, dancing shadows twist and stretch like phantom figures. A thin plume of dark smoke curls upward, leaving a dark, greasy soot stain on the wall above it..
+        ///   Looks up a localized string similar to A pitch-soaked #0torch jammed into a heavy iron sconce mounted on the wall. It casts a flickering light that dances across the bricks. Long, dancing shadows twist and stretch like phantom figures. A thin plume of dark smoke curls upward, leaving a dark, greasy soot stain on the wall above it..
         /// </summary>
         internal static string TorchDescription {
             get {

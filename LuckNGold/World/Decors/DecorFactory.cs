@@ -16,7 +16,7 @@ static class DecorFactory
     /// Skull and bone that can be placed on the floor.
     /// </summary>
     public static RogueLikeEntity Skull(HorizontalOrientation orientation) =>
-        GetEntity($"Skull{orientation}", name: "Skull and Bones",
+        GetEntity($"Skull{orientation}", name: "Bones",
             description: Strings.BonesDescription);
 
     /// <summary>
@@ -44,7 +44,7 @@ static class DecorFactory
             description: Strings.SpiderWebDescription);
 
     public static RogueLikeEntity Shackle(string size) =>
-        GetEntity($"Shackle{size}", name: $"{size} Shackles", 
+        GetEntity($"Shackle{size}", name: "Shackles", 
             description: Strings.ShacklesDescription);
 
     /// <summary>
@@ -62,7 +62,7 @@ static class DecorFactory
     }
 
     public static RogueLikeEntity CandleStand(Size size) =>
-        GetEntity($"CandleStand{size}", name: $"{size} Candle Stand", false);
+        GetEntity($"CandleStand{size}", name: "Candle Stand", false);
 
     /// <summary>
     /// Small prop with unknown use.
@@ -71,7 +71,7 @@ static class DecorFactory
         GetEntity("AmberStand");
 
     public static AnimatedRogueLikeEntity Cauldron() =>
-        GetAnimatedEntity("Cauldron", isWalkable: false);
+        GetAnimatedEntity("Cauldron", isWalkable: false, description: Strings.CauldronDescription);
 
     /// <summary>
     /// Animated torch that can be placed on the side wall of a room.
@@ -79,7 +79,7 @@ static class DecorFactory
     /// <exception cref="ArgumentException">Fired when the wrong type 
     /// of direction is passed.</exception>
     public static AnimatedRogueLikeEntity SideTorch(HorizontalOrientation orientation) =>
-        GetAnimatedEntity($"SideTorch{orientation}", "Side Torch", 
+        GetAnimatedEntity($"SideTorch{orientation}", "Torch", 
             description: Strings.TorchDescription);
 
     /// <summary>
@@ -93,21 +93,33 @@ static class DecorFactory
     /// </summary>
     /// <param name="size">Size of the stand.</param>
     public static AnimatedRogueLikeEntity Candle(Size size) =>
-        GetAnimatedEntity($"{size}Candle", name: $"{size} Candle", isWalkable: false);
+        GetAnimatedEntity($"{size}Candle", name: "Candle", isWalkable: false,
+            description: Strings.CandleDescription);
 
     /// <summary>
     /// Animated flag that can be placed on the top wall of a room.
     /// </summary>
     /// <param name="color">Color of the inner portion of the flag that corresponds 
     /// to the given <see cref="Gemstone"/>.</param>
-    public static AnimatedRogueLikeEntity Flag(Gemstone color) =>
-        GetAnimatedEntity($"{color}Flag");
+    public static AnimatedRogueLikeEntity Flag(Gemstone color)
+    {
+        string colorDescription = color switch
+        {
+            Gemstone.Onyx => Strings.OnyxBannerStateDescription,
+            Gemstone.Amber => Strings.AmberBannerStateDescription,
+            _ => string.Empty
+        };
+
+        return GetAnimatedEntity($"{color}Flag", name: $"{color} Banner",
+            description: Strings.BannerDescription, stateDescription: colorDescription);
+    }
 
     public static AnimatedRogueLikeEntity Fountain(VerticalOrientation orientation, bool isBlue)
     {
         var color = isBlue ? "Blue" : "Red";
         bool isWalkable = orientation == VerticalOrientation.Top;
-        return GetAnimatedEntity($"{color}Fountain{orientation}", isWalkable: isWalkable);
+        return GetAnimatedEntity($"{color}Fountain{orientation}", name: "Fountain",
+            isWalkable: isWalkable);
     }
 
     static AnimatedRogueLikeEntity GetAnimatedEntity(string animationName, string name = "",

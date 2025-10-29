@@ -8,11 +8,13 @@ internal class RootScreen : ScreenObject
     GameScreen? _gameScreen;
     readonly MainMenuScreen _mainMenuScreen;
     readonly GenerationScreen _generationScreen = new();
+    readonly SettingsScreen _settingsScreen;
 
     public RootScreen()
     {
         _mainMenuScreen = new(this);
-        DisplayMainMenu();
+        _settingsScreen = new(this);
+        Show<MainMenuScreen>();
     }
 
     public async void CreateNewGame()
@@ -25,9 +27,24 @@ internal class RootScreen : ScreenObject
         Children.Add(_gameScreen!);
     }
 
-    public void DisplayMainMenu()
+    public static void Exit()
+    {
+        Environment.Exit(0);
+    }
+
+    public static void None() { }
+
+    public void Show<T>() where T : MenuScreen
     {
         Children.Clear();
-        Children.Add(_mainMenuScreen);
+        
+        if (_mainMenuScreen is T) Children.Add(_mainMenuScreen);
+        else if (_settingsScreen is T) Children.Add(_settingsScreen);
+
+        if (Children.Count > 0 && Children[0] is MenuScreen menuScreen)
+        {
+            menuScreen.IsFocused = true;
+            menuScreen.FocusFirstControl();
+        }
     }
 }

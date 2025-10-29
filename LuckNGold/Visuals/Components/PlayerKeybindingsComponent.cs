@@ -8,7 +8,7 @@ using SadRogue.Integration.Keybindings;
 
 namespace LuckNGold.Visuals.Components;
 
-internal class PlayerKeybindingsComponent : KeybindingsComponentBase
+internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
 {
     readonly QuickAccessComponent _quickAccess;
 

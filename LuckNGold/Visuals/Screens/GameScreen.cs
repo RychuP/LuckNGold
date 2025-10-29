@@ -22,6 +22,7 @@ partial class GameScreen : ScreenObject
     // Component that keeps view centered at a target entity.
     readonly SurfaceComponentFollowTarget _followTargetComponent;
 
+    // Window that displays an info about a pointer selected entity.
     readonly EntityInfoWindow _entityInfoWindow = new();
 
     /// <summary>
@@ -73,5 +74,23 @@ partial class GameScreen : ScreenObject
 
         // Add a window that displays information about the selected entity.
         Children.Add(_entityInfoWindow);
+    }
+
+    public bool IsShowingPopUpWindow()
+    {
+        return _entityInfoWindow.IsVisible;
+    }
+
+    public void ClosePopUpWindows()
+    {
+        HideEntityInfo();
+    }
+
+    public void ClosePopUpOrHidePointer()
+    {
+        if (IsShowingPopUpWindow())
+            ClosePopUpWindows();
+        else
+            HidePointer();
     }
 }

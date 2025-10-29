@@ -4,7 +4,7 @@ using SadRogue.Primitives.GridViews;
 
 namespace LuckNGold.Visuals.Components;
 
-internal class PointerKeybindingsComponent : KeybindingsComponentBase
+internal class PointerKeybindingsComponent : GameScreenKeybindingsComponent
 {
     public PointerKeybindingsComponent(GameScreen gameScreen) 
         : base(gameScreen, gameScreen.Pointer)
@@ -15,6 +15,7 @@ internal class PointerKeybindingsComponent : KeybindingsComponentBase
     protected override void AddPointerControls()
     {
         SetAction(Keys.X, GameScreen.HidePointer);
+        SetAction(Keys.Escape, GameScreen.ClosePopUpOrHidePointer);
         SetAction(Keys.F, GameScreen.ToggleEntityInfo);
     }
 

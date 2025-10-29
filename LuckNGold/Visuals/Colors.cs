@@ -4,9 +4,11 @@ namespace LuckNGold.Visuals;
 
 static class Colors
 {
+    // Map colors.
     public static readonly Color Floor = new(61, 37, 59);
     public static readonly Color Wall = new(37, 19, 26);
 
+    // Gemstone colors.
     public static readonly Color Onyx = new(162, 145, 127);
     public static readonly Color Amber = new(222, 146, 80);
     public static readonly Color Emerald = new(102, 166, 74);
@@ -22,6 +24,18 @@ static class Colors
         {Gemstone.Ruby, Ruby },
         {Gemstone.Diamond, Diamond },
     };
+
+    /// <summary>
+    /// Color of the highlighted entity name in the entity info window.
+    /// Command #1.
+    /// </summary>
+    public static readonly Color EntityHighlight = Color.LightGreen;
+
+    /// <summary>
+    /// Color of the highlighted entity state in the entity info window.
+    /// Command #2.
+    /// </summary>
+    public static readonly Color StateHightlight = Color.Yellow;
 
     /// <summary>
     /// Tint of the explored area out of fov.
