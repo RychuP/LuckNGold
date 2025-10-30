@@ -20,5 +20,5 @@ Dungeon exploration game in early stages of development. I don't think this will
 ## Screenshots:
 
 <p align="center" style="margin-bottom: 0px !important;">
-  <img width="800" src="/Screenshots/Gameplay.png" alt="Gameplay" align="center">
+  <img width="800" src="/Screenshots/Dungeon.gif" alt="Gameplay" align="center">
 </p>
