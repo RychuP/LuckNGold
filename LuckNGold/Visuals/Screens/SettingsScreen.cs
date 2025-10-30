@@ -7,7 +7,7 @@ internal class SettingsScreen : MenuScreen
 {
     public const string ArrowButtonsText = "Arrow  Buttons";
     public const string NumpadButtonsText = "Numpad Buttons";
-    public const string WasdButtonsText = "AWSD   Buttons";
+    public const string WasdButtonsText = "WASD   Buttons";
     public const string ViButtonsText = "HJKL   Buttons";
 
     public SettingsScreen(RootScreen rootScreen) : base(rootScreen)

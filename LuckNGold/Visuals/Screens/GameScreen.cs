@@ -11,7 +11,7 @@ namespace LuckNGold.Visuals.Screens;
 /// Main game screen that is displayed once the generation is complete.
 /// It contains the map and various information windows. 
 /// </summary>
-partial class GameScreen : ScreenObject, Screen
+partial class GameScreen : ScreenObject, IScreen
 {
     // Window that shows player's quick access inventory
     readonly QuickAccessWindow _quickAccessWindow;

@@ -136,7 +136,7 @@
     <value>A lone #0candle flickers atop a wrought-iron stand, casting a small, dancing circle of amber light against the wall. The stand itself is not menacing, but functional. Wisps of smoke curl lazily from the flame, a tiny beacon of warmth and stability in the otherwise cool, still air.</value>
   </data>
   <data name="CandleStandDescription" xml:space="preserve">
-    <value>A rusted iron #0candle #0stand, tall and twisted like a skeletal limb, stands silent. A thick layer of congealed, black soot coats its surface, testimony to countless past burnt wicks. The stand is empty, save for a few flakes of ancient, #1dark #1wax stuck stubbornly to the top.</value>
+    <value>A rusted iron #0candle #0stand, tall and twisted like a skeletal limb, stands silent. A thick layer of congealed, black soot coats its surface, testimony to countless past burnt wicks. The stand is #1empty, save for a few flakes of ancient, dark wax stuck stubbornly to the top.</value>
   </data>
   <data name="CauldronDescription" xml:space="preserve">
     <value>An oversized #0iron #0cauldron with a fire crackling merrily beneath it. The contents of the cauldron gurgle and spit in a rhythmic, soothing pattern. A gentle steam rises from the bubbling liquid, swirling lazily and disappearing into the low-lit ceiling.</value>

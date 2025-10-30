@@ -35,9 +35,14 @@ static class Program
                 .SetScreenSize(Width, Height)
                 .ConfigureFonts(FontLoader)
                 .SetStartingScreen<RootScreen>();
-
-        // Setup the engine and start the game
+        
+        // Setup the engine.
         Game.Create(builder);
+
+        // Reduce key pressed delay.
+        Game.Instance.Keyboard.InitialRepeatDelay = 0.2f;
+
+        // Start the game.
         Game.Instance.Run();
         Game.Instance.Dispose();
     }

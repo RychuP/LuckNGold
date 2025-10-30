@@ -133,7 +133,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A rusted iron #0candle #0stand, tall and twisted like a skeletal limb, stands silent. A thick layer of congealed, black soot coats its surface, testimony to countless past burnt wicks. The stand is empty, save for a few flakes of ancient, #1dark #1wax stuck stubbornly to the top..
+        ///   Looks up a localized string similar to A rusted iron #0candle #0stand, tall and twisted like a skeletal limb, stands silent. A thick layer of congealed, black soot coats its surface, testimony to countless past burnt wicks. The stand is #1empty, save for a few flakes of ancient, dark wax stuck stubbornly to the top..
         /// </summary>
         internal static string CandleStandDescription {
             get {

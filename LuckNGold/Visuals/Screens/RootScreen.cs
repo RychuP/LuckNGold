@@ -34,6 +34,10 @@ internal class RootScreen : ScreenObject
         Environment.Exit(0);
     }
 
+    /// <summary>
+    /// Shows screen of selected type.
+    /// </summary>
+    /// <typeparam name="T">Type of screen to be selected.</typeparam>
     public void Show<T>() where T : MenuScreen
     {
         Children.Clear();
@@ -62,7 +66,7 @@ internal class RootScreen : ScreenObject
         }
     }
 
-    IEnumerable<Screen> Screens
+    IEnumerable<IScreen> Screens
     {
         get
         {

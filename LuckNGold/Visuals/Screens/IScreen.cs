@@ -2,7 +2,7 @@
 
 namespace LuckNGold.Visuals.Screens;
 
-interface Screen
+interface IScreen
 {
     void UpdateKeybindings(CheckBox checkBox);
 }

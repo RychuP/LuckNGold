@@ -3,6 +3,9 @@ using System.Text;
 
 namespace LuckNGold.Visuals.Windows;
 
+/// <summary>
+/// Window that display info about an entity selected with a pointer.
+/// </summary>
 internal class EntityInfoWindow : Window
 {
     const int DesiredWidth = 30;

@@ -4,7 +4,7 @@ using SadConsole.UI.Controls;
 
 namespace LuckNGold.Visuals.Screens;
 
-abstract class MenuScreen : ControlsConsole, Screen
+abstract class MenuScreen : ControlsConsole, IScreen
 {
     /// <summary>
     /// Vertical spacing between controls.
