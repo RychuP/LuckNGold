@@ -11,6 +11,7 @@ internal class MovableAppearanceComponent :
 
     Direction _currentDirection = Direction.None;
     int _currentFrame = 0;
+    int _frameChangeDelta = 1;
 
     public MovableAppearanceComponent(ColoredGlyph[] appearances) :
         base(false, false, false, false)
@@ -41,11 +42,21 @@ internal class MovableAppearanceComponent :
         {
             _currentDirection = direction;
             _currentFrame = 0;
+            _frameChangeDelta = 1;
         }
         else
         {
-            if (++_currentFrame > 2)
-                _currentFrame = 0;
+            _currentFrame = _currentFrame + _frameChangeDelta;
+            if (_currentFrame > 2)
+            {
+                _frameChangeDelta = -1;
+                _currentFrame = 1;
+            }
+            else if (_currentFrame < 0)
+            {
+                _frameChangeDelta = 1;
+                _currentFrame = 1;
+            }
         }
 
         int appearanceIndex = _currentDirection.Type switch
