@@ -58,6 +58,7 @@ partial class GameScreen
         // Place entities on the map.
         var rooms = generator.Context.GetFirst<ItemList<Room>>("Rooms").Items;
         int gateCount = 0;
+        int doubleGateCount = 0;
         foreach (var room in rooms)
         {
             foreach (var entity in room.Contents)
@@ -67,15 +68,19 @@ partial class GameScreen
                 else if (entity is Furniture furniture)
                 {
                     map.PlaceFurniture(furniture);
-                    if (DebugEnabled && furniture is Gate)
+                    if (DebugEnabled && furniture is Gate gate)
+                    {
                         gateCount++;
+                        if (gate.IsDouble)
+                            doubleGateCount++;
+                    }
                 }
                 else if (entity is Item item)
                     map.PlaceItem(item);
             }
         }
         if (DebugEnabled)
-            Print($"Gate count: {gateCount}");
+            Print($"Gate count: {gateCount}, of which double: {doubleGateCount}");
 
         return map;
     }
@@ -84,12 +89,12 @@ partial class GameScreen
     {
         if (e.Item is not RogueLikeEntity entity) return;
 
-        if (entity.Name == "Door")
+        if (entity.Name.Contains("Door"))
         {
             // Recalculate FOV when transparency of the door changes.
             entity.TransparencyChanged += RogueLikeEntity_OnTransparencyChanged;
         }
-        else if (entity.Name == "Chest")
+        else if (entity.Name.Contains("Chest"))
         {
             // Save the opening component to the list of openings that need to be closed.
             var openingComponent = entity.AllComponents.GetFirst<OpeningComponent>();
@@ -101,11 +106,11 @@ partial class GameScreen
     {
         if (e.Item is not RogueLikeEntity entity) return;
 
-        if (entity.Name == "Door")
+        if (entity.Name.Contains("Door"))
         {
             entity.TransparencyChanged -= RogueLikeEntity_OnTransparencyChanged;
         }
-        else if (entity.Name == "Chest")
+        else if (entity.Name.Contains("Chest"))
         {
             var openingComponent = entity.AllComponents.GetFirst<OpeningComponent>();
             _openings.Remove(openingComponent);

@@ -63,18 +63,36 @@ namespace LuckNGold.Resources {
         /// <summary>
         ///   Looks up a localized string similar to A vibrant field of #1amber occupies the middle, its color suggesting something precious like solidified sunlight or ancient resin..
         /// </summary>
-        internal static string AmberBannerStateDescription {
+        internal static string AmberBannerDescription {
             get {
-                return ResourceManager.GetString("AmberBannerStateDescription", resourceCulture);
+                return ResourceManager.GetString("AmberBannerDescription", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A #0banner of heavy cloth hangs on the wall. The fabric is worn and fraying at the edges, giving it the appearance of an ancient relic. The image at its center, now faded, was once something significant, perhaps a symbol of rank, an elemental sigil, or a forgotten noble house. .
+        ///   Looks up a localized string similar to A low, squat #0chest of polished, amber-hued metal sits in the shallow alcove, its surface reflecting the faint light with a deep, ornamental sheen. It is adorned with swirling, vine-like etchings, darkened with time and grime, that cover its surface in intricate patterns..
+        /// </summary>
+        internal static string AmberChestDescription {
+            get {
+                return ResourceManager.GetString("AmberChestDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A #0banner of heavy cloth hangs on the wall. The fabric is worn and fraying at the edges, giving it the appearance of an ancient relic. The image at its center was once something significant, perhaps a symbol of rank, an elemental sigil, or a forgotten noble house. .
         /// </summary>
         internal static string BannerDescription {
             get {
                 return ResourceManager.GetString("BannerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Water glows with a strange, #1cool #3blue #1light, casting dancing reflections on the drab walls and filling the space with a soft, ethereal illumination, its purpose shrouded in the quiet mystery of the room..
+        /// </summary>
+        internal static string BlueFountainDescription {
+            get {
+                return ResourceManager.GetString("BlueFountainDescription", resourceCulture);
             }
         }
         
@@ -88,11 +106,38 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A haphazard pile of #0small #0wooden #0boxes nestled against the stone walls. They are all different shapes and sizes, resembling a collection of oversized jewelry boxes or forgotten treasure chests. Some are bound with corroded metal and have intricate carvings, while others are plain and unadorned. A thick layer of dust covers the pile, but a few have been nudged out of place, leaving cleaner patches on the dirty stone floor..
+        /// </summary>
+        internal static string BoxesDescription {
+            get {
+                return ResourceManager.GetString("BoxesDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A sturdy #0wooden #0chest, its once-smooth surface now rough and deeply scarred. Thick iron bands, corroded and dark with rust, wrap around its body, secured with heavy, round studs. .
+        /// </summary>
+        internal static string BrownChestDescription {
+            get {
+                return ResourceManager.GetString("BrownChestDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A lone #0candle flickers atop a wrought-iron stand, casting a small, dancing circle of amber light against the wall. The stand itself is not menacing, but functional. Wisps of smoke curl lazily from the flame, a tiny beacon of warmth and stability in the otherwise cool, still air..
         /// </summary>
         internal static string CandleDescription {
             get {
                 return ResourceManager.GetString("CandleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A rusted iron #0candle #0stand, tall and twisted like a skeletal limb, stands silent. A thick layer of congealed, black soot coats its surface, testimony to countless past burnt wicks. The stand is empty, save for a few flakes of ancient, #1dark #1wax stuck stubbornly to the top..
+        /// </summary>
+        internal static string CandleStandDescription {
+            get {
+                return ResourceManager.GetString("CandleStandDescription", resourceCulture);
             }
         }
         
@@ -106,38 +151,137 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This #0gate appears to be #1closed. No hinges are visible, however there is a space in the wall that the gate might retract to..
+        ///   Looks up a localized string similar to A large #0gate of blackened iron, its heavy bars thick as a man&apos;s arm and twisted into complex, arcane patterns. The rust has eaten away at much of the surface, but where it remains, it speaks of a forgotten craftsmanship. There is no visible latch or handle, only a solid stone arch surrounding the rusted metal, suggesting that whatever #1mechanisms control the gate are either deep within the stone or long since removed..
         /// </summary>
-        internal static string GateClosedStateDescription {
+        internal static string ClosedGateDescription {
             get {
-                return ResourceManager.GetString("GateClosedStateDescription", resourceCulture);
+                return ResourceManager.GetString("ClosedGateDescription", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Horizontal and vertical metal bars bonded together that form a frame intended to completely block the passage..
+        ///   Looks up a localized string similar to A stack of imposing, #0large #0wooden #0crates, their bulk casting deep shadows across the floor. The wood is thick and stained dark with age and moisture, and heavy iron straps, pitted with rust, secure their lids. They appear incredibly heavy and sturdy, as if meant to hold and protect valuable or dangerous cargo for a long journey. Some have a few broken or splintered planks, revealing nothing but darkness within..
         /// </summary>
-        internal static string GateDescription {
+        internal static string CratesDescription {
             get {
-                return ResourceManager.GetString("GateDescription", resourceCulture);
+                return ResourceManager.GetString("CratesDescription", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This #0gate appears to be #1open. Only a few of metal bars ends are visible in the wall opening where the gate retracted to..
+        ///   Looks up a localized string similar to A stark symbol of pure #3diamond #3blue remains clear and untarnished. It is not bright or brilliant, but holds a soft, enduring glow, as if capturing all the faint light and holding it fast. .
         /// </summary>
-        internal static string GateOpenStateDescription {
+        internal static string DiamondBannerDescription {
             get {
-                return ResourceManager.GetString("GateOpenStateDescription", resourceCulture);
+                return ResourceManager.GetString("DiamondBannerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A thick, heavy #0oak #0door, bound with strips of corroded iron, stands stubbornly. The wood is scarred and splintered, evidence of countless attempts to break through it. The iron bindings, once polished, are now pitted with rust, and a simple, heavy iron ring hangs where a handle might be..
+        /// </summary>
+        internal static string DoorDescription {
+            get {
+                return ResourceManager.GetString("DoorDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Across the iron bands, a massive, xxx #1padlock hangs, its shackle thick as a finger. It serves as a stark and silent barrier, leaving the imagination to wander to what, or who, it was meant to keep contained..
+        /// </summary>
+        internal static string DoorLockDescription {
+            get {
+                return ResourceManager.GetString("DoorLockDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Striking #1emerald color in the middle remains strangely vivid, its bright #0green a stark and captivating splash of life in the otherwise quiet and drab chamber. .
+        /// </summary>
+        internal static string EmeraldBannerDescription {
+            get {
+                return ResourceManager.GetString("EmeraldBannerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The lid is slightly ajar, revealing a black, #1empty space within. It holds the scent of dust and the faintest memory of what might have once been inside..
+        /// </summary>
+        internal static string EmptyChestDescription {
+            get {
+                return ResourceManager.GetString("EmptyChestDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An aged #0stone #0fountain, its basin filled with running water that gurgles and splashes softly. The craftsmanship is intricate, depicting ancient, weathered faces carved into the lip of the fountain. They seem to stare out with a quiet, knowing gaze, their features worn smooth by centuries of flowing water..
+        /// </summary>
+        internal static string FountainDescription {
+            get {
+                return ResourceManager.GetString("FountainDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The lid is slightly ajar, revealing a glimpse of the #1treasure within: an initial layer of tarnished coins, half-buried under dust, that only hints at the riches piled beneath. .
+        /// </summary>
+        internal static string FullChestDescription {
+            get {
+                return ResourceManager.GetString("FullChestDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A squat, heavy chest of blackened iron sits heavily in the shallow alcove, its very presence radiating a sense of unyielding permanence. Its surface is a mottled landscape of rust and corrosion, the result of long years in the damp air. .
+        /// </summary>
+        internal static string IronChestDescription {
+            get {
+                return ResourceManager.GetString("IronChestDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A thick, #0heavy #0iron #0lever juts out from the cold floor, its surface rough with corrosion and age. It is set within a solid metal mount, bolted deep into the rock, giving it an appearance of immense strength and permanence. The handle is worn smooth in the center, as if from countless hands pulling it over the centuries. The heavy, unyielding feel of it in your hand and the quiet in the room tell of a potential, but forgotten purpose..
+        /// </summary>
+        internal static string LeverDescription {
+            get {
+                return ResourceManager.GetString("LeverDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Large, rectangular piece of pure #1onyx cloth has been meticulously sewn into the fabric, its polished grayness standing in contrast to the light background. .
         /// </summary>
-        internal static string OnyxBannerStateDescription {
+        internal static string OnyxBannerDescription {
             get {
-                return ResourceManager.GetString("OnyxBannerStateDescription", resourceCulture);
+                return ResourceManager.GetString("OnyxBannerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heavy, blackened bars pulled to the side and the deep grooves in the stone where the #0gate once slid. It did not #1retract completely. A jagged, broken section of the heavy iron bars remains jutting out from the opening, a rusted tooth in the mouth of the stone, a testimony to the violent force that tore it open..
+        /// </summary>
+        internal static string OpenGateDescription {
+            get {
+                return ResourceManager.GetString("OpenGateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Water glows with a #1strange, #2red #1light, casting dancing reflections on the drab walls and coloring the ancient faces in an eerie, unsettling hue. A forgotten story or ritual now only whispered by the endless, red-tinged flow..
+        /// </summary>
+        internal static string RedFountainDescription {
+            get {
+                return ResourceManager.GetString("RedFountainDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rectangular symbol of #1deep #2ruby #2red at its heart remains oddly untouched by decay. It whispers of secrets that no longer have a voice and a story that has been obscured by time, leaving behind only the faintest, yet most captivating, trace..
+        /// </summary>
+        internal static string RubyBannerDescription {
+            get {
+                return ResourceManager.GetString("RubyBannerDescription", resourceCulture);
             }
         }
         
@@ -183,6 +327,15 @@ namespace LuckNGold.Resources {
         internal static string TorchDescription {
             get {
                 return ResourceManager.GetString("TorchDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A tall, #0stone #0urn, its surface worn smooth by the passage of centuries. Though it has the rounded body and flared pedestal of a ceremonial vessel, any ornate details have long since been scrubbed away by time and neglect. It is not merely a pot, but a sentinel to a story that has lost its voice..
+        /// </summary>
+        internal static string UrnDescription {
+            get {
+                return ResourceManager.GetString("UrnDescription", resourceCulture);
             }
         }
     }

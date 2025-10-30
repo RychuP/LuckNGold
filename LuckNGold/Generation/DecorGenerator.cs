@@ -134,9 +134,9 @@ internal class DecorGenerator() : GenerationStep("Decorators",
                                 CheckCountAndAdd(room, new Bones(neighbourPosition));
                                 break;
 
-                            // Amber stand (don't ask me what this is).
+                            // Urn.
                             case 2:
-                                CheckCountAndAdd(room, new AmberStand(neighbourPosition));
+                                CheckCountAndAdd(room, new Urn(neighbourPosition));
                                 break;
 
                             // Small boxes.

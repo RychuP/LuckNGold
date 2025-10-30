@@ -1,4 +1,6 @@
-﻿using LuckNGold.World.Furnitures.Enums;
+﻿using LuckNGold.Generation.Map;
+using LuckNGold.World.Furnitures.Enums;
+using System;
 
 namespace LuckNGold.Generation.Furnitures;
 
@@ -8,18 +10,21 @@ namespace LuckNGold.Generation.Furnitures;
 abstract record Entryway : Furniture
 {
     public DoorOrientation Orientation { get; init; }
+    public bool IsDouble { get; init; }
 
-    public Entryway(Point position, Direction direction) : base(position)
+    public Entryway(Exit exit) : base(exit.Position)
     {
+        IsDouble = exit.IsDouble;
+
         // Establish orientation of the door
-        if (direction.IsHorizontal())
+        if (exit.Direction.IsHorizontal())
         {
-            Orientation = direction == Direction.Left ?
+            Orientation = exit.Direction == Direction.Left ?
                 DoorOrientation.Left : DoorOrientation.Right;
         }
         else
         {
-            Orientation = direction == Direction.Up ?
+            Orientation = exit.Direction == Direction.Up ?
                 DoorOrientation.TopLeft : DoorOrientation.BottomLeft;
         }
     }

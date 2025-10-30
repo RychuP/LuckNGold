@@ -29,9 +29,15 @@ static class DecorFactory
     /// Boxes that can be placed on the floor.
     /// </summary>
     /// <param name="size">Size of the boxes: either large or small.</param>
-    public static RogueLikeEntity Boxes(Size size) =>
-        GetEntity($"Boxes{size}", name: $"{size} Boxes",
-            isWalkable: size == Size.Small, randomMirror: true);
+    public static RogueLikeEntity Boxes(Size size)
+    {
+        string entityDescription = size == Size.Large ? Strings.CratesDescription :
+            Strings.BoxesDescription;
+        string entityName = size == Size.Large ? "Crates" : "Boxes";
+        var entity = GetEntity(entityName, isWalkable: size == Size.Small, 
+            randomMirror: true, description: entityDescription);
+        return entity;
+    }
 
     /// <summary>
     /// Spider web that can be placed on the floor in the corners of a room.
@@ -62,13 +68,11 @@ static class DecorFactory
     }
 
     public static RogueLikeEntity CandleStand(Size size) =>
-        GetEntity($"CandleStand{size}", name: "Candle Stand", false);
+        GetEntity($"CandleStand{size}", name: "Candle Stand", false,
+            description: Strings.CandleStandDescription);
 
-    /// <summary>
-    /// Small prop with unknown use.
-    /// </summary>
-    public static RogueLikeEntity AmberStand() =>
-        GetEntity("AmberStand");
+    public static RogueLikeEntity Urn() =>
+        GetEntity("Urn", description: Strings.UrnDescription);
 
     public static AnimatedRogueLikeEntity Cauldron() =>
         GetAnimatedEntity("Cauldron", isWalkable: false, description: Strings.CauldronDescription);
@@ -97,29 +101,35 @@ static class DecorFactory
             description: Strings.CandleDescription);
 
     /// <summary>
-    /// Animated flag that can be placed on the top wall of a room.
+    /// Animated banner that can be placed on the top wall of a room.
     /// </summary>
-    /// <param name="color">Color of the inner portion of the flag that corresponds 
+    /// <param name="color">Color of the inner portion of the banner that corresponds 
     /// to the given <see cref="Gemstone"/>.</param>
-    public static AnimatedRogueLikeEntity Flag(Gemstone color)
+    public static AnimatedRogueLikeEntity Banner(Gemstone color)
     {
         string colorDescription = color switch
         {
-            Gemstone.Onyx => Strings.OnyxBannerStateDescription,
-            Gemstone.Amber => Strings.AmberBannerStateDescription,
+            Gemstone.Onyx => Strings.OnyxBannerDescription,
+            Gemstone.Amber => Strings.AmberBannerDescription,
+            Gemstone.Emerald => Strings.EmeraldBannerDescription,
+            Gemstone.Ruby => Strings.RubyBannerDescription,
+            Gemstone.Diamond => Strings.DiamondBannerDescription,
             _ => string.Empty
         };
 
-        return GetAnimatedEntity($"{color}Flag", name: $"{color} Banner",
+        return GetAnimatedEntity($"{color}Banner", name: $"{color} Banner",
             description: Strings.BannerDescription, stateDescription: colorDescription);
     }
 
     public static AnimatedRogueLikeEntity Fountain(VerticalOrientation orientation, bool isBlue)
     {
         var color = isBlue ? "Blue" : "Red";
+        string colorDescription = isBlue ? Strings.BlueFountainDescription :
+            Strings.RedFountainDescription;
         bool isWalkable = orientation == VerticalOrientation.Top;
         return GetAnimatedEntity($"{color}Fountain{orientation}", name: "Fountain",
-            isWalkable: isWalkable);
+            isWalkable: isWalkable, description: Strings.FountainDescription,
+            stateDescription: colorDescription);
     }
 
     static AnimatedRogueLikeEntity GetAnimatedEntity(string animationName, string name = "",

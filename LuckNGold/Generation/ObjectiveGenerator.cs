@@ -171,7 +171,7 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
 
         // Place a gate at the room's exit.
         var exit = room.Exits.First();
-        var gate = new Gate(exit.Position, exit.Direction);
+        var gate = new Gate(exit);
         room.AddEntity(gate);
 
         // Select a room for the lever.

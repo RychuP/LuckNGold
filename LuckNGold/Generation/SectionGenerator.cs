@@ -190,8 +190,8 @@ internal class SectionGenerator() : GenerationStep("Sections",
 
     static void CreateFlag(Point position, Room room)
     {
-        var flag = new Flag(position, room.Section!.Gemstone);
-        room.AddEntity(flag);
+        var banner = new Banner(position, room.Section!.Gemstone);
+        room.AddEntity(banner);
     }
 
     /// <summary>
@@ -205,7 +205,7 @@ internal class SectionGenerator() : GenerationStep("Sections",
         var isDouble = exit.IsDouble;
         var doorDirection = exit.Direction;
         var @lock = new Lock((Difficulty)gemstone);
-        var door = new Door(doorPosition, doorDirection, isDouble, @lock);
+        var door = new Door(exit, @lock);
         exit.Room.AddEntity(door);
     }
 

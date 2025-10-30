@@ -2,11 +2,11 @@
 
 namespace LuckNGold.Generation.Decors;
 
-record Flag : Decor
+record Banner : Decor
 {
     public Gemstone Gemstone { get; init; }
 
-    public Flag(Point position, Gemstone gemstone) : base(position)
+    public Banner(Point position, Gemstone gemstone) : base(position)
     {
         Gemstone = gemstone;
     }

@@ -1,6 +1,5 @@
 ﻿using LuckNGold.Generation.Decors;
 using LuckNGold.World.Decors;
-using LuckNGold.World.Items.Enums;
 using SadRogue.Integration;
 
 namespace LuckNGold.World.Map;
@@ -30,7 +29,7 @@ partial class GameMap
     /// <exception cref="ArgumentException"></exception>
     static RogueLikeEntity CreateDecor(Decor decor) =>
         decor is Steps steps ? DecorFactory.Steps(steps.FaceRight, steps.LeadDown) :
-        decor is Flag flag ? DecorFactory.Flag(flag.Gemstone) :
+        decor is Banner banner ? DecorFactory.Banner(banner.Gemstone) :
         decor is SideTorch sideTorch ? DecorFactory.SideTorch(sideTorch.Orientation) :
         decor is Torch ? DecorFactory.Torch() :
         decor is Fountain fountain ? DecorFactory.Fountain(fountain.Orientation, fountain.IsBlue) :
@@ -41,7 +40,7 @@ partial class GameMap
         decor is Candle candle ? DecorFactory.Candle(candle.Size) :
         decor is Skull skull ? DecorFactory.Skull(skull.Orientation) :
         decor is Bones ? DecorFactory.Bones() :
-        decor is AmberStand ? DecorFactory.AmberStand() :
+        decor is Urn ? DecorFactory.Urn() :
         decor is Cauldron ? DecorFactory.Cauldron() :
         throw new ArgumentException("Item not implemented.");
 }

@@ -22,7 +22,7 @@ internal class FirstRoomGenerator() : GenerationStep("FirstRoom",
         var exit = firstRoom.Exits.First();
 
         // Place gate.
-        var gate = new Gate(exit.Position, exit.Direction);
+        var gate = new Gate(exit);
         firstRoom.AddEntity(gate);
 
         // Place lever.

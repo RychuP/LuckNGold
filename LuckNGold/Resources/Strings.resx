@@ -117,32 +117,53 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AmberBannerStateDescription" xml:space="preserve">
+  <data name="AmberBannerDescription" xml:space="preserve">
     <value>A vibrant field of #1amber occupies the middle, its color suggesting something precious like solidified sunlight or ancient resin.</value>
   </data>
   <data name="BannerDescription" xml:space="preserve">
-    <value>A #0banner of heavy cloth hangs on the wall. The fabric is worn and fraying at the edges, giving it the appearance of an ancient relic. The image at its center, now faded, was once something significant, perhaps a symbol of rank, an elemental sigil, or a forgotten noble house. </value>
+    <value>A #0banner of heavy cloth hangs on the wall. The fabric is worn and fraying at the edges, giving it the appearance of an ancient relic. The image at its center was once something significant, perhaps a symbol of rank, an elemental sigil, or a forgotten noble house. </value>
+  </data>
+  <data name="BlueFountainDescription" xml:space="preserve">
+    <value>Water glows with a strange, #1cool #3blue #1light, casting dancing reflections on the drab walls and filling the space with a soft, ethereal illumination, its purpose shrouded in the quiet mystery of the room.</value>
   </data>
   <data name="BonesDescription" xml:space="preserve">
     <value>Scattering of #0bones lying on the floor, a grim testament to the dungeon's past. #0Skulls stare from empty sockets, while ribs, femurs, and vertebrae lie haphazardly mixed with scraps of rotting cloth and rusted armor.</value>
   </data>
+  <data name="BoxesDescription" xml:space="preserve">
+    <value>A haphazard pile of #0small #0wooden #0boxes nestled against the stone walls. They are all different shapes and sizes, resembling a collection of oversized jewelry boxes or forgotten treasure chests. Some are bound with corroded metal and have intricate carvings, while others are plain and unadorned. A thick layer of dust covers the pile, but a few have been nudged out of place, leaving cleaner patches on the dirty stone floor.</value>
+  </data>
   <data name="CandleDescription" xml:space="preserve">
     <value>A lone #0candle flickers atop a wrought-iron stand, casting a small, dancing circle of amber light against the wall. The stand itself is not menacing, but functional. Wisps of smoke curl lazily from the flame, a tiny beacon of warmth and stability in the otherwise cool, still air.</value>
+  </data>
+  <data name="CandleStandDescription" xml:space="preserve">
+    <value>A rusted iron #0candle #0stand, tall and twisted like a skeletal limb, stands silent. A thick layer of congealed, black soot coats its surface, testimony to countless past burnt wicks. The stand is empty, save for a few flakes of ancient, #1dark #1wax stuck stubbornly to the top.</value>
   </data>
   <data name="CauldronDescription" xml:space="preserve">
     <value>An oversized #0iron #0cauldron with a fire crackling merrily beneath it. The contents of the cauldron gurgle and spit in a rhythmic, soothing pattern. A gentle steam rises from the bubbling liquid, swirling lazily and disappearing into the low-lit ceiling.</value>
   </data>
-  <data name="GateClosedStateDescription" xml:space="preserve">
-    <value>This #0gate appears to be #1closed. No hinges are visible, however there is a space in the wall that the gate might retract to.</value>
+  <data name="CratesDescription" xml:space="preserve">
+    <value>A stack of imposing, #0large #0wooden #0crates, their bulk casting deep shadows across the floor. The wood is thick and stained dark with age and moisture, and heavy iron straps, pitted with rust, secure their lids. They appear incredibly heavy and sturdy, as if meant to hold and protect valuable or dangerous cargo for a long journey. Some have a few broken or splintered planks, revealing nothing but darkness within.</value>
   </data>
-  <data name="GateDescription" xml:space="preserve">
-    <value>Horizontal and vertical metal bars bonded together that form a frame intended to completely block the passage.</value>
+  <data name="DiamondBannerDescription" xml:space="preserve">
+    <value>A stark symbol of pure #3diamond #3blue remains clear and untarnished. It is not bright or brilliant, but holds a soft, enduring glow, as if capturing all the faint light and holding it fast. </value>
   </data>
-  <data name="GateOpenStateDescription" xml:space="preserve">
-    <value>This #0gate appears to be #1open. Only a few of metal bars ends are visible in the wall opening where the gate retracted to.</value>
+  <data name="EmeraldBannerDescription" xml:space="preserve">
+    <value>Striking #1emerald color in the middle remains strangely vivid, its bright #0green a stark and captivating splash of life in the otherwise quiet and drab chamber. </value>
   </data>
-  <data name="OnyxBannerStateDescription" xml:space="preserve">
+  <data name="FountainDescription" xml:space="preserve">
+    <value>An aged #0stone #0fountain, its basin filled with running water that gurgles and splashes softly. The craftsmanship is intricate, depicting ancient, weathered faces carved into the lip of the fountain. They seem to stare out with a quiet, knowing gaze, their features worn smooth by centuries of flowing water.</value>
+  </data>
+  <data name="ClosedGateDescription" xml:space="preserve">
+    <value>A large #0gate of blackened iron, its heavy bars thick as a man's arm and twisted into complex, arcane patterns. The rust has eaten away at much of the surface, but where it remains, it speaks of a forgotten craftsmanship. There is no visible latch or handle, only a solid stone arch surrounding the rusted metal, suggesting that whatever #1mechanisms control the gate are either deep within the stone or long since removed.</value>
+  </data>
+  <data name="OnyxBannerDescription" xml:space="preserve">
     <value>Large, rectangular piece of pure #1onyx cloth has been meticulously sewn into the fabric, its polished grayness standing in contrast to the light background. </value>
+  </data>
+  <data name="RedFountainDescription" xml:space="preserve">
+    <value>Water glows with a #1strange, #2red #1light, casting dancing reflections on the drab walls and coloring the ancient faces in an eerie, unsettling hue. A forgotten story or ritual now only whispered by the endless, red-tinged flow.</value>
+  </data>
+  <data name="RubyBannerDescription" xml:space="preserve">
+    <value>Rectangular symbol of #1deep #2ruby #2red at its heart remains oddly untouched by decay. It whispers of secrets that no longer have a voice and a story that has been obscured by time, leaving behind only the faintest, yet most captivating, trace.</value>
   </data>
   <data name="ShacklesDescription" xml:space="preserve">
     <value>Rusting iron #0shackles hanging from a heavy iron ring set into the wall. A length of thick, corroded chain trails down from the cuff. The metal is rough and cold to the touch, and the clanking of the empty restraints echoes menacingly in the silence.</value>
@@ -158,5 +179,35 @@
   </data>
   <data name="TorchDescription" xml:space="preserve">
     <value>A pitch-soaked #0torch jammed into a heavy iron sconce mounted on the wall. It casts a flickering light that dances across the bricks. Long, dancing shadows twist and stretch like phantom figures. A thin plume of dark smoke curls upward, leaving a dark, greasy soot stain on the wall above it.</value>
+  </data>
+  <data name="UrnDescription" xml:space="preserve">
+    <value>A tall, #0stone #0urn, its surface worn smooth by the passage of centuries. Though it has the rounded body and flared pedestal of a ceremonial vessel, any ornate details have long since been scrubbed away by time and neglect. It is not merely a pot, but a sentinel to a story that has lost its voice.</value>
+  </data>
+  <data name="OpenGateDescription" xml:space="preserve">
+    <value>Heavy, blackened bars pulled to the side and the deep grooves in the stone where the #0gate once slid. It did not #1retract completely. A jagged, broken section of the heavy iron bars remains jutting out from the opening, a rusted tooth in the mouth of the stone, a testimony to the violent force that tore it open.</value>
+  </data>
+  <data name="DoorDescription" xml:space="preserve">
+    <value>A thick, heavy #0oak #0door, bound with strips of corroded iron, stands stubbornly. The wood is scarred and splintered, evidence of countless attempts to break through it. The iron bindings, once polished, are now pitted with rust, and a simple, heavy iron ring hangs where a handle might be.</value>
+  </data>
+  <data name="DoorLockDescription" xml:space="preserve">
+    <value>Across the iron bands, a massive, xxx #1padlock hangs, its shackle thick as a finger. It serves as a stark and silent barrier, leaving the imagination to wander to what, or who, it was meant to keep contained.</value>
+  </data>
+  <data name="BrownChestDescription" xml:space="preserve">
+    <value>A sturdy #0wooden #0chest, its once-smooth surface now rough and deeply scarred. Thick iron bands, corroded and dark with rust, wrap around its body, secured with heavy, round studs. </value>
+  </data>
+  <data name="EmptyChestDescription" xml:space="preserve">
+    <value>The lid is slightly ajar, revealing a black, #1empty space within. It holds the scent of dust and the faintest memory of what might have once been inside.</value>
+  </data>
+  <data name="FullChestDescription" xml:space="preserve">
+    <value>The lid is slightly ajar, revealing a glimpse of the #1treasure within: an initial layer of tarnished coins, half-buried under dust, that only hints at the riches piled beneath. </value>
+  </data>
+  <data name="IronChestDescription" xml:space="preserve">
+    <value>A squat, heavy chest of blackened iron sits heavily in the shallow alcove, its very presence radiating a sense of unyielding permanence. Its surface is a mottled landscape of rust and corrosion, the result of long years in the damp air. </value>
+  </data>
+  <data name="AmberChestDescription" xml:space="preserve">
+    <value>A low, squat #0chest of polished, amber-hued metal sits in the shallow alcove, its surface reflecting the faint light with a deep, ornamental sheen. It is adorned with swirling, vine-like etchings, darkened with time and grime, that cover its surface in intricate patterns.</value>
+  </data>
+  <data name="LeverDescription" xml:space="preserve">
+    <value>A thick, #0heavy #0iron #0lever juts out from the cold floor, its surface rough with corrosion and age. It is set within a solid metal mount, bolted deep into the rock, giving it an appearance of immense strength and permanence. The handle is worn smooth in the center, as if from countless hands pulling it over the centuries. The heavy, unyielding feel of it in your hand and the quiet in the room tell of a potential, but forgotten purpose.</value>
   </data>
 </root>

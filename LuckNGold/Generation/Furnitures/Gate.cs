@@ -1,11 +1,12 @@
-﻿namespace LuckNGold.Generation.Furnitures;
+﻿using LuckNGold.Generation.Map;
+
+namespace LuckNGold.Generation.Furnitures;
 
 record Gate : Entryway
 {
     public bool IsOperateRemotely { get; init; }
 
-    public Gate(Point position, Direction direction, bool isOperatedRemotely = true) 
-        : base(position, direction)
+    public Gate(Exit exit, bool isOperatedRemotely = true) : base(exit)
     {
         IsOperateRemotely = isOperatedRemotely;
     }

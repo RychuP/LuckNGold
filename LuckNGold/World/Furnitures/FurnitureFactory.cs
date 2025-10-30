@@ -5,6 +5,7 @@ using LuckNGold.World.Common.Components;
 using LuckNGold.World.Common.Enums;
 using LuckNGold.World.Furnitures.Components;
 using LuckNGold.World.Furnitures.Enums;
+using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
 
@@ -38,6 +39,10 @@ internal class FurnitureFactory
             Name = "Door"
         };
 
+        // Add description component.
+        var descriptionComponent = new DescriptionComponent(Strings.DoorDescription);
+        door.AllComponents.Add(descriptionComponent);
+
         // Add opening component
         var openingComponent = new OpeningComponent();
         openingComponent.Closed += (o, e) =>
@@ -59,6 +64,21 @@ internal class FurnitureFactory
         {
             if (lockDifficulty == Difficulty.None)
                 throw new ArgumentException("Locked door requires a lock difficulty level.");
+
+            // Add lock description.
+            var lockDescription = Strings.DoorLockDescription;
+            string gemstone = $"#1{(Gemstone)lockDifficulty}".ToLower();
+            lockDescription = lockDescription.Replace("xxx", gemstone);
+            descriptionComponent.StateDescription = lockDescription;
+
+            // React to lock component removal.
+            door.AllComponents.ComponentRemoved += (o, e) =>
+            {
+                if (e.Component is LockComponent)
+                {
+                    descriptionComponent.StateDescription = string.Empty;
+                }
+            };
 
             var lockComp = new LockComponent(lockDifficulty);
             door.AllComponents.Add(lockComp);
@@ -88,8 +108,7 @@ internal class FurnitureFactory
             Name = "Gate"
         };
 
-        var descriptionComponent = new DescriptionComponent(Strings.GateDescription,
-            Strings.GateClosedStateDescription);
+        var descriptionComponent = new DescriptionComponent(Strings.ClosedGateDescription);
         gate.AllComponents.Add(descriptionComponent);
 
         // Add actuator component to operate the gate.
@@ -101,13 +120,13 @@ internal class FurnitureFactory
         openingComponent.Closed += (o, e) =>
         {
             closedAppearance.CopyAppearanceTo(gate.AppearanceSingle!.Appearance);
-            descriptionComponent.StateDescription = Strings.GateClosedStateDescription;
+            descriptionComponent.Description = Strings.ClosedGateDescription;
             gate.IsWalkable = false;
         };
         openingComponent.Opened += (o, e) =>
         {
             openAppearance.CopyAppearanceTo(gate.AppearanceSingle!.Appearance);
-            descriptionComponent.StateDescription = Strings.GateOpenStateDescription;
+            descriptionComponent.Description = Strings.OpenGateDescription;
             gate.IsWalkable = true;
         };
         gate.AllComponents.Add(openingComponent);
@@ -121,7 +140,7 @@ internal class FurnitureFactory
     /// <param name="items">Item entities that will drop as loot when chest is open.</param>
     public static AnimatedRogueLikeEntity Chest(List<RogueLikeEntity> items)
     {
-        var chestColor = GlobalRandom.DefaultRNG.NextBool() ? "Brown" : "Bronze";
+        var chestColor = GlobalRandom.DefaultRNG.NextBool() ? "Brown" : "Amber";
 
         string[] animations = [$"{chestColor}ClosedChest",
             $"{chestColor}EmptyOpenChest", $"{chestColor}FullOpenChest",
@@ -130,8 +149,16 @@ internal class FurnitureFactory
         var chest = new AnimatedRogueLikeEntity(animations, animations[0], false,
             GameMap.Layer.Furniture, false)
         {
-            Name = "Chest"
+            Name = $"{chestColor} Chest"
         };
+
+        // Add description component.
+        var description = chestColor == "Brown" ? Strings.BrownChestDescription :
+            Strings.AmberChestDescription;
+        var contentDescription = items.Count > 0 ? Strings.FullChestDescription :
+            Strings.EmptyChestDescription;
+        var descriptionComponent = new DescriptionComponent(description, contentDescription);
+        chest.AllComponents.Add(descriptionComponent);
 
         // Add loot spawner
         var loot = new LootSpawnerComponent(items);
@@ -154,6 +181,7 @@ internal class FurnitureFactory
             openingComponent.OpenAnimation = animations[1];
             openingComponent.OpeningAnimation = animations[3];
             openingComponent.ClosingAnimation = animations[5];
+            descriptionComponent.StateDescription = Strings.EmptyChestDescription;
         };
 
         return chest;
@@ -173,6 +201,11 @@ internal class FurnitureFactory
             Name = "Lever"
         };
 
+        // Add description component.
+        var descriptionComponent = new DescriptionComponent(Strings.LeverDescription);
+        lever.AllComponents.Add(descriptionComponent);
+
+        // Add switch component.
         var switchComponent = new SwitchComponent(animations[1], animations[0],
             animations[3], animations[2], animations[5], animations[4]);
         lever.AllComponents.Add(switchComponent);

@@ -11,7 +11,7 @@ internal class EntityInfoWindow : Window
     
     // Colors for the colored string parser.
     readonly string _foregroundColor;
-    readonly string[] _highlights = ["LightGreen", "Yellow"];
+    readonly string[] _highlights = ["LightGreen", "Yellow", "Tomato", "DeepSkyBlue", ];
 
     public EntityInfoWindow() : base(DesiredWidth, DesiredHeight)
     {
@@ -177,6 +177,8 @@ internal class EntityInfoWindow : Window
                 {
                     '0' => $"[c:r f:{_highlights[0]}]{trimmedWord}[c:u]",
                     '1' => $"[c:r f:{_highlights[1]}]{trimmedWord}[c:u]",
+                    '2' => $"[c:r f:{_highlights[2]}]{trimmedWord}[c:u]",
+                    '3' => $"[c:r f:{_highlights[3]}]{trimmedWord}[c:u]",
                     _ => $"{trimmedWord}",
                 };
 
@@ -198,7 +200,8 @@ internal class EntityInfoWindow : Window
         {
             horizontalDelta = Point.Zero;
 
-            if (!Program.Bounds.Contains(Position.WithX(Surface.Area.MaxExtentX)))
+            Point rightSidePosition = Position + (Width - 1, 0);
+            if (!Program.Bounds.Contains(rightSidePosition))
             {
                 horizontalDelta = Point.Zero + Direction.Left;
             }

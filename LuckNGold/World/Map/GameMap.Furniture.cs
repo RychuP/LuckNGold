@@ -38,13 +38,6 @@ partial class GameMap
             Place(lever);
     }
 
-    RogueLikeEntity Place(Gate gateData)
-    {
-        var gate = FurnitureFactory.Gate(gateData.Orientation);
-        AddEntity(gate, gateData.Position);
-        return gate;
-    }
-
     void Place(Lever leverData)
     {
         var lever = FurnitureFactory.Lever();
@@ -86,6 +79,41 @@ partial class GameMap
 
         var chest = FurnitureFactory.Chest(items);
         AddEntity(chest, chestData.Position);
+    }
+
+    RogueLikeEntity Place(Gate gateData)
+    {
+        var gate = FurnitureFactory.Gate(gateData.Orientation);
+        AddEntity(gate, gateData.Position);
+
+        // Add additional gate to wide corridors.
+        if (gateData.IsDouble)
+        {
+            // Calculate gate orientation.
+            var gateOrientation =
+                gateData.Orientation == DoorOrientation.TopLeft ? DoorOrientation.TopRight :
+                gateData.Orientation == DoorOrientation.BottomLeft ? DoorOrientation.BottomRight :
+                throw new InvalidOperationException("Double gate can only be vertical.");
+
+            // Create 2nd gate.
+            var gate2 = FurnitureFactory.Gate(gateOrientation);
+            AddEntity(gate2, gate.Position + Direction.Right);
+
+            // Pull out actuator components.
+            var actuatorComponent1 = gate.AllComponents.GetFirst<ActuatorComponent>();
+            var actuatorComponent2 = gate2.AllComponents.GetFirst<ActuatorComponent>();
+
+            // Make the 2nd gate dependent of the 1st.
+            actuatorComponent1.StateChanged += (o, e) =>
+            {
+                if (actuatorComponent1.State == ActuatorState.Extended)
+                    actuatorComponent2.Extend();
+                else
+                    actuatorComponent2.Retract();
+            };
+        }
+
+        return gate;
     }
 
     void Place(Door doorData)
