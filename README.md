@@ -18,8 +18,8 @@ Dungeon exploration game in early stages of development. I don't think this will
 1. Ctrl + Tilde = Map layout (zoom out to sync views first)
 
 ## Credits:
-[TheSadRogue.Integration](https://github.com/thesadrogue/TheSadRogue.Integration) game engine.
-[Pixel Dungeon](https://pixel-poem.itch.io/dungeon-assetpuck) asset pack (a selection of sprites from the free version).
+[TheSadRogue.Integration](https://github.com/thesadrogue/TheSadRogue.Integration) game engine.<br>
+[Pixel Dungeon](https://pixel-poem.itch.io/dungeon-assetpuck) asset pack (a selection of sprites from the free version).<br>
 [Chibi](https://opengameart.org/content/16x16-chibi-rpg-character-builder-v3) character builder (only a small sample for main character for now).
 
 ## Screenshots:
