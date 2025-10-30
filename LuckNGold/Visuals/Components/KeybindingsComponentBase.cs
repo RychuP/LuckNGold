@@ -19,10 +19,40 @@ internal class KeybindingsComponentBase : KeybindingsComponent
 
     public KeybindingsComponentBase()
     {
-        // Add motions.
-        SetMotions(ViMotions);
-        SetMotions(ArrowMotions);
-        SetMotions(NumPadAllMotions);
-        SetMotions(WasdMotions);
+        if (Keybindings.ViMotionsEnabled)
+            AddViMotions();
+
+        if (Keybindings.ArrowMotionsEnabled)
+            AddArrowMotions();
+
+        if (Keybindings.NumpadMotionsEnabled)
+            AddNumpadMotions();
+
+        if (Keybindings.WasdMotionsEnabled)
+            AddWasdMotions();
     }
+
+    public void AddViMotions() =>
+        SetMotions(ViMotions);
+
+    public void AddArrowMotions() =>
+        SetMotions(ArrowMotions);
+
+    public void AddNumpadMotions() =>
+        SetMotions(NumPadAllMotions);
+
+    public void AddWasdMotions() =>
+        SetMotions(WasdMotions);
+
+    public void RemoveViMotions() =>
+        RemoveMotions(ViMotions.Select(e => e.binding));
+
+    public void RemoveArrowMotions() =>
+        RemoveMotions(ArrowMotions.Select(e => e.binding));
+
+    public void RemovedNumpadMotions() =>
+        RemoveMotions(NumPadAllMotions.Select(e => e.binding));
+    
+    public void RemoveWasdMotions() =>
+        RemoveMotions(WasdMotions.Select(e => e.binding));
 }

@@ -1,9 +1,9 @@
-﻿using LuckNGold.Visuals.Windows;
-using LuckNGold.World.Common.Interfaces;
+﻿using LuckNGold.Visuals.Components;
+using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
 using SadConsole.Components;
-using SadRogue.Integration;
+using SadConsole.UI.Controls;
 
 namespace LuckNGold.Visuals.Screens;
 
@@ -11,7 +11,7 @@ namespace LuckNGold.Visuals.Screens;
 /// Main game screen that is displayed once the generation is complete.
 /// It contains the map and various information windows. 
 /// </summary>
-partial class GameScreen : ScreenObject
+partial class GameScreen : ScreenObject, Screen
 {
     // Window that shows player's quick access inventory
     readonly QuickAccessWindow _quickAccessWindow;
@@ -24,6 +24,15 @@ partial class GameScreen : ScreenObject
 
     // Window that displays an info about a pointer selected entity.
     readonly EntityInfoWindow _entityInfoWindow = new();
+
+    IEnumerable<GameScreenKeybindingsComponent> KeybindingsComponents
+    {
+        get
+        {
+            yield return _playerKeybindingsComponent;
+            yield return _pointerKeybindingsComponent;
+        }
+    }
 
     /// <summary>
     /// Initializes an instance of <see cref="GameScreen"/> class with default parameters.
@@ -92,5 +101,42 @@ partial class GameScreen : ScreenObject
             ClosePopUpWindows();
         else
             HidePointer();
+    }
+
+    public void UpdateKeybindings(CheckBox checkBox)
+    {
+        foreach (var keybindingsComponent in KeybindingsComponents)
+        {
+            switch (checkBox.Text)
+            {
+                case SettingsScreen.ArrowButtonsText:
+                    if (checkBox.IsSelected)
+                        keybindingsComponent.AddArrowMotions();
+                    else
+                        keybindingsComponent.RemoveArrowMotions();
+                    break;
+
+                case SettingsScreen.NumpadButtonsText:
+                    if (checkBox.IsSelected)
+                        keybindingsComponent.AddNumpadMotions();
+                    else
+                        keybindingsComponent.RemovedNumpadMotions();
+                    break;
+
+                case SettingsScreen.WasdButtonsText:
+                    if (checkBox.IsSelected)
+                        keybindingsComponent.AddWasdMotions();
+                    else
+                        keybindingsComponent.RemoveWasdMotions();
+                    break;
+
+                case SettingsScreen.ViButtonsText:
+                    if (checkBox.IsSelected)
+                        keybindingsComponent.AddViMotions();
+                    else
+                        keybindingsComponent.RemoveViMotions();
+                    break;
+            }
+        }
     }
 }

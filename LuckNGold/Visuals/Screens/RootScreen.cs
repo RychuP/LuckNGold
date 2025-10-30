@@ -1,4 +1,6 @@
-﻿namespace LuckNGold.Visuals.Screens;
+﻿using SadConsole.UI.Controls;
+
+namespace LuckNGold.Visuals.Screens;
 
 /// <summary>
 /// Displays an appropriate screen for the current state of the program.
@@ -32,8 +34,6 @@ internal class RootScreen : ScreenObject
         Environment.Exit(0);
     }
 
-    public static void None() { }
-
     public void Show<T>() where T : MenuScreen
     {
         Children.Clear();
@@ -45,6 +45,34 @@ internal class RootScreen : ScreenObject
         {
             menuScreen.IsFocused = true;
             menuScreen.FocusFirstControl();
+        }
+    }
+
+    public void UpdateKeybindings(CheckBox checkBox)
+    {
+        switch (checkBox.Text)
+        {
+            case SettingsScreen.ArrowButtonsText:
+            case SettingsScreen.NumpadButtonsText:
+            case SettingsScreen.WasdButtonsText:
+            case SettingsScreen.ViButtonsText:
+                foreach (var screen in Screens)
+                    screen.UpdateKeybindings(checkBox);
+                break;
+        }
+    }
+
+    IEnumerable<Screen> Screens
+    {
+        get
+        {
+            yield return _mainMenuScreen;
+            yield return _settingsScreen;
+
+            if (_gameScreen is not null)
+                yield return _gameScreen;
+            else
+                yield break;
         }
     }
 }
