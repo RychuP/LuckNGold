@@ -4,84 +4,116 @@ using SadConsole.UI.Controls;
 
 namespace LuckNGold.Visuals.Screens;
 
-abstract class MenuScreen : ControlsConsole, IScreen
+/// <summary>
+/// Base class to all menu screens.
+/// </summary>
+abstract class MenuScreen() : ControlsConsole(Program.Width, Program.Height)
 {
     /// <summary>
     /// Vertical spacing between controls.
     /// </summary>
     const int RowSpacing = 2;
 
-    protected RootScreen RootScreen { get; init; }
+    const int TitleRow = 10;
 
-    public MenuScreen(RootScreen rootScreen) : base(Program.Width, Program.Height)
-    {
-        RootScreen = rootScreen;
-        SadComponents.Add(new MenuKeybindingsComponent());
-    }
+    /// <summary>
+    /// Name of the <see cref="MenuScreen"/>.
+    /// </summary>
+    public string Name { get; protected set; } = "";
+
+    /// <summary>
+    /// Description of the page to be displayed as button instruction.
+    /// </summary>
+    public string Description { get; protected set; } = "";
+
+    /// <summary>
+    /// Text for the button leading back to this screen.
+    /// </summary>
+    public string BackButtonInstruction => $"Return to {Name} Page";
+
+    public static readonly MenuKeybindingsComponent KeybindingsComponent = new();
+
+    /// <summary>
+    /// Gets an Exit or Back button, whichever is present.
+    /// </summary>
+    public Button? GetReturnButton() => Controls
+        .Where(c => c is Button button && (button.Text == "Back" || button.Text == "Exit"))
+        .FirstOrDefault() as Button;
 
     /// <summary>
     /// Prints screen title.
     /// </summary>
     /// <param name="title">Title of the screen.</param>
-    protected void PrintTitle(string title)
+    protected void PrintTitle(string title, Color? color = null)
     {
+        title = $"-= {title} =-";
         int x = (Width - title.Length) / 2;
-        Surface.Print(x, 10, title, Color.Yellow);
+        Surface.Print(x, TitleRow, title, color ?? Color.Yellow);
+    }
+
+    protected void EraseTitle()
+    {
+        var title = " ".PadLeft(Width);
+        Surface.Print(0, TitleRow, title);
     }
 
     /// <summary>
     /// Prints instructions to focused controls, if required.
     /// </summary>
-    protected void PrintInstruction(string instruction = "")
+    protected void PrintInstruction(string bottomInstruction, string topInstruction = "")
     {
-        if (string.IsNullOrEmpty(instruction))
+        int y = GetFirstRow() - RowSpacing * 2;
+        Print(bottomInstruction);
+
+        if (!string.IsNullOrEmpty(topInstruction))
         {
-            instruction = " ".PadLeft(Width);
+            y -= RowSpacing;
+            Print(topInstruction);
         }
 
-        int x = (Width - instruction.Length) / 2;
-        int y = GetFirstRow() - RowSpacing;
-        Surface.Print(x, y, instruction);
+        void Print(string text)
+        {
+            int x = (Width - text.Length) / 2;
+            Surface.Print(x, y, text, Color.DarkSeaGreen);
+        }
     }
 
-    protected void AddButton(string buttonText, Action buttonAction, string instruction = "")
+    protected void EraseInstructions()
+    {
+        var text = " ".PadLeft(Width);
+        PrintInstruction(text, text);
+    }
+
+    protected void AddButton(string buttonText, Action buttonAction, 
+        string bottomInstruction, string topInstruction = "")
     {
         var button = new Button(buttonText);
         button.Click += (o, e) => buttonAction();
-
-        // Add instruction display.
-        if (!string.IsNullOrEmpty(instruction))
-        {
-            button.Focused += (o, e) => PrintInstruction(instruction);
-            button.Unfocused += (o, e) => PrintInstruction();
-        }
-
-        // Calculate position.
-        int x = (Width - buttonText.Length - 4) / 2;
-        int y = GetNextRow();
-        button.Position = (x, y);
-
-        // Add to controls.
-        Controls.Add(button);
+        AddControl(button, buttonText.Length + 4, bottomInstruction, topInstruction);
     }
 
-    protected void AddCheckBox(string text, bool isSelected, EventHandler handler)
+    protected void AddCheckBox(string text, bool isSelected, EventHandler handler,
+        string bottomInstruction, string topInstruction = "")
     {
         var checkBox = new CheckBox(text) { IsSelected = isSelected };
         checkBox.IsSelectedChanged += handler;
+        AddControl(checkBox, text.Length + 3, bottomInstruction, topInstruction);
+    }
 
+    void AddControl(ControlBase control, int controlWidth,
+        string bottomInstruction, string topInstruction)
+    {
         // Add instruction display.
-        checkBox.Focused += (o, e) => PrintInstruction("At least one set of motions " +
-            "must be selected.");
-        checkBox.Unfocused += (o, e) => PrintInstruction();
+        control.Focused += (o, e) => PrintInstruction(bottomInstruction, topInstruction);
+        control.Unfocused += (o, e) => EraseInstructions();
 
         // Calculate position.
-        int x = (Width - text.Length - 3) / 2;
+        int x = (Width - controlWidth) / 2;
         int y = GetNextRow();
-        checkBox.Position = (x, y);
+        control.Position = (x, y);
 
         // Add to controls.
-        Controls.Add(checkBox);
+        Controls.Add(control);
     }
 
     /// <summary>
@@ -102,43 +134,5 @@ abstract class MenuScreen : ControlsConsole, IScreen
     public void FocusFirstControl()
     {
         Controls.FocusedControl = Controls[0];
-    }
-
-    public void UpdateKeybindings(CheckBox checkBox)
-    {
-        if (SadComponents.Where(c => c is MenuKeybindingsComponent)
-            .FirstOrDefault() is MenuKeybindingsComponent keybindingsComponent)
-        {
-            switch (checkBox.Text)
-            {
-                case SettingsScreen.ArrowButtonsText:
-                    if (checkBox.IsSelected)
-                        keybindingsComponent.AddArrowMotions();
-                    else
-                        keybindingsComponent.RemoveArrowMotions();
-                    break;
-
-                case SettingsScreen.NumpadButtonsText:
-                    if (checkBox.IsSelected)
-                        keybindingsComponent.AddNumpadMotions();
-                    else
-                        keybindingsComponent.RemovedNumpadMotions();
-                    break;
-
-                case SettingsScreen.WasdButtonsText:
-                    if (checkBox.IsSelected)
-                        keybindingsComponent.AddWasdMotions();
-                    else
-                        keybindingsComponent.RemoveWasdMotions();
-                    break;
-
-                case SettingsScreen.ViButtonsText:
-                    if (checkBox.IsSelected)
-                        keybindingsComponent.AddViMotions();
-                    else
-                        keybindingsComponent.RemoveViMotions();
-                    break;
-            }
-        }
     }
 }

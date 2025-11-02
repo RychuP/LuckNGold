@@ -1,5 +1,4 @@
-﻿
-using SadConsole.Instructions;
+﻿using SadConsole.Instructions;
 
 namespace LuckNGold.Visuals.Screens;
 

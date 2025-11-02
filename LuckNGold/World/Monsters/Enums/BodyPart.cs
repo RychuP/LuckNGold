@@ -3,12 +3,13 @@
 namespace LuckNGold.World.Monsters.Enums;
 
 /// <summary>
-/// Parts of a monster entity that can be dressed with <see cref="IWearable"/>.
+/// Body part slots that can hold <see cref="IEquippable"/> items.
 /// </summary>
-/// <remarks>This game will primarily feature humanoid entities.</remarks>
 enum BodyPart
 {
     Head,
-    Chest,
+    Body,
+    LeftHand,
+    RightHand,
     Feet
 }

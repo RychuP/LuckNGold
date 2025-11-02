@@ -5,5 +5,5 @@ static class Keybindings
     public static bool ViMotionsEnabled = true;
     public static bool ArrowMotionsEnabled = true;
     public static bool NumpadMotionsEnabled = true;
-    public static bool WasdMotionsEnabled = true;
+    public static bool FPSMotionsEnabled = true;
 }

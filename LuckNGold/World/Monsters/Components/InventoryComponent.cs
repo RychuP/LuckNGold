@@ -1,5 +1,6 @@
 ﻿using LuckNGold.World.Items.Components;
 using LuckNGold.World.Items.Interfaces;
+using LuckNGold.World.Monsters.Interfaces;
 using SadRogue.Integration;
 
 namespace LuckNGold.World.Monsters.Components;
@@ -32,20 +33,10 @@ internal class InventoryComponent(int capacity) : InventoryBase(capacity)
         if (index < 0 || index >= Items.Count)
             throw new ArgumentOutOfRangeException(nameof(index));
 
-        if (Parent == null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
-
-        if (Parent.CurrentMap == null)
-            throw new InvalidOperationException("Parent has to be on the map.");
-
         var item = Items[index] ?? 
             throw new InvalidOperationException("No item at the given index.");
 
-        if (Remove(item))
-        {
-            item.Position = Parent.Position;
-            Parent.CurrentMap.AddEntity(item);
-        }
+        Drop(item);
     }
 
     /// <summary>
@@ -119,14 +110,8 @@ internal class InventoryComponent(int capacity) : InventoryBase(capacity)
     /// </summary>
     public bool Use(RogueLikeEntity item)
     {
-        if (Parent == null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
-
-        if (Parent.CurrentMap == null)
-            throw new InvalidOperationException("Parent has to be on the map.");
-
         if (!Items.Contains(item))
-            throw new InvalidOperationException("Item needs to be in the inventory to be used.");
+            throw new InvalidOperationException("Item is not present in the inventory.");
 
         return Activate(item);
     }
@@ -135,12 +120,6 @@ internal class InventoryComponent(int capacity) : InventoryBase(capacity)
     {
         if (index < 0 || index >= Items.Count)
             throw new ArgumentOutOfRangeException(nameof(index));
-
-        if (Parent == null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
-
-        if (Parent.CurrentMap == null)
-            throw new InvalidOperationException("Parent has to be on the map.");
 
         var item = Items[index];
         return item is not null && Activate(item);
@@ -163,5 +142,41 @@ internal class InventoryComponent(int capacity) : InventoryBase(capacity)
             return false;
 
         return true;
+    }
+
+    public bool Equip(RogueLikeEntity item)
+    {
+        if (Parent == null)
+            throw new InvalidOperationException("Component needs to be attached to an entity.");
+
+        if (Parent.CurrentMap == null)
+            throw new InvalidOperationException("Parent has to be on the map.");
+
+        if (!Items.Contains(item))
+            throw new InvalidOperationException("Item is not present in the inventory.");
+
+        var equipmentComponent = Parent.AllComponents.GetFirst<IEquipment>();
+
+        // Check item can be equipped.
+        var equippableComponent = item.AllComponents.GetFirstOrDefault<IEquippable>();
+        if (equippableComponent is null) 
+            return false;
+
+        // Try to equip the item.
+        if (equipmentComponent.Equip(item, out RogueLikeEntity? unequippedItem))
+        {
+            // Remove item from inventory.
+            Remove(item);
+
+            // Add unequipped item, if any, to inventory.
+            if (unequippedItem != null)
+            {
+                Add(unequippedItem);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }

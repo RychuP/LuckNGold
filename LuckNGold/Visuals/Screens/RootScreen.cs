@@ -1,4 +1,5 @@
 ﻿using SadConsole.UI.Controls;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LuckNGold.Visuals.Screens;
 
@@ -7,26 +8,45 @@ namespace LuckNGold.Visuals.Screens;
 /// </summary>
 internal class RootScreen : ScreenObject
 {
-    GameScreen? _gameScreen;
-    readonly MainMenuScreen _mainMenuScreen;
-    readonly GenerationScreen _generationScreen = new();
-    readonly SettingsScreen _settingsScreen;
+    public IScreenObject? CurrentScreen { get; private set; }
+    public IScreenObject? PrevScreen { get; private set; }
 
-    public RootScreen()
+    public void Init(object? o, GameHost host)
     {
-        _mainMenuScreen = new(this);
-        _settingsScreen = new(this);
+        Game.Instance.Screen = this;
+
+        // Create screens.
+        Children.Add(new GenerationScreen());
+        Children.Add(new MainMenuScreen());
+        Children.Add(new SettingsScreen());
+        Children.Add(new PauseScreen());
+
+        // Show main menu.
+        HideAll();
         Show<MainMenuScreen>();
     }
 
     public async void CreateNewGame()
     {
-        Children.Clear();
-        _generationScreen.Reset();
-        Children.Add(_generationScreen);
-        await Task.Run(() => _gameScreen = new GameScreen());
-        Children.Clear();
-        Children.Add(_gameScreen!);
+        // Show generation screen.
+        var generationScreen = Get<GenerationScreen>();
+        generationScreen.Reset();
+        Show(generationScreen);
+
+        // Remove old gamescreen.
+        if (TryGet(out GameScreen? oldGameScreen))
+        {
+            Children.Remove(oldGameScreen);
+            if (PrevScreen == oldGameScreen)
+                PrevScreen = Get<MainMenuScreen>();
+        }
+
+        // Run generation.
+        GameScreen? newGameScreen = null;
+        await Task.Run(() => newGameScreen = new GameScreen());
+
+        // Show new game screen.
+        Show(newGameScreen!);
     }
 
     public static void Exit()
@@ -34,49 +54,90 @@ internal class RootScreen : ScreenObject
         Environment.Exit(0);
     }
 
+    public void Show(IScreenObject screen)
+    {
+        if (CurrentScreen == screen) return;
+
+        if (CurrentScreen != null)
+        {
+            Hide(CurrentScreen);
+            PrevScreen = CurrentScreen;
+        }
+
+        if (PrevScreen is MenuScreen)
+        {
+            PrevScreen.SadComponents.Remove(MenuScreen.KeybindingsComponent);
+        }
+
+        CurrentScreen = screen;
+        Children.Add(CurrentScreen);
+        CurrentScreen.IsVisible = true;
+        CurrentScreen.IsEnabled = true;
+        CurrentScreen.IsFocused = true;
+
+        if (CurrentScreen is MenuScreen menuScreen)
+        {
+            menuScreen.FocusFirstControl();
+            menuScreen.SadComponents.Add(MenuScreen.KeybindingsComponent);
+        }
+    }
+
+    static void Hide(IScreenObject screen)
+    {
+        screen.IsVisible = false;
+        screen.IsEnabled = false;
+    }
+
+    void HideAll()
+    {
+        foreach (var screen in Children)
+            Hide(screen);
+    }
+
     /// <summary>
     /// Shows screen of selected type.
     /// </summary>
-    /// <typeparam name="T">Type of screen to be selected.</typeparam>
-    public void Show<T>() where T : MenuScreen
+    public void Show<T>() where T : class, IScreenObject
     {
-        Children.Clear();
-        
-        if (_mainMenuScreen is T) Children.Add(_mainMenuScreen);
-        else if (_settingsScreen is T) Children.Add(_settingsScreen);
-
-        if (Children.Count > 0 && Children[0] is MenuScreen menuScreen)
-        {
-            menuScreen.IsFocused = true;
-            menuScreen.FocusFirstControl();
-        }
+        if (CurrentScreen is T) return;
+        Show(Get<T>());
     }
 
-    public void UpdateKeybindings(CheckBox checkBox)
+    /// <summary>
+    /// Gets screen of selected type.
+    /// </summary>
+    T Get<T>() where T : class, IScreenObject
     {
-        switch (checkBox.Text)
-        {
-            case SettingsScreen.ArrowButtonsText:
-            case SettingsScreen.NumpadButtonsText:
-            case SettingsScreen.WasdButtonsText:
-            case SettingsScreen.ViButtonsText:
-                foreach (var screen in Screens)
-                    screen.UpdateKeybindings(checkBox);
-                break;
-        }
+        return Children.Where(c => c is T).First() as T ??
+            throw new InvalidOperationException("Screen could not be found.");
     }
 
-    IEnumerable<IScreen> Screens
+    bool TryGet<T>([NotNullWhen(true)] out T? screen) where T : class, IScreenObject
     {
-        get
-        {
-            yield return _mainMenuScreen;
-            yield return _settingsScreen;
+        screen = Children.Where(c => c is T).FirstOrDefault() as T;
+        return screen is not null;
+    }
 
-            if (_gameScreen is not null)
-                yield return _gameScreen;
-            else
-                yield break;
+    public void ShowPrevScreen()
+    {
+        if (PrevScreen != null)
+            Show(PrevScreen);
+        else
+            Show<MainMenuScreen>();
+    }
+
+    public string GetBackButtonInstruction() =>
+        "Return to Previous Page";
+
+    public void UpdateKeybindings(ControlBase control)
+    {
+        // Update menu screen keybindings.
+        MenuScreen.KeybindingsComponent.UpdateKeybindings(control);
+
+        // Update game screen keybindings.
+        if (TryGet(out GameScreen? gameScreen))
+        {
+            gameScreen.UpdateKeybindings(control);
         }
     }
 }

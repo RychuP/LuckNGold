@@ -9,6 +9,7 @@ static class Program
     public const int Width = 84;
     public const int Height = 60;
 
+    public static RootScreen RootScreen { get; } = new();
     public static Rectangle Bounds => new(0, 0, Width, Height);
     public static IFont Font => Game.Instance.Fonts["PixelDungeon"];
     public static Distance Distance => Distance.Chebyshev;
@@ -34,13 +35,14 @@ static class Program
         Builder builder = new Builder()
                 .SetScreenSize(Width, Height)
                 .ConfigureFonts(FontLoader)
-                .SetStartingScreen<RootScreen>();
-        
+                .OnStart(RootScreen.Init);
+
         // Setup the engine.
         Game.Create(builder);
 
         // Reduce key pressed delay.
         Game.Instance.Keyboard.InitialRepeatDelay = 0.2f;
+        Game.Instance.Keyboard.RepeatDelay = 0.15f;
 
         // Start the game.
         Game.Instance.Run();

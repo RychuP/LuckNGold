@@ -17,6 +17,9 @@ internal class PlayerFOVController : RogueLikeComponentBase<RogueLikeEntity>
     /// </summary>
     public int FOVRadius { get; init; } = 8;
 
+    /// <summary>
+    /// Initializes an instance of <see cref="PlayerFOVController"/> class.
+    /// </summary>
     public PlayerFOVController()
         : base(false, false, false, false)
     {

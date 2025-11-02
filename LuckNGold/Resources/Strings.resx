@@ -124,7 +124,7 @@
     <value>A #0banner of heavy cloth hangs on the wall. The fabric is worn and fraying at the edges, giving it the appearance of an ancient relic. The image at its center was once something significant, perhaps a symbol of rank, an elemental sigil, or a forgotten noble house. </value>
   </data>
   <data name="BlueFountainDescription" xml:space="preserve">
-    <value>Water glows with a strange, #1cool #3blue #1light, casting dancing reflections on the drab walls and filling the space with a soft, ethereal illumination, its purpose shrouded in the quiet mystery of the room.</value>
+    <value>Water glows with a strange, cool #1blue #1light, casting dancing reflections on the drab walls and filling the space with a soft, ethereal illumination, its purpose shrouded in the quiet mystery of the room.</value>
   </data>
   <data name="BonesDescription" xml:space="preserve">
     <value>Scattering of #0bones lying on the floor, a grim testament to the dungeon's past. #0Skulls stare from empty sockets, while ribs, femurs, and vertebrae lie haphazardly mixed with scraps of rotting cloth and rusted armor.</value>
@@ -145,10 +145,10 @@
     <value>A stack of imposing, #0large #0wooden #0crates, their bulk casting deep shadows across the floor. The wood is thick and stained dark with age and moisture, and heavy iron straps, pitted with rust, secure their lids. They appear incredibly heavy and sturdy, as if meant to hold and protect valuable or dangerous cargo for a long journey. Some have a few broken or splintered planks, revealing nothing but darkness within.</value>
   </data>
   <data name="DiamondBannerDescription" xml:space="preserve">
-    <value>A stark symbol of pure #3diamond #3blue remains clear and untarnished. It is not bright or brilliant, but holds a soft, enduring glow, as if capturing all the faint light and holding it fast. </value>
+    <value>A stark symbol of pure #1diamond blue remains clear and untarnished. It is not bright or brilliant, but holds a soft, enduring glow, as if capturing all the faint light and holding it fast. </value>
   </data>
   <data name="EmeraldBannerDescription" xml:space="preserve">
-    <value>Striking #1emerald color in the middle remains strangely vivid, its bright #0green a stark and captivating splash of life in the otherwise quiet and drab chamber. </value>
+    <value>Striking #1emerald color in the middle remains strangely vivid, its bright green a stark and captivating splash of life in the otherwise quiet and drab chamber. </value>
   </data>
   <data name="FountainDescription" xml:space="preserve">
     <value>An aged #0stone #0fountain, its basin filled with running water that gurgles and splashes softly. The craftsmanship is intricate, depicting ancient, weathered faces carved into the lip of the fountain. They seem to stare out with a quiet, knowing gaze, their features worn smooth by centuries of flowing water.</value>
@@ -160,10 +160,10 @@
     <value>Large, rectangular piece of pure #1onyx cloth has been meticulously sewn into the fabric, its polished grayness standing in contrast to the light background. </value>
   </data>
   <data name="RedFountainDescription" xml:space="preserve">
-    <value>Water glows with a #1strange, #2red #1light, casting dancing reflections on the drab walls and coloring the ancient faces in an eerie, unsettling hue. A forgotten story or ritual now only whispered by the endless, red-tinged flow.</value>
+    <value>Water glows with a strange, #1red #1light, casting dancing reflections on the drab walls and coloring the ancient faces in an eerie, unsettling hue. A forgotten story or ritual now only whispered by the endless, red-tinged flow.</value>
   </data>
   <data name="RubyBannerDescription" xml:space="preserve">
-    <value>Rectangular symbol of #1deep #2ruby #2red at its heart remains oddly untouched by decay. It whispers of secrets that no longer have a voice and a story that has been obscured by time, leaving behind only the faintest, yet most captivating, trace.</value>
+    <value>Rectangular symbol of deep #1ruby red at its heart remains oddly untouched by decay. It whispers of secrets that no longer have a voice and a story that has been obscured by time, leaving behind only the faintest, yet most captivating, trace.</value>
   </data>
   <data name="ShacklesDescription" xml:space="preserve">
     <value>Rusting iron #0shackles hanging from a heavy iron ring set into the wall. A length of thick, corroded chain trails down from the cuff. The metal is rough and cold to the touch, and the clanking of the empty restraints echoes menacingly in the silence.</value>

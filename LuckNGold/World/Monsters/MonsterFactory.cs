@@ -27,25 +27,24 @@ static class MonsterFactory
             new(Color.White, Color.Transparent, 281),
             new(Color.White, Color.Transparent, 282),
         ];
-        player.AllComponents.Add(new MovableAppearanceComponent(appearances));
 
-        // Add inventory component
+        // Add component that updates entity appearance as it moves.
+        player.AllComponents.Add(new MotionAppearanceComponent(appearances));
+
+        // Add inventory component.
         player.AllComponents.Add(new InventoryComponent(20));
 
-        // Add wallet to hold coins
+        // Add wallet to hold coins.
         player.AllComponents.Add(new WalletComponent());
 
-        // Add quick access component displayed at the bottom of the screen
+        // Add quick access component displayed at the bottom of the screen.
         player.AllComponents.Add(new QuickAccessComponent());
 
-        // Add component for updating map's player FOV as they move
+        // Add component for updating map's player FOV as they move.
         player.AllComponents.Add(new PlayerFOVController());
 
-        // Add component that represents the outfit of the player entity
-        player.AllComponents.Add(new OutfitComponent());
-
-        // Add component that represents gear carried in hands by the player entity
-        player.AllComponents.Add(new GearComponent());
+        // Add component that represents the equipment worn and carried.
+        player.AllComponents.Add(new EquipmentComponent());
 
         return player;
     }

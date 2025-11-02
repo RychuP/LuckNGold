@@ -4,16 +4,23 @@ using SadRogue.Integration.Components;
 
 namespace LuckNGold.World.Monsters.Components;
 
-internal class MovableAppearanceComponent : 
-    RogueLikeComponentBase<RogueLikeEntity>, IMovableAppearance
+/// <summary>
+/// Component for entities that animate their appearance to show movement 
+/// as they change their position.
+/// </summary>
+internal class MotionAppearanceComponent : 
+    RogueLikeComponentBase<RogueLikeEntity>, IMotionAppearance
 {
+    /// <summary>
+    /// 12 frames (3 per direction) that contain motion appearances (as per chibi samples).
+    /// </summary>
     public ColoredGlyph[] Appearances { get; }
 
     Direction _currentDirection = Direction.None;
     int _currentFrame = 0;
     int _frameChangeDelta = 1;
 
-    public MovableAppearanceComponent(ColoredGlyph[] appearances) :
+    public MotionAppearanceComponent(ColoredGlyph[] appearances) :
         base(false, false, false, false)
     {
         if (appearances.Length != 12)
@@ -41,7 +48,7 @@ internal class MovableAppearanceComponent :
         if (_currentDirection != direction)
         {
             _currentDirection = direction;
-            _currentFrame = 0;
+            _currentFrame = 1;
             _frameChangeDelta = 1;
         }
         else

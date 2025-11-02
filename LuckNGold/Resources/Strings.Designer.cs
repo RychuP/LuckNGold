@@ -88,7 +88,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Water glows with a strange, #1cool #3blue #1light, casting dancing reflections on the drab walls and filling the space with a soft, ethereal illumination, its purpose shrouded in the quiet mystery of the room..
+        ///   Looks up a localized string similar to Water glows with a strange, cool #1blue #1light, casting dancing reflections on the drab walls and filling the space with a soft, ethereal illumination, its purpose shrouded in the quiet mystery of the room..
         /// </summary>
         internal static string BlueFountainDescription {
             get {
@@ -169,7 +169,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A stark symbol of pure #3diamond #3blue remains clear and untarnished. It is not bright or brilliant, but holds a soft, enduring glow, as if capturing all the faint light and holding it fast. .
+        ///   Looks up a localized string similar to A stark symbol of pure #1diamond blue remains clear and untarnished. It is not bright or brilliant, but holds a soft, enduring glow, as if capturing all the faint light and holding it fast. .
         /// </summary>
         internal static string DiamondBannerDescription {
             get {
@@ -196,7 +196,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Striking #1emerald color in the middle remains strangely vivid, its bright #0green a stark and captivating splash of life in the otherwise quiet and drab chamber. .
+        ///   Looks up a localized string similar to Striking #1emerald color in the middle remains strangely vivid, its bright green a stark and captivating splash of life in the otherwise quiet and drab chamber. .
         /// </summary>
         internal static string EmeraldBannerDescription {
             get {
@@ -268,7 +268,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Water glows with a #1strange, #2red #1light, casting dancing reflections on the drab walls and coloring the ancient faces in an eerie, unsettling hue. A forgotten story or ritual now only whispered by the endless, red-tinged flow..
+        ///   Looks up a localized string similar to Water glows with a strange, #1red #1light, casting dancing reflections on the drab walls and coloring the ancient faces in an eerie, unsettling hue. A forgotten story or ritual now only whispered by the endless, red-tinged flow..
         /// </summary>
         internal static string RedFountainDescription {
             get {
@@ -277,7 +277,7 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rectangular symbol of #1deep #2ruby #2red at its heart remains oddly untouched by decay. It whispers of secrets that no longer have a voice and a story that has been obscured by time, leaving behind only the faintest, yet most captivating, trace..
+        ///   Looks up a localized string similar to Rectangular symbol of deep #1ruby red at its heart remains oddly untouched by decay. It whispers of secrets that no longer have a voice and a story that has been obscured by time, leaving behind only the faintest, yet most captivating, trace..
         /// </summary>
         internal static string RubyBannerDescription {
             get {

@@ -7,32 +7,66 @@ internal class SettingsScreen : MenuScreen
 {
     public const string ArrowButtonsText = "Arrow  Buttons";
     public const string NumpadButtonsText = "Numpad Buttons";
-    public const string WasdButtonsText = "WASD   Buttons";
-    public const string ViButtonsText = "HJKL   Buttons";
+    public const string FPSButtonsText = "FPS    Buttons";
+    public const string ViButtonsText = "VI     Buttons";
 
-    public SettingsScreen(RootScreen rootScreen) : base(rootScreen)
+    const string MotionControlsTitle = "Motion Controls";
+
+    const string MotionControlsInstruction = "Select between Arrow, Numpad, " +
+        "FPS and Vi control schemes";
+
+    const string FourWay = "Four way controls:";
+    const string EightWay = "Eight way controls:";
+    const string MotionCheckBoxInstruction = "At least one set of motions " +
+            "must be selected";
+    const string ArrowCheckBoxInstruction = $"{FourWay} left, right, " +
+        "up and down cardinal directions";
+    const string ViCheckBoxInstruction = $"{EightWay} HJKL cardinal, BNYU diagonal directions";
+    const string NumpadInstruction = $"{EightWay} 2468 cardinal, 1379 diagonal directions";
+    const string FPSInstruction = $"{FourWay} WASD cardinal directions";
+
+    public SettingsScreen() : base()
     {
-        PrintTitle("-= Settings =-");
+        Name = "Settings";
         DisplaySettingButtons();
     }
 
     void DisplaySettingButtons()
     {
+        EraseTitle();
+        PrintTitle(Name);
+
         Controls.Clear();
-        AddButton("Motion Controls", DisplayMotionControlSelectors,
-            "Select between Arrow, Numpad, Wasd and Hjkl control schemes.");
-        AddButton("Back", RootScreen.Show<MainMenuScreen>);
+        AddButton(MotionControlsTitle, DisplayMotionControlSelectors, MotionControlsInstruction);
+        AddButton("Back", Program.RootScreen.ShowPrevScreen, 
+            Program.RootScreen.GetBackButtonInstruction());
+
         FocusFirstControl();
     }
 
     void DisplayMotionControlSelectors()
     {
+        PrintTitle(MotionControlsTitle);
+
         Controls.Clear();
-        AddCheckBox(ArrowButtonsText, true, CheckBox_Motions_OnIsSelectedChanged);
-        AddCheckBox(NumpadButtonsText, true, CheckBox_Motions_OnIsSelectedChanged);
-        AddCheckBox(WasdButtonsText, true, CheckBox_Motions_OnIsSelectedChanged);
-        AddCheckBox(ViButtonsText, true, CheckBox_Motions_OnIsSelectedChanged);
-        AddButton("Back", DisplaySettingButtons);
+        AddCheckBox(ArrowButtonsText, Keybindings.ArrowMotionsEnabled, 
+            CheckBox_Motions_OnIsSelectedChanged,
+            MotionCheckBoxInstruction, ArrowCheckBoxInstruction);
+
+        AddCheckBox(NumpadButtonsText, Keybindings.NumpadMotionsEnabled, 
+            CheckBox_Motions_OnIsSelectedChanged,
+            MotionCheckBoxInstruction, NumpadInstruction);
+
+        AddCheckBox(FPSButtonsText, Keybindings.FPSMotionsEnabled, 
+            CheckBox_Motions_OnIsSelectedChanged,
+            MotionCheckBoxInstruction, FPSInstruction);
+
+        AddCheckBox(ViButtonsText, Keybindings.ViMotionsEnabled, 
+            CheckBox_Motions_OnIsSelectedChanged,
+            MotionCheckBoxInstruction, ViCheckBoxInstruction);
+
+        AddButton("Back", DisplaySettingButtons, BackButtonInstruction);
+
         FocusFirstControl();
     }
 
@@ -63,23 +97,21 @@ internal class SettingsScreen : MenuScreen
         {
             case ArrowButtonsText:
                 Keybindings.ArrowMotionsEnabled = checkBox.IsSelected;
-                RootScreen.UpdateKeybindings(checkBox);
                 break;
 
             case NumpadButtonsText:
                 Keybindings.NumpadMotionsEnabled = checkBox.IsSelected;
-                RootScreen.UpdateKeybindings(checkBox);
                 break;
 
-            case WasdButtonsText:
-                Keybindings.WasdMotionsEnabled = checkBox.IsSelected;
-                RootScreen.UpdateKeybindings(checkBox);
+            case FPSButtonsText:
+                Keybindings.FPSMotionsEnabled = checkBox.IsSelected;
                 break;
 
             case ViButtonsText:
                 Keybindings.ViMotionsEnabled = checkBox.IsSelected;
-                RootScreen.UpdateKeybindings(checkBox);
                 break;
         }
+
+        Program.RootScreen.UpdateKeybindings(checkBox);
     }
 }

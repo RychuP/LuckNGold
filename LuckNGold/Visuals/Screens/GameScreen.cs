@@ -11,7 +11,7 @@ namespace LuckNGold.Visuals.Screens;
 /// Main game screen that is displayed once the generation is complete.
 /// It contains the map and various information windows. 
 /// </summary>
-partial class GameScreen : ScreenObject, IScreen
+partial class GameScreen : ScreenObject
 {
     // Window that shows player's quick access inventory
     readonly QuickAccessWindow _quickAccessWindow;
@@ -39,8 +39,6 @@ partial class GameScreen : ScreenObject, IScreen
     /// </summary>
     public GameScreen()
     {
-        IsFocused = true;
-
         // Generate the dungeon map.
         Map = GenerateMap(GameMap.DefaultWidth, GameMap.DefaultHeight, 16);
         Map.ViewZoomChanged += Map_OnViewZoomChanged;
@@ -103,40 +101,9 @@ partial class GameScreen : ScreenObject, IScreen
             HidePointer();
     }
 
-    public void UpdateKeybindings(CheckBox checkBox)
+    public void UpdateKeybindings(ControlBase control)
     {
         foreach (var keybindingsComponent in KeybindingsComponents)
-        {
-            switch (checkBox.Text)
-            {
-                case SettingsScreen.ArrowButtonsText:
-                    if (checkBox.IsSelected)
-                        keybindingsComponent.AddArrowMotions();
-                    else
-                        keybindingsComponent.RemoveArrowMotions();
-                    break;
-
-                case SettingsScreen.NumpadButtonsText:
-                    if (checkBox.IsSelected)
-                        keybindingsComponent.AddNumpadMotions();
-                    else
-                        keybindingsComponent.RemovedNumpadMotions();
-                    break;
-
-                case SettingsScreen.WasdButtonsText:
-                    if (checkBox.IsSelected)
-                        keybindingsComponent.AddWasdMotions();
-                    else
-                        keybindingsComponent.RemoveWasdMotions();
-                    break;
-
-                case SettingsScreen.ViButtonsText:
-                    if (checkBox.IsSelected)
-                        keybindingsComponent.AddViMotions();
-                    else
-                        keybindingsComponent.RemoveViMotions();
-                    break;
-            }
-        }
+            keybindingsComponent.UpdateKeybindings(control);
     }
 }

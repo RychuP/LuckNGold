@@ -3,7 +3,7 @@
 /// <summary>
 /// It can change its appearance depending on motion.
 /// </summary>
-internal interface IMovableAppearance
+internal interface IMotionAppearance
 {
     void UpdateAppearance(Direction direction);
 }

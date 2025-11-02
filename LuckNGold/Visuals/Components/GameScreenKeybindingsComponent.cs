@@ -36,6 +36,7 @@ abstract class GameScreenKeybindingsComponent : KeybindingsComponentBase
         SetAction(Keys.Z, GameScreen.Map.ZoomViewOut);
     }
 
+
     // Adds keyboard shortcuts to show debug overlay screens.
     void AddDebugControls()
     {
@@ -53,5 +54,10 @@ abstract class GameScreenKeybindingsComponent : KeybindingsComponentBase
             if (GameScreen.MapLayout is null) return;
             GameScreen.MapLayout.IsVisible = !GameScreen.MapLayout.IsVisible;
         });
+    }
+
+    protected override void HandleEscape()
+    {
+        Program.RootScreen.Show<PauseScreen>();
     }
 }

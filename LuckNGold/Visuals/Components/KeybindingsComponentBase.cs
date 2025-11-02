@@ -1,4 +1,6 @@
-﻿using SadConsole.Input;
+﻿using LuckNGold.Visuals.Screens;
+using SadConsole.Input;
+using SadConsole.UI.Controls;
 using SadRogue.Integration.Keybindings;
 
 namespace LuckNGold.Visuals.Components;
@@ -19,6 +21,12 @@ internal class KeybindingsComponentBase : KeybindingsComponent
 
     public KeybindingsComponentBase()
     {
+        AddMotions();
+        AddEscapeHandling();
+    }
+
+    void AddMotions()
+    {
         if (Keybindings.ViMotionsEnabled)
             AddViMotions();
 
@@ -28,31 +36,75 @@ internal class KeybindingsComponentBase : KeybindingsComponent
         if (Keybindings.NumpadMotionsEnabled)
             AddNumpadMotions();
 
-        if (Keybindings.WasdMotionsEnabled)
-            AddWasdMotions();
+        if (Keybindings.FPSMotionsEnabled)
+            AddFPSMotions();
     }
 
-    public void AddViMotions() =>
-        SetMotions(ViMotions);
+    protected virtual void HandleEscape() { }
 
-    public void AddArrowMotions() =>
+    protected void AddEscapeHandling()
+    {
+        SetAction(Keys.Escape, HandleEscape);
+    }
+
+    public virtual void UpdateKeybindings(ControlBase control)
+    {
+        if (control is CheckBox checkBox)
+        {
+            switch (checkBox.Text)
+            {
+                case SettingsScreen.ArrowButtonsText:
+                    if (checkBox.IsSelected)
+                        AddArrowMotions();
+                    else
+                        RemoveArrowMotions();
+                    break;
+
+                case SettingsScreen.NumpadButtonsText:
+                    if (checkBox.IsSelected)
+                        AddNumpadMotions();
+                    else
+                        RemovedNumpadMotions();
+                    break;
+
+                case SettingsScreen.FPSButtonsText:
+                    if (checkBox.IsSelected)
+                        AddFPSMotions();
+                    else
+                        RemoveFPSMotions();
+                    break;
+
+                case SettingsScreen.ViButtonsText:
+                    if (checkBox.IsSelected)
+                        AddViMotions();
+                    else
+                        RemoveViMotions();
+                    break;
+            }
+        }
+    }
+
+    void AddViMotions() =>
+    SetMotions(ViMotions);
+
+    void AddArrowMotions() =>
         SetMotions(ArrowMotions);
 
-    public void AddNumpadMotions() =>
+    void AddNumpadMotions() =>
         SetMotions(NumPadAllMotions);
 
-    public void AddWasdMotions() =>
+    void AddFPSMotions() =>
         SetMotions(WasdMotions);
 
-    public void RemoveViMotions() =>
+    void RemoveViMotions() =>
         RemoveMotions(ViMotions.Select(e => e.binding));
 
-    public void RemoveArrowMotions() =>
+    void RemoveArrowMotions() =>
         RemoveMotions(ArrowMotions.Select(e => e.binding));
 
-    public void RemovedNumpadMotions() =>
+    void RemovedNumpadMotions() =>
         RemoveMotions(NumPadAllMotions.Select(e => e.binding));
-    
-    public void RemoveWasdMotions() =>
+
+    void RemoveFPSMotions() =>
         RemoveMotions(WasdMotions.Select(e => e.binding));
 }
