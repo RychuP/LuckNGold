@@ -1,4 +1,4 @@
-﻿using LuckNGold.Visuals;
+﻿using LuckNGold.Primitives;
 using LuckNGold.World.Items.Components;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;

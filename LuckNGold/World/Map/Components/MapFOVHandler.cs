@@ -1,4 +1,5 @@
-﻿using LuckNGold.Visuals;
+﻿using LuckNGold.Config;
+using LuckNGold.Primitives;
 using SadRogue.Integration;
 using SadRogue.Integration.FieldOfView;
 

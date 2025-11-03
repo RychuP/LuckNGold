@@ -6,13 +6,14 @@
 /// </summary>
 internal class MainMenuScreen : MenuScreen
 {
+    public const string Name = "Main Menu";
+
     public MainMenuScreen() : base()
     {
-        Name = "Main Menu";
-        PrintTitle("Luck N' Gold");
+        PrintTitle(Program.Title);
         AddButton("Start Game", Program.RootScreen.CreateNewGame, "Create a New Game");
-        AddButton("Settings", Program.RootScreen.Show<SettingsScreen>, 
-            "Configure Gameplay and Keybindings");
-        AddButton("Exit", RootScreen.Exit, $"Exit to {Environment.OSVersion}");
+        AddButton(SettingsScreen.Name, Program.RootScreen.Show<SettingsScreen>, 
+            SettingsScreen.Description);
+        AddButton("Exit", RootScreen.Exit);
     }
 }

@@ -8,17 +8,25 @@ namespace LuckNGold.Visuals.Screens;
 /// </summary>
 internal class RootScreen : ScreenObject
 {
+    /// <summary>
+    /// Screen that is currently being displayed.
+    /// </summary>
     public IScreenObject? CurrentScreen { get; private set; }
-    public IScreenObject? PrevScreen { get; private set; }
+
+    /// <summary>
+    /// Screen to be shown when Settings Screen is closed.
+    /// </summary>
+    public IScreenObject? ReturnScreen { get; private set; }
 
     public void Init(object? o, GameHost host)
     {
         Game.Instance.Screen = this;
 
         // Create screens.
-        Children.Add(new GenerationScreen());
         Children.Add(new MainMenuScreen());
         Children.Add(new SettingsScreen());
+        Children.Add(new MotionsSelectorScreen());
+        Children.Add(new GenerationScreen());
         Children.Add(new PauseScreen());
 
         // Show main menu.
@@ -37,8 +45,8 @@ internal class RootScreen : ScreenObject
         if (TryGet(out GameScreen? oldGameScreen))
         {
             Children.Remove(oldGameScreen);
-            if (PrevScreen == oldGameScreen)
-                PrevScreen = Get<MainMenuScreen>();
+            if (ReturnScreen == oldGameScreen)
+                ReturnScreen = Get<MainMenuScreen>();
         }
 
         // Run generation.
@@ -60,13 +68,13 @@ internal class RootScreen : ScreenObject
 
         if (CurrentScreen != null)
         {
-            Hide(CurrentScreen);
-            PrevScreen = CurrentScreen;
-        }
+            if (CurrentScreen is MenuScreen)
+                CurrentScreen.SadComponents.Remove(MenuScreen.KeybindingsComponent);
 
-        if (PrevScreen is MenuScreen)
-        {
-            PrevScreen.SadComponents.Remove(MenuScreen.KeybindingsComponent);
+            if (CurrentScreen is MainMenuScreen || CurrentScreen is PauseScreen)
+                ReturnScreen = CurrentScreen;
+
+            Hide(CurrentScreen);
         }
 
         CurrentScreen = screen;
@@ -118,16 +126,13 @@ internal class RootScreen : ScreenObject
         return screen is not null;
     }
 
-    public void ShowPrevScreen()
+    public void ShowReturnScreen()
     {
-        if (PrevScreen != null)
-            Show(PrevScreen);
-        else
+        if (ReturnScreen is null)
             Show<MainMenuScreen>();
+        else
+            Show(ReturnScreen);
     }
-
-    public string GetBackButtonInstruction() =>
-        "Return to Previous Page";
 
     public void UpdateKeybindings(ControlBase control)
     {

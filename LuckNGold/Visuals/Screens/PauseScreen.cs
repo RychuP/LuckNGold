@@ -2,13 +2,14 @@
 
 internal class PauseScreen : MenuScreen
 {
+    public const string Name = "Pause";
+
     public PauseScreen() : base()
     {
-        Name = "Paused";
         PrintTitle(Name);
         AddButton("Continue", Program.RootScreen.Show<GameScreen>, "Return to Current Game");
-        AddButton("Settings", Program.RootScreen.Show<SettingsScreen>,
-            "Configure Gameplay and Keybindings");
-        AddButton("Exit", Program.RootScreen.Show<MainMenuScreen>, "Return to Main Menu Page");
+        AddButton(SettingsScreen.Name , Program.RootScreen.Show<SettingsScreen>,
+            SettingsScreen.Description);
+        AddButton("Exit", Program.RootScreen.Show<MainMenuScreen>);
     }
 }

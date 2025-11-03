@@ -1,6 +1,6 @@
 ﻿using GoRogue.Random;
+using LuckNGold.Primitives;
 using LuckNGold.Resources;
-using LuckNGold.Visuals;
 using LuckNGold.World.Common.Components;
 using LuckNGold.World.Common.Enums;
 using LuckNGold.World.Furnitures.Components;

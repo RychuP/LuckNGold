@@ -1,4 +1,5 @@
-﻿using LuckNGold.Generation.Map;
+﻿using LuckNGold.Config;
+using LuckNGold.Generation.Map;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
 

@@ -2,7 +2,7 @@
 using LuckNGold.World.Map;
 using SadRogue.Integration;
 
-namespace LuckNGold.Visuals;
+namespace LuckNGold.Primitives;
 
 /// <summary>
 /// Base entity that can play various, named animations depending on the state.

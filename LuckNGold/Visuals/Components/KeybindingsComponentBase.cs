@@ -1,4 +1,5 @@
-﻿using LuckNGold.Visuals.Screens;
+﻿using LuckNGold.Config;
+using LuckNGold.Visuals.Screens;
 using SadConsole.Input;
 using SadConsole.UI.Controls;
 using SadRogue.Integration.Keybindings;
@@ -53,28 +54,28 @@ internal class KeybindingsComponentBase : KeybindingsComponent
         {
             switch (checkBox.Text)
             {
-                case SettingsScreen.ArrowButtonsText:
+                case MotionsSelectorScreen.ArrowButtonsText:
                     if (checkBox.IsSelected)
                         AddArrowMotions();
                     else
                         RemoveArrowMotions();
                     break;
 
-                case SettingsScreen.NumpadButtonsText:
+                case MotionsSelectorScreen.NumpadButtonsText:
                     if (checkBox.IsSelected)
                         AddNumpadMotions();
                     else
                         RemovedNumpadMotions();
                     break;
 
-                case SettingsScreen.FPSButtonsText:
+                case MotionsSelectorScreen.FPSButtonsText:
                     if (checkBox.IsSelected)
                         AddFPSMotions();
                     else
                         RemoveFPSMotions();
                     break;
 
-                case SettingsScreen.ViButtonsText:
+                case MotionsSelectorScreen.ViButtonsText:
                     if (checkBox.IsSelected)
                         AddViMotions();
                     else

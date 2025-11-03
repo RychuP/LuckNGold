@@ -14,23 +14,14 @@ abstract class MenuScreen() : ControlsConsole(Program.Width, Program.Height)
     /// </summary>
     const int RowSpacing = 2;
 
+    /// <summary>
+    /// Y position of the title text.
+    /// </summary>
     const int TitleRow = 10;
 
     /// <summary>
-    /// Name of the <see cref="MenuScreen"/>.
+    /// Keybindings component shared between all <see cref="MenuScreen"/>s.
     /// </summary>
-    public string Name { get; protected set; } = "";
-
-    /// <summary>
-    /// Description of the page to be displayed as button instruction.
-    /// </summary>
-    public string Description { get; protected set; } = "";
-
-    /// <summary>
-    /// Text for the button leading back to this screen.
-    /// </summary>
-    public string BackButtonInstruction => $"Return to {Name} Page";
-
     public static readonly MenuKeybindingsComponent KeybindingsComponent = new();
 
     /// <summary>
@@ -49,12 +40,6 @@ abstract class MenuScreen() : ControlsConsole(Program.Width, Program.Height)
         title = $"-= {title} =-";
         int x = (Width - title.Length) / 2;
         Surface.Print(x, TitleRow, title, color ?? Color.Yellow);
-    }
-
-    protected void EraseTitle()
-    {
-        var title = " ".PadLeft(Width);
-        Surface.Print(0, TitleRow, title);
     }
 
     /// <summary>
@@ -85,7 +70,7 @@ abstract class MenuScreen() : ControlsConsole(Program.Width, Program.Height)
     }
 
     protected void AddButton(string buttonText, Action buttonAction, 
-        string bottomInstruction, string topInstruction = "")
+        string bottomInstruction = "", string topInstruction = "")
     {
         var button = new Button(buttonText);
         button.Click += (o, e) => buttonAction();
@@ -93,7 +78,7 @@ abstract class MenuScreen() : ControlsConsole(Program.Width, Program.Height)
     }
 
     protected void AddCheckBox(string text, bool isSelected, EventHandler handler,
-        string bottomInstruction, string topInstruction = "")
+        string bottomInstruction, string topInstruction)
     {
         var checkBox = new CheckBox(text) { IsSelected = isSelected };
         checkBox.IsSelectedChanged += handler;

@@ -1,4 +1,4 @@
-﻿using LuckNGold.Visuals;
+﻿using LuckNGold.Primitives;
 using SadRogue.Integration;
 
 namespace LuckNGold.World.Map.Components;

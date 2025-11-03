@@ -1,4 +1,4 @@
-﻿using LuckNGold.Visuals;
+﻿using LuckNGold.Primitives;
 using LuckNGold.World.Furnitures.Enums;
 using LuckNGold.World.Furnitures.Interfaces;
 using LuckNGold.World.Map;

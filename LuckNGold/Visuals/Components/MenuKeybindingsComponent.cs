@@ -18,14 +18,14 @@ internal class MenuKeybindingsComponent() : KeybindingsComponentBase()
 
     protected override void HandleEscape()
     {
-        if (Parent is MainMenuScreen)
-            RootScreen.Exit();
-        else if (Parent is PauseScreen)
+        if (Parent is PauseScreen)
+        {
             Program.RootScreen.Show<GameScreen>();
-        else if (Parent is SettingsScreen settingsScreen &&
-            settingsScreen.GetReturnButton() is Button returnButton)
+        }
+        else if (Parent is MenuScreen menuScreen &&
+            menuScreen.GetReturnButton() is Button returnButton)
+        {
             returnButton.InvokeClick();
-        else
-            Program.RootScreen.ShowPrevScreen();
+        }
     }
 }

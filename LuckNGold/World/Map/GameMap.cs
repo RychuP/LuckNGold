@@ -1,7 +1,7 @@
 ﻿using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
+using LuckNGold.Config;
 using LuckNGold.Generation.Map;
-using LuckNGold.Visuals;
 using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Map.Components;
 using SadRogue.Integration;

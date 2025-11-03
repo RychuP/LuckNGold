@@ -1,4 +1,6 @@
-﻿using LuckNGold.World.Monsters.Components;
+﻿using LuckNGold.Config;
+using LuckNGold.Primitives;
+using LuckNGold.World.Monsters.Components;
 using SadRogue.Integration;
 
 namespace LuckNGold.Visuals.Windows;
@@ -46,7 +48,7 @@ internal class QuickAccessWindow : ScreenSurface
             Surface.DrawBox(itemBorder, _shapeParameters);
             int index = i < 9 ? i + 1 : 0;
             Surface.Print(x + 1, SelectorBoxSize - 1, $"{(char)180} {(char)195}");
-            Surface.Print(x + 2, SelectorBoxSize - 1, $"{index}", Colors.SelectorNumber);
+            Surface.Print(x + 2, SelectorBoxSize - 1, $"{index}", Colors.SlotDigit);
         }
     }
 

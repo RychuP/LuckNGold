@@ -34,9 +34,9 @@ internal class MotionAppearanceComponent :
         if (Parent == null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
-        if (Parent.CurrentMap == null)
-            //throw new InvalidOperationException("Parent has to be on the map.");
-            return;
+        //if (Parent.CurrentMap == null)
+        //    //throw new InvalidOperationException("Parent has to be on the map.");
+        //    return;
 
         direction =
             direction.DeltaX < 0 ? Direction.Left :

@@ -1,6 +1,6 @@
 ﻿using LuckNGold.World.Items.Enums;
 
-namespace LuckNGold.Visuals;
+namespace LuckNGold.Config;
 
 static class Colors
 {
@@ -48,7 +48,7 @@ static class Colors
     public static readonly Color SelectorBorder = Color.DarkGray;
 
     /// <summary>
-    /// Color of the item selector number in the inventory window.
+    /// Color of the digit on the bottom line of the slot border.
     /// </summary>
-    public static readonly Color SelectorNumber = Color.LightBlue;
+    public static readonly Color SlotDigit = Color.LightBlue;
 }

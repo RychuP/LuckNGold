@@ -1,5 +1,5 @@
 ﻿using GoRogue.Random;
-using LuckNGold.Visuals;
+using LuckNGold.Config;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
 using ShaiRandom.Generators;

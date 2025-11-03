@@ -8,6 +8,7 @@ static class Program
 {
     public const int Width = 84;
     public const int Height = 60;
+    public const string Title = "Luck N' Gold";
 
     public static RootScreen RootScreen { get; } = new();
     public static Rectangle Bounds => new(0, 0, Width, Height);
@@ -36,6 +37,7 @@ static class Program
                 .SetScreenSize(Width, Height)
                 .ConfigureFonts(FontLoader)
                 .OnStart(RootScreen.Init);
+                //.SetStartingScreen<Test>();
 
         // Setup the engine.
         Game.Create(builder);
