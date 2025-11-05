@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\Fonts\" />
+    <Folder Include="Resources\Fonts\Chibi\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +59,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\rysza\Source\Repos\SadConsoleProjects\LuckNGold\LuckNGold\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\rysza\Source\Repos\SadConsoleProjects\LuckNGold\LuckNGold\.editorconfig" />
   </ItemGroup>
 
 </Project>

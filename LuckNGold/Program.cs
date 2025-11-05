@@ -10,6 +10,7 @@ static class Program
     public const int Height = 60;
     public const string Title = "Luck N' Gold";
 
+    public static Dictionary<string, IFont> ChibiFonts = [];
     public static RootScreen RootScreen { get; } = new();
     public static Rectangle Bounds => new(0, 0, Width, Height);
     public static IFont Font => Game.Instance.Fonts["PixelDungeon"];
@@ -57,5 +58,22 @@ static class Program
         string PixelDungeonPath = Path.Combine("Resources", "Fonts", "PixelDungeon.font");
         fontConfig.UseCustomFont(C64Path);
         fontConfig.AddExtraFonts([PixelDungeonPath]);
+        LoadChibiFonts();
+    }
+
+    static void LoadChibiFonts()
+    {
+        var chibiFilesPath = Path.Combine("Resources", "Fonts", "Chibi");
+        var enumarator = Directory.EnumerateFiles(chibiFilesPath);
+
+        foreach (var file in enumarator)
+        {
+            var fontTexture = GameHost.Instance.GetTexture(file);
+            int rowCount = fontTexture.Height / 16;
+            int columnCount = fontTexture.Width / 16;
+            var name = Path.GetFileNameWithoutExtension(file);
+            SadFont font = new(16, 16, 0, rowCount, columnCount, 1, fontTexture, name);
+            ChibiFonts[name] = font;
+        }
     }
 }

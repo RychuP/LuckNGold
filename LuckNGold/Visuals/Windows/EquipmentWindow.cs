@@ -6,17 +6,42 @@ namespace LuckNGold.Visuals.Windows;
 
 internal class EquipmentWindow : ScreenSurface
 {
-    readonly Point _slotSpacing = (1, 1);
+    const int SlotSize = 7;
+    const int SlotSpacing = 0;
 
-    readonly Dictionary<BodyPart, SlotSurface> _equipmentSlots;
-    readonly CharacterPreviewSurface _characterPreviewSurface;
-
-    public EquipmentWindow() : base(30, 20)
+    public EquipmentWindow() : base(SlotSize * 3 + SlotSpacing * 2, 
+        SlotSize * 3 + SlotSpacing * 2)
     {
-        var player = MonsterFactory.Player();
-        _characterPreviewSurface = new(player);
+        AddSlot(BodyPart.Head, GetTranslatedPosition(1, 0), GetPlaceholder("Head"));
+        AddSlot(BodyPart.Body, GetTranslatedPosition(1, 1), GetPlaceholder("Body"));
+        AddSlot(BodyPart.Feet, GetTranslatedPosition(1, 2), GetPlaceholder("Feet"));
+        AddSlot(BodyPart.LeftHand, GetTranslatedPosition(0, 1), GetPlaceholder("Weapon"));
+        AddSlot(BodyPart.RightHand, GetTranslatedPosition(2, 1), GetPlaceholder("Shield"));
+    }
 
-        int slotCount = Enum.GetValues(typeof(BodyPart)).Length;
-        _equipmentSlots = new(slotCount);
+    public IEnumerable<Slot> Slots => Children
+        .Cast<Slot>();
+
+    static Point GetTranslatedPosition(int x, int y)
+    {
+        Point targetSize = (1, 1);
+        Point sourceSize = (SlotSize + SlotSpacing, SlotSize + SlotSpacing);
+        Point position = (x, y);
+        return position.TranslateFont(sourceSize, targetSize);
+    }
+
+    static ColoredGlyph GetPlaceholder(string placeholderName)
+    {
+        var glyphDef = Program.Font.GetGlyphDefinition(placeholderName);
+        return glyphDef.CreateColoredGlyph();
+    }
+
+    void AddSlot(BodyPart bodyPart, Point position, ColoredGlyph placeHolder)
+    {
+        var slot = new Slot(SlotSize, $"{bodyPart}", placeHolder)
+        {
+            Position = position
+        };
+        Children.Add(slot);
     }
 }

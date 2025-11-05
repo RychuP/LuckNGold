@@ -8,7 +8,7 @@ namespace LuckNGold.Visuals.Windows;
 /// <summary>
 /// Surface that show a character entity marching in all cardinal directions.
 /// </summary>
-internal class CharacterPreviewSurface : ScreenSurface
+internal class CharacterPreview : ScreenSurface
 {
     const int BoxSize = 7;
     const int StartIndex = BoxSize - 1;
@@ -21,10 +21,10 @@ internal class CharacterPreviewSurface : ScreenSurface
     int _positionIndex = StartIndex;
 
     /// <summary>
-    /// Initializes an instance of <see cref="CharacterPreviewSurface"/> class.
+    /// Initializes an instance of <see cref="CharacterPreview"/> class.
     /// </summary>
     /// <param name="characterEntity">Character entity to be shown in preview.</param>
-    public CharacterPreviewSurface(RogueLikeEntity characterEntity) : base(BoxSize, BoxSize)
+    public CharacterPreview(RogueLikeEntity characterEntity) : base(BoxSize, BoxSize)
     {
         _characterEntity = characterEntity;
 

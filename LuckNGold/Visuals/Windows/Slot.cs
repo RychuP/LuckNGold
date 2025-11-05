@@ -5,20 +5,22 @@ using SadRogue.Integration;
 namespace LuckNGold.Visuals.Windows;
 
 /// <summary>
-/// Surface that represents slots from equipment or quick access windows.
+/// Surface that represents slots for equipment or items in inventory.
 /// </summary>
-internal class SlotSurface : ScreenSurface
+internal class Slot : ScreenSurface
 {
-    readonly int _boxSize;
     readonly ScreenSurface _itemSurface;
+    readonly ColoredGlyph? _placeHolder;
+    public string Tag { get; init; }
 
-    public SlotSurface(int boxSize) : base(boxSize, boxSize)
+    public Slot(int size, string tag, ColoredGlyph? placeHolder = null) : base(size, size)
     {
-        _boxSize = boxSize;
+        _placeHolder = placeHolder;
+        Tag = tag;
 
         // Draw slot border.
         var shapeParameters = ShapeParameters.CreateStyledBoxThin(Colors.SelectorBorder);
-        var itemBorder = new Rectangle(0, 0, boxSize, boxSize);
+        var itemBorder = new Rectangle(0, 0, size, size);
         Surface.DrawBox(itemBorder, shapeParameters);
 
         // Create surface for the item.
@@ -27,9 +29,13 @@ internal class SlotSurface : ScreenSurface
             Font = Program.Font,
             UsePixelPositioning = true
         };
+        Children.Add(_itemSurface);
+
+        // Draw placeholder if any.
+        EraseItem();
 
         // Specify the font size for the item.
-        _itemSurface.FontSize *= boxSize - 2;
+        _itemSurface.FontSize *= size - 2;
 
         // Shift pixel position of the item surface to place it in the middle of the border.
         int offset = (HeightPixels - _itemSurface.HeightPixels) / 2;
@@ -42,7 +48,7 @@ internal class SlotSurface : ScreenSurface
     /// <param name="digit">Digit to be displayer on the border.</param>
     public void PrintDigit(int digit)
     {
-        int y = _boxSize - 1;
+        int y = Width - 1;
         Surface.Print(1, y, $"{(char)180} {(char)195}");
         Surface.Print(2, y, $"{digit}", Colors.SlotDigit);
     }
@@ -55,14 +61,18 @@ internal class SlotSurface : ScreenSurface
     {
         ColoredGlyphBase appearance = item is AnimatedRogueLikeEntity animated ?
             animated.StaticAppearance : item.AppearanceSingle!.Appearance;
-        _itemSurface.Surface.SetGlyph(0, 0, appearance.Glyph);
+        appearance.CopyAppearanceTo(_itemSurface.Surface[0]);
+        //_itemSurface.Surface.SetGlyph(0, 0, appearance.Glyph);
     }
 
     /// <summary>
     /// Clears the item surface.
     /// </summary>
-    public void ClearItem()
+    public void EraseItem()
     {
-        _itemSurface.Surface.SetGlyph(0, 0, 0);
+        if (_placeHolder != null)
+            _placeHolder.CopyAppearanceTo(_itemSurface.Surface[0]);
+        else
+            _itemSurface.Surface.SetGlyph(0, 0, 0);
     }
 }
