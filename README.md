@@ -20,10 +20,11 @@ Dungeon exploration game in early stages of development. I don't think this will
 ## Credits:
 [TheSadRogue.Integration](https://github.com/thesadrogue/TheSadRogue.Integration) game engine.<br>
 [Pixel Dungeon](https://pixel-poem.itch.io/dungeon-assetpuck) asset pack (a selection of sprites from the free version).<br>
-[Chibi](https://opengameart.org/content/16x16-chibi-rpg-character-builder-v3) character builder (only a small sample for main character for now).
+[Chibi Character Builder v3](https://opengameart.org/content/16x16-chibi-rpg-character-builder-v3) player and npc appearance.
 
 ## Screenshots:
 
 <p align="center" style="margin-bottom: 0px !important;">
+  <img width="800" src="/Screenshots/Character.gif" alt="Chibi Character" align="center">
   <img width="800" src="/Screenshots/Dungeon.gif" alt="Gameplay" align="center">
 </p>
