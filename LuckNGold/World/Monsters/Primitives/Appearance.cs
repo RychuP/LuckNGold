@@ -3,5 +3,14 @@ using LuckNGold.World.Monsters.Interfaces;
 
 namespace LuckNGold.World.Monsters.Primitives;
 
-record struct Appearance(HairStyle HairStyle = default, HairCut HairCut = default,
-    BeardStyle BeardStyle = default) : IAppearance;
+record struct Appearance(
+    Age Age = Age.Adult,
+    Face Face = Face.VariantA,
+    EyeColor EyeColor = EyeColor.Normal,
+    HairStyle HairStyle = default,
+    HairCut HairCut = default,
+    HairColor HairColor = default,
+    BeardStyle BeardStyle = default,
+    BeardColor BeardColor = default,
+    bool IsAngry = false
+) : IAppearance;

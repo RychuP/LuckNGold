@@ -1,4 +1,5 @@
-﻿using LuckNGold.Visuals.Overlays;
+﻿using LuckNGold.Visuals.Components;
+using LuckNGold.Visuals.Overlays;
 using SadConsole.Components;
 
 namespace LuckNGold.Visuals.Screens;
@@ -9,12 +10,13 @@ partial class GameScreen
     public static DebugConsole DebugConsole { get; } = new();
     public static MapLayout MapLayout { get; } = new();
 
-    void AddDebugOverlays(SurfaceComponentFollowTarget followTargetComponent)
+    void AddDebugOverlays()
     {
         if (!DebugEnabled) return;
 
         MapLayout.DrawOverlay(Map);
         MapLayout.SadComponents.Clear();
+        FollowTargetComponent followTargetComponent = new(Player);
         MapLayout.SadComponents.Add(followTargetComponent);
         Children.Add(MapLayout);
         Children.Add(DebugConsole);

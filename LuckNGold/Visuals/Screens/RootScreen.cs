@@ -8,6 +8,8 @@ namespace LuckNGold.Visuals.Screens;
 /// </summary>
 internal class RootScreen : ScreenObject
 {
+    GameScreen? _gameScreen = null;
+
     /// <summary>
     /// Screen that is currently being displayed.
     /// </summary>
@@ -18,6 +20,9 @@ internal class RootScreen : ScreenObject
     /// </summary>
     public IScreenObject? ReturnScreen { get; private set; }
 
+    /// <summary>
+    /// Initializes the root screen.
+    /// </summary>
     public void Init(object? o, GameHost host)
     {
         Game.Instance.Screen = this;
@@ -34,6 +39,10 @@ internal class RootScreen : ScreenObject
         Show<MainMenuScreen>();
     }
 
+    /// <summary>
+    /// Creates a new gamescreen and adds it to the children. 
+    /// Removes previous gamescreen if one existed.
+    /// </summary>
     public async void CreateNewGame()
     {
         // Show generation screen.
@@ -42,26 +51,28 @@ internal class RootScreen : ScreenObject
         Show(generationScreen);
 
         // Remove old gamescreen.
-        if (TryGet(out GameScreen? oldGameScreen))
-        {
-            Children.Remove(oldGameScreen);
-            if (ReturnScreen == oldGameScreen)
-                ReturnScreen = Get<MainMenuScreen>();
-        }
+        if (_gameScreen != null && Children.Contains(_gameScreen))
+            Children.Remove(_gameScreen);
 
         // Run generation.
-        GameScreen? newGameScreen = null;
-        await Task.Run(() => newGameScreen = new GameScreen());
+        await Task.Run(() => _gameScreen = new GameScreen());
 
         // Show new game screen.
-        Show(newGameScreen!);
+        Show(_gameScreen!);
     }
 
+    /// <summary>
+    /// Leaves the game.
+    /// </summary>
     public static void Exit()
     {
         Environment.Exit(0);
     }
 
+    /// <summary>
+    /// Shows a screen (must be already added to children).
+    /// </summary>
+    /// <param name="screen">Screen to be shown.</param>
     public void Show(IScreenObject screen)
     {
         if (CurrentScreen == screen) return;
@@ -90,12 +101,19 @@ internal class RootScreen : ScreenObject
         }
     }
 
+    /// <summary>
+    /// Hides an individual screen.
+    /// </summary>
+    /// <param name="screen">Screen to be hidden.</param>
     static void Hide(IScreenObject screen)
     {
         screen.IsVisible = false;
         screen.IsEnabled = false;
     }
 
+    /// <summary>
+    /// Hides all screens.
+    /// </summary>
     void HideAll()
     {
         foreach (var screen in Children)
@@ -120,12 +138,21 @@ internal class RootScreen : ScreenObject
             throw new InvalidOperationException("Screen could not be found.");
     }
 
+    /// <summary>
+    /// Tries to get screen of selected type.
+    /// </summary>
+    /// <typeparam name="T">Type of the screen to be shown.</typeparam>
+    /// <param name="screen">Screen instance if found.</param>
+    /// <returns>True if screen was found, false otherwise.</returns>
     bool TryGet<T>([NotNullWhen(true)] out T? screen) where T : class, IScreenObject
     {
         screen = Children.Where(c => c is T).FirstOrDefault() as T;
         return screen is not null;
     }
 
+    /// <summary>
+    /// Shows the screen that opened settings screen.
+    /// </summary>
     public void ShowReturnScreen()
     {
         if (ReturnScreen is null)

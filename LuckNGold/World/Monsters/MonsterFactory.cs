@@ -1,5 +1,7 @@
-﻿using LuckNGold.World.Map;
+﻿using GoRogue.Random;
+using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
+using LuckNGold.World.Monsters.Enums;
 using LuckNGold.World.Monsters.Primitives;
 using SadRogue.Integration;
 
@@ -9,34 +11,35 @@ static class MonsterFactory
 {
     public static RogueLikeEntity Player()
     {
-        var player = new RogueLikeEntity(251, false, layer: (int)GameMap.Layer.Monsters)
+        var player = new RogueLikeEntity(2, false, layer: (int)GameMap.Layer.Monsters)
         {
-            Name = "Player"
+            Name = "Player",
+        };
+
+        // Generate appearance.
+        var rnd = GlobalRandom.DefaultRNG;
+        var identityComponent = new IdentityComponent("Henry", Race.Human);
+        var hairCut = (HairCut)rnd.NextInt(4);
+        var hairStyle = (HairStyle)rnd.NextInt(4);
+        var beardStyle = (BeardStyle)rnd.NextInt(1, 3);
+        bool isAngry = rnd.NextBool();
+        identityComponent.Appearance = identityComponent.Appearance with 
+        { 
+            Age = Age.Adult, 
+            HairStyle = hairStyle,
+            HairCut = hairCut, 
+            BeardStyle = beardStyle, 
+            IsAngry = isAngry,
         };
 
         // Add component that holds identity information.
-        player.AllComponents.Add(new IdentityComponent("Henry", Race.Human));
+        player.AllComponents.Add(identityComponent);
 
         // Add component that represents the equipment worn and carried.
         player.AllComponents.Add(new EquipmentComponent());
 
-        ColoredGlyph[] appearances = [
-            new(Color.White, Color.Transparent, 250),
-            new(Color.White, Color.Transparent, 251),
-            new(Color.White, Color.Transparent, 252),
-            new(Color.White, Color.Transparent, 260),
-            new(Color.White, Color.Transparent, 261),
-            new(Color.White, Color.Transparent, 262),
-            new(Color.White, Color.Transparent, 270),
-            new(Color.White, Color.Transparent, 271),
-            new(Color.White, Color.Transparent, 272),
-            new(Color.White, Color.Transparent, 280),
-            new(Color.White, Color.Transparent, 281),
-            new(Color.White, Color.Transparent, 282),
-        ];
-
-        // Add component that updates entity appearance as it moves.
-        player.AllComponents.Add(new MotionComponent(appearances));
+        // Add component that composes appearance of several layers.
+        player.AllComponents.Add(new OnionComponent());
 
         // Add inventory component.
         player.AllComponents.Add(new InventoryComponent(20));

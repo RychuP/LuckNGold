@@ -243,7 +243,7 @@
 "Pointer6" : {"Glyph": 169, "Mirror": 0},
 
 "Head" : {"Glyph": 170, "Mirror": 0},
-"Body" : {"Glyph": 171, "Mirror": 0},
+"Torso" : {"Glyph": 171, "Mirror": 0},
 "Feet" : {"Glyph": 172, "Mirror": 0},
 "Weapon" : {"Glyph": 173, "Mirror": 0},
 "Shield" : {"Glyph": 174, "Mirror": 0},

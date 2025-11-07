@@ -1,8 +1,9 @@
 ﻿using LuckNGold.Visuals.Components;
+using LuckNGold.Visuals.Overlays;
 using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
-using SadConsole.Components;
+using LuckNGold.World.Monsters.Interfaces;
 using SadConsole.UI.Controls;
 
 namespace LuckNGold.Visuals.Screens;
@@ -19,11 +20,11 @@ partial class GameScreen : ScreenObject
     // Window that displays player health, wealth and other stats
     readonly StatusWindow _statusWindow;
 
-    // Component that keeps view centered at a target entity.
-    readonly SurfaceComponentFollowTarget _followTargetComponent;
-
     // Window that displays an info about a pointer selected entity.
     readonly EntityInfoWindow _entityInfoWindow = new();
+
+    // Layer that displays monster onion appearances.
+    readonly MonsterLayer _monsterLayer;
 
     IEnumerable<GameScreenKeybindingsComponent> KeybindingsComponents
     {
@@ -44,6 +45,10 @@ partial class GameScreen : ScreenObject
         Map.ViewZoomChanged += Map_OnViewZoomChanged;
         Children.Add(Map);
 
+        // Add monster layer above the map.
+        _monsterLayer = new MonsterLayer(Map);
+        Children.Add(_monsterLayer);
+
         // Create the player and place it in the first room of the main path.
         Player = GeneratePlayer();
         Map.AddEntity(Player);
@@ -60,11 +65,12 @@ partial class GameScreen : ScreenObject
         Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
 
         // Create a component that centers view on player as they move.
-        _followTargetComponent = new SurfaceComponentFollowTarget { Target = Player };
-        Map.DefaultRenderer!.SadComponents.Add(_followTargetComponent);
+        var followTargetComponent = new FollowTargetComponent(Player);
+        Map.DefaultRenderer!.SadComponents.Add(followTargetComponent);
+        followTargetComponent.ViewChanged += FollowTargetComponent_OnViewChanged;
 
         // Debug screens with various testing info.
-        AddDebugOverlays(_followTargetComponent);
+        AddDebugOverlays();
 
         // Create a window to display player's inventory
         var quickAccess = Player.AllComponents.GetFirst<QuickAccessComponent>();
@@ -105,5 +111,22 @@ partial class GameScreen : ScreenObject
     {
         foreach (var keybindingsComponent in KeybindingsComponents)
             keybindingsComponent.UpdateKeybindings(control);
+    }
+
+    void FollowTargetComponent_OnViewChanged(object? sender, EventArgs e)
+    {
+        var visibleMonsters = Map.Monsters
+            .Where(m => m.IsVisible);
+
+        // Update onion appearance position of all visible monsters.
+        foreach (var monster in visibleMonsters)
+        {
+            if (monster.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
+            {
+                var viewPosition = Map.DefaultRenderer!.Surface.ViewPosition;
+                onionComponent.CurrentFrame.Position = monster.Position - viewPosition;
+                //onionComponent.SetPosition(monster.Position - viewPosition);
+            }
+        }
     }
 }

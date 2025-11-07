@@ -10,7 +10,6 @@ static class Program
     public const int Height = 60;
     public const string Title = "Luck N' Gold";
 
-    public static Dictionary<string, IFont> ChibiFonts = [];
     public static RootScreen RootScreen { get; } = new();
     public static Rectangle Bounds => new(0, 0, Width, Height);
     public static IFont Font => Game.Instance.Fonts["PixelDungeon"];
@@ -30,15 +29,15 @@ static class Program
 
     static void Main()
     {
-        Settings.WindowTitle = "Luck N' Gold";
+        Settings.WindowTitle = Title;
         Settings.ResizeMode = Settings.WindowResizeOptions.Fit;
 
-        // Configure how SadConsole starts up
+        // Configure how SadConsole starts up.
         Builder builder = new Builder()
-                .SetScreenSize(Width, Height)
-                .ConfigureFonts(FontLoader)
-                .OnStart(RootScreen.Init);
-                //.SetStartingScreen<Test>();
+            .SetScreenSize(Width, Height)
+            .ConfigureFonts(FontLoader)
+            .OnStart(RootScreen.Init);
+            //.SetStartingScreen<Test>();
 
         // Setup the engine.
         Game.Create(builder);
@@ -58,10 +57,13 @@ static class Program
         string PixelDungeonPath = Path.Combine("Resources", "Fonts", "PixelDungeon.font");
         fontConfig.UseCustomFont(C64Path);
         fontConfig.AddExtraFonts([PixelDungeonPath]);
-        LoadChibiFonts();
+        LoadChibiFonts(host);
     }
 
-    static void LoadChibiFonts()
+    /// <summary>
+    /// Loads all chibi sprite sheets as fonts.
+    /// </summary>
+    static void LoadChibiFonts(GameHost host)
     {
         var chibiFilesPath = Path.Combine("Resources", "Fonts", "Chibi");
         var enumarator = Directory.EnumerateFiles(chibiFilesPath);
@@ -73,7 +75,7 @@ static class Program
             int columnCount = fontTexture.Width / 16;
             var name = Path.GetFileNameWithoutExtension(file);
             SadFont font = new(16, 16, 0, rowCount, columnCount, 1, fontTexture, name);
-            ChibiFonts[name] = font;
+            host.Fonts[name] = font;
         }
     }
 }

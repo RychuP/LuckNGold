@@ -1,4 +1,5 @@
-﻿using LuckNGold.Visuals.Windows;
+﻿using LuckNGold.Visuals.Screens;
+using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Monsters;
 
 namespace LuckNGold.Tests;
@@ -23,7 +24,7 @@ internal class Test : SimpleSurface
         };
         Children.Add(equipment);
 
-        Font = Program.ChibiFonts["race-human-base-pale"];
+        Font = Game.Instance.Fonts["race-human-base-pale"];
         FontSize *= 4;
         
         int fontColumns = Font.Image.Width / Font.GlyphWidth;

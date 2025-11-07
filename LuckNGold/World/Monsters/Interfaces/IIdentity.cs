@@ -1,12 +1,14 @@
-﻿namespace LuckNGold.World.Monsters.Interfaces;
+﻿using LuckNGold.World.Monsters.Primitives;
+
+namespace LuckNGold.World.Monsters.Interfaces;
 
 /// <summary>
 /// It has a name, race and other identifying features.
 /// </summary>
 interface IIdentity
 {
-    event EventHandler<ValueChangedEventArgs<IAppearance>>? AppearanceChanged;
+    event EventHandler<ValueChangedEventArgs<Appearance>>? AppearanceChanged;
     string Name { get; }
-    IRace Race { get; }
-    IAppearance Appearance { get; }
+    Race Race { get; }
+    Appearance Appearance { get; }
 }

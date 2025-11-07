@@ -5,7 +5,7 @@ using SadRogue.Integration;
 namespace LuckNGold.Visuals.Windows;
 
 /// <summary>
-/// Surface that represents slots for equipment or items in inventory.
+/// Surface that represents slots for equipment or items in player inventory.
 /// </summary>
 internal class Slot : ScreenSurface
 {

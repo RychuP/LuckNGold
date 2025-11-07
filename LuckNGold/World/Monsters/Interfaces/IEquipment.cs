@@ -16,4 +16,10 @@ internal interface IEquipment
     bool Equip(RogueLikeEntity item, out RogueLikeEntity? unequippedItem);
 
     bool Unequip(RogueLikeEntity item);
+
+    RogueLikeEntity? Head { get; }
+    RogueLikeEntity? Torso { get; }
+    RogueLikeEntity? Feet { get; }
+    RogueLikeEntity? LeftHand { get; }
+    RogueLikeEntity? RightHand { get; }
 }

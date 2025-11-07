@@ -2,5 +2,8 @@
 
 enum SkinTone
 {
-
+    None,
+    Dark,
+    Pale,
+    Red
 }

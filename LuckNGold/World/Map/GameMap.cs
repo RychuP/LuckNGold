@@ -16,15 +16,30 @@ partial class GameMap : RogueLikeMap
 {
     public event EventHandler? ViewZoomChanged;
 
-    // Map width/height
+    /// <summary>
+    /// Default map width.
+    /// </summary>
     public const int DefaultWidth = 100;
+
+    /// <summary>
+    /// Default map height.
+    /// </summary>
     public const int DefaultHeight = 60;
 
-    // Effectively max view zoom level
+    /// <summary>
+    /// Font size multiplier that is first applied when the game starts.
+    /// </summary>
+    public const int DefaultFontSizeMultiplier = 3;
+
+    /// <summary>
+    /// Max font size multiplier that also defines max view zoom level.
+    /// </summary>
     const int MaxFontSizeMultiplier = 4;
 
-    // Effectively current view zoom level
-    int _fontSizeMultiplier = 3;
+    /// <summary>
+    /// Current font size multiplier that also defines current view zoom level.
+    /// </summary>
+    public int FontSizeMultiplier { get; private set; } = DefaultFontSizeMultiplier;
 
     /// <summary>
     /// List of paths from generator (available only if debugging is enabled).
@@ -58,6 +73,14 @@ partial class GameMap : RogueLikeMap
     }
 
     /// <summary>
+    /// All <see cref="RogueLikeEntity"/>s on <see cref="Layer.Monsters"/>.
+    /// </summary>
+    public IEnumerable<RogueLikeEntity> Monsters => Entities
+        .Where(e => e.Item.Layer == (int)Layer.Monsters)
+        .Select(e => e.Item)
+        .Cast<RogueLikeEntity>();
+
+    /// <summary>
     /// Initializes an instance of <see cref="GameMap"/> with parameters provided.
     /// </summary>
     /// <param name="context">Generation context.</param>
@@ -69,11 +92,11 @@ partial class GameMap : RogueLikeMap
         Sections = GameScreen.DebugEnabled ? context.GetFirst<ItemList<Section>>().Items : [];
 
         // Create renderer.
-        Point viewSize = new(Program.Width / _fontSizeMultiplier,
-            Program.Height / _fontSizeMultiplier);
+        Point viewSize = new(Program.Width / FontSizeMultiplier,
+            Program.Height / FontSizeMultiplier);
         DefaultRenderer = CreateRenderer(viewSize);
         DefaultRenderer.Font = Program.Font;
-        DefaultRenderer.FontSize *= _fontSizeMultiplier;
+        DefaultRenderer.FontSize *= FontSizeMultiplier;
 
         // Change default bg color to match wall color.
         DefaultRenderer.Surface.DefaultBackground = Colors.Wall;
@@ -86,10 +109,8 @@ partial class GameMap : RogueLikeMap
     /// <summary>
     /// Resizes view of the map in response to zooming in and out.
     /// </summary>
-    /// <param name="fontSizeMultiplier"></param>
-    public void ResizeView(int fontSizeMultiplier)
+    void ResizeView(int fontSizeMultiplier)
     {
-        if (fontSizeMultiplier < 0 || fontSizeMultiplier > 4) return;
         var width = Program.Width / fontSizeMultiplier;
         var height = Program.Height / fontSizeMultiplier;
         DefaultRenderer!.Surface.View = new Rectangle(0, 0, width, height);
@@ -100,14 +121,14 @@ partial class GameMap : RogueLikeMap
 
     public void ZoomViewIn()
     {
-        if (_fontSizeMultiplier >= MaxFontSizeMultiplier) return;
-        ResizeView(++_fontSizeMultiplier);
+        if (FontSizeMultiplier >= MaxFontSizeMultiplier) return;
+        ResizeView(++FontSizeMultiplier);
     }
 
     public void ZoomViewOut()
     {
-        if (_fontSizeMultiplier <= 1) return;
-        ResizeView(--_fontSizeMultiplier);
+        if (FontSizeMultiplier <= 1) return;
+        ResizeView(--FontSizeMultiplier);
     }
 
     /// <summary>

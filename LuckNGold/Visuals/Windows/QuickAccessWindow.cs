@@ -19,6 +19,10 @@ internal class QuickAccessWindow : ScreenSurface
     // Surface set to the graphical font used in the game that displays items from inventory
     readonly ScreenSurface _itemDisplay;
 
+    /// <summary>
+    /// Initializes an instance of <see cref="QuickAccessWindow"/> class.
+    /// </summary>
+    /// <param name="quickAccess">Source component for the window.</param>
     public QuickAccessWindow(QuickAccessComponent quickAccess) : 
         base(QuickAccessComponent.Max * SelectorBoxSize +
         QuickAccessComponent.Max - 1, SelectorBoxSize)

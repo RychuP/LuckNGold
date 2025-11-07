@@ -3,6 +3,6 @@
 internal enum BeardStyle
 {
     None,
-    Short,
-    Long,
+    Circle,
+    Boxed,
 }

@@ -8,7 +8,7 @@ namespace LuckNGold.World.Monsters.Enums;
 enum BodyPart
 {
     Head,
-    Body,
+    Torso,
     LeftHand,
     RightHand,
     Feet

@@ -9,6 +9,7 @@ using LuckNGold.Generation.Map;
 using LuckNGold.World.Furnitures.Components;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
+using LuckNGold.World.Monsters.Interfaces;
 using LuckNGold.World.Terrain;
 using SadRogue.Integration;
 using SadRogue.Primitives.GridViews;
@@ -85,6 +86,9 @@ partial class GameScreen
         return map;
     }
 
+    /// <summary>
+    /// Adds event handlers to entities.
+    /// </summary>
     void Map_OnObjectAdded(object? o, ItemEventArgs<IGameObject> e)
     {
         if (e.Item is not RogueLikeEntity entity) return;
@@ -100,8 +104,19 @@ partial class GameScreen
             var openingComponent = entity.AllComponents.GetFirst<OpeningComponent>();
             _openings.Add(openingComponent);
         }
+
+        // Monitor visibility of the monster to show its onion appearance in monster layer.
+        if (entity.Layer == (int)GameMap.Layer.Monsters &&
+            entity.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
+        {
+            entity.IsVisibleChanged += Monster_OnIsVisibleChanged;
+            onionComponent.CurrentFrameChanged += OnionComponent_OnCurrentFrameChanged;
+        }
     }
 
+    /// <summary>
+    /// Removes event handlers from entities.
+    /// </summary>
     void Map_OnObjectRemoved(object? o, ItemEventArgs<IGameObject> e)
     {
         if (e.Item is not RogueLikeEntity entity) return;
@@ -115,9 +130,37 @@ partial class GameScreen
             var openingComponent = entity.AllComponents.GetFirst<OpeningComponent>();
             _openings.Remove(openingComponent);
         }
+
+        if (entity.Layer == (int)GameMap.Layer.Monsters &&
+            entity.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
+        {
+            entity.IsVisibleChanged -= Monster_OnIsVisibleChanged;
+            onionComponent.CurrentFrameChanged -= OnionComponent_OnCurrentFrameChanged;
+        }
     }
 
-    // Recalculates player FOV if an entity that changed its transparency is in view.
+    /// <summary>
+    /// Reacts to map zoom changes.
+    /// </summary>
+    void Map_OnViewZoomChanged(object? o, EventArgs e)
+    {
+        if (_entityInfoWindow.IsVisible)
+            HideEntityInfo();
+
+        var visibleMonsters = Map.Monsters
+            .Where(m => m.IsVisible);
+
+        // Update font size of all visible monsters.
+        foreach (var monster in visibleMonsters)
+        {
+            if (monster.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
+                onionComponent.SetFontSize(Map.FontSizeMultiplier);
+        }
+    }
+
+    /// <summary>
+    /// Recalculates player FOV if an entity that changed its transparency is in view.
+    /// </summary>
     void RogueLikeEntity_OnTransparencyChanged(object? o, ValueChangedEventArgs<bool> e)
     {
         if (o is not RogueLikeEntity door || door.Name != "Door")
@@ -126,5 +169,49 @@ partial class GameScreen
         var playerFOV = Player.AllComponents.GetFirst<PlayerFOVController>();
         if (Map.PlayerFOV.CurrentFOV.Contains(door.Position))
             playerFOV.CalculateFOV();
+    }
+
+    /// <summary>
+    /// Adds or removes monster onion appearance from gamescreen monster layer 
+    /// when monster visibility changes.
+    /// </summary>
+    void Monster_OnIsVisibleChanged(object? o, EventArgs e)
+    {
+        if (o is not RogueLikeEntity monster) return;
+
+        if (monster.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
+        {
+            if (monster.IsVisible)
+            {
+                _monsterLayer.Children.Add(onionComponent.CurrentFrame);
+
+                // Update font size if necessary.
+                if (onionComponent.FontSizeMultiplier != Map.FontSizeMultiplier)
+                    onionComponent.SetFontSize(Map.FontSizeMultiplier);
+            }
+            else
+            {
+                Children.Remove(onionComponent.CurrentFrame);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Replaces monster onion appearance in the gamescreen monster layer.
+    /// </summary>
+    void OnionComponent_OnCurrentFrameChanged(object? o, ValueChangedEventArgs<ILayerStack> e)
+    {
+        if (o is not OnionComponent onionComponent) return;
+        if (onionComponent.Parent is null) return;
+
+        _monsterLayer.Children.Remove(e.OldValue);
+        _monsterLayer.Children.Add(e.NewValue);
+        var viewPosition = Map.DefaultRenderer!.Surface.ViewPosition;
+        e.NewValue.Position = onionComponent.Parent.Position - viewPosition;
+    }
+
+    void Monster_OnPositionChanged(object? o, ValueChangedEventArgs<Point> e)
+    {
+        if (o is not RogueLikeEntity monster) return;
     }
 }

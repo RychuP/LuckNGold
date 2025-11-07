@@ -8,12 +8,12 @@ namespace LuckNGold.World.Monsters.Components;
 internal class IdentityComponent(string name, Race race) : 
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IIdentity
 {
-    public event EventHandler<ValueChangedEventArgs<IAppearance>>? AppearanceChanged;
+    public event EventHandler<ValueChangedEventArgs<Appearance>>? AppearanceChanged;
     public string Name { get; } = name;
-    public IRace Race { get; } = race;
+    public Race Race { get; } = race;
 
-    IAppearance _appearance = new Appearance();
-    public IAppearance Appearance
+    public Appearance _appearance = new();
+    public Appearance Appearance
     {
         get => _appearance;
         set
@@ -25,9 +25,9 @@ internal class IdentityComponent(string name, Race race) :
         }
     }
 
-    void OnAppearanceChanged(IAppearance oldValue, IAppearance newValue)
+    void OnAppearanceChanged(Appearance oldValue, Appearance newValue)
     {
-        var args = new ValueChangedEventArgs<IAppearance>(oldValue, newValue);
+        var args = new ValueChangedEventArgs<Appearance>(oldValue, newValue);
         AppearanceChanged?.Invoke(this, args);
     }
 }
