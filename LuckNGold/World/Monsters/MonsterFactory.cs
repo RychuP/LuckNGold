@@ -42,7 +42,7 @@ static class MonsterFactory
         // Add component that holds identity information.
         player.AllComponents.Add(identityComponent);
 
-        // Add component that represents the equipment worn and carried.
+        // Add component that represents worn and wielded equipment.
         player.AllComponents.Add(new EquipmentComponent());
 
         // Add component that composes appearance of several layers.
