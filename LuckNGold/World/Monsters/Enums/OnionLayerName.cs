@@ -9,6 +9,6 @@ internal enum OnionLayerName
     Beard,
     HairHelmet,
     WeaponNear,
-    WeaponHandRight,
-    ShieldNearLeftHand
+    WeaponRightHand,
+    ShieldLeftHand
 }

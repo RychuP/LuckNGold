@@ -3,14 +3,13 @@ using LuckNGold.World.Monsters.Interfaces;
 using LuckNGold.World.Monsters.Primitives;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
-using System.Net.Http.Headers;
 
 namespace LuckNGold.World.Monsters.Components;
 
 /// <summary>
 /// Component for entities that combine their appearance from multiple layers (like an onion).
 /// </summary>
-internal class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
+partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
 {
     public event EventHandler<ValueChangedEventArgs<ILayerStack>>? CurrentFrameChanged;
 
@@ -105,182 +104,6 @@ internal class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
         CurrentFrame = Frames[frameIndex];
     }
 
-    void UpdateWeaponLayers()
-    {
-
-    }
-
-    /// <summary>
-    /// Updates base (3) layer.
-    /// </summary>
-    void UpdateBaseLayer()
-    {
-        if (Parent == null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
-
-        var identityComponent = Parent.AllComponents.GetFirst<IdentityComponent>();
-        var equipment = Parent.AllComponents.GetFirst<EquipmentComponent>();
-        
-        Race race = (Race)identityComponent.Race; 
-        var appearance = identityComponent.Appearance;
-
-        string raceType = race.RaceType.ToString().ToLower();
-        string skinTone = race.SkinTone switch
-        {
-            SkinTone.Pale => "-pale",
-            SkinTone.Dark => "-dark",
-            _ => string.Empty,
-        };
-        
-        string fontName = $"race-{raceType}-base{skinTone}";
-        int row = 0, column = 0;
-
-        if (race == Race.Human)
-        {
-            if (equipment.Head != null)
-            {
-
-            }
-            else
-            {
-                column = appearance.HairStyle switch
-                {
-                    HairStyle.Bald => 0,
-                    HairStyle.Shaved => 1,
-                    _ => 2,
-                };
-
-                row = appearance switch
-                {
-                    { Age: Age.Young, Face: Face.VariantA, IsAngry: false } => 0,
-                    { Age: Age.Young, IsAngry: true } => 2,
-
-                    { Age: Age.Adult, BeardStyle: BeardStyle.Circle, IsAngry: false } => 11,
-                    { Age: Age.Adult, BeardStyle: BeardStyle.Circle, IsAngry: true } => 12,
-
-                    { Age: Age.Adult, BeardStyle: BeardStyle.Boxed, IsAngry: false } => 13,
-                    { Age: Age.Adult, BeardStyle: BeardStyle.Boxed, IsAngry: true } => 14,
-
-                    { Age: Age.Old, Face: Face.VariantA, BeardStyle: BeardStyle.None, IsAngry: false } => 3,
-                    { Age: Age.Old, Face: Face.VariantB, BeardStyle: BeardStyle.None, IsAngry: false } => 5,
-                    { Age: Age.Old, Face: Face.VariantC, BeardStyle: BeardStyle.None, IsAngry: false } => 6,
-                    { Age: Age.Old, BeardStyle: BeardStyle.None, IsAngry: true } => 7,
-
-                    { Age: Age.Old, Face: Face.VariantA, BeardStyle: BeardStyle.Circle, IsAngry: false } => 4,
-                    { Age: Age.Old, Face: Face.VariantB, BeardStyle: BeardStyle.Circle, IsAngry: false } => 8,
-                    { Age: Age.Old, Face: Face.VariantC, BeardStyle: BeardStyle.Circle, IsAngry: false } => 9,
-                    { Age: Age.Old, BeardStyle: BeardStyle.Circle, IsAngry: true } => 10,
-
-                    _ => 15 // young, variant b, not angry
-                };
-            }
-        }
-
-        SetLayerAppearance(OnionLayerName.Base, fontName, row * 4, column * 3);
-    }
-
-    /// <summary>
-    /// Updates clothes / armour (4) layer.
-    /// </summary>
-    void UpdateClothesArmourLayer()
-    {
-
-    }
-
-    /// <summary>
-    /// Updates beard (5) layer.
-    /// </summary>
-    /// <exception cref="InvalidOperationException"></exception>
-    void UpdateBeardLayer()
-    {
-        if (Parent == null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
-
-        var identityComponent = Parent.AllComponents.GetFirst<IdentityComponent>();
-        var equipment = Parent.AllComponents.GetFirst<EquipmentComponent>();
-
-        Race race = (Race)identityComponent.Race;
-        var appearance = identityComponent.Appearance;
-
-        if (appearance.BeardStyle == BeardStyle.None)
-        {
-            EraseLayer(OnionLayerName.Beard);
-            return;
-        }
-
-        string raceType = race.RaceType.ToString().ToLower();
-        string fontName = string.Empty;
-        int row = 0, column = 0;
-
-        if (race == Race.Human)
-        {
-            if (equipment.Head != null)
-            {
-
-            }
-            else
-            {
-                var beardVariant = (int)appearance.BeardColor + 1;
-                fontName = $"race-{raceType}-beards-{beardVariant}";
-                row = appearance switch
-                {
-                    { BeardStyle: BeardStyle.Circle, IsAngry: true } => 1,
-                    { BeardStyle: BeardStyle.Boxed, IsAngry: false } => 2,
-                    { BeardStyle: BeardStyle.Boxed, IsAngry: true } => 3,
-                    _ => 0 // circle, not angry
-                };
-            }
-        }
-
-        SetLayerAppearance(OnionLayerName.Beard, fontName, row * 4, column * 3);
-    }
-
-    /// <summary>
-    /// Updates hair / helmet (6) layer.
-    /// </summary>
-    void UpdateHairHelmetLayer()
-    {
-        if (Parent == null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
-
-        var identityComponent = Parent.AllComponents.GetFirst<IdentityComponent>();
-        var equipment = Parent.AllComponents.GetFirst<EquipmentComponent>();
-
-        Race race = (Race)identityComponent.Race;
-        var appearance = identityComponent.Appearance;
-
-        string raceType = race.RaceType.ToString().ToLower();
-        string fontName = string.Empty;
-        int row = 0, column = 0;
-
-        if (race == Race.Human)
-        {
-            if (equipment.Head != null)
-            {
-
-            }
-            else
-            {
-                if (appearance.HairStyle == HairStyle.Bald ||
-                    appearance.HairStyle == HairStyle.Shaved)
-                {
-                    EraseLayer(OnionLayerName.HairHelmet);
-                    return;
-                }
-
-                var hairVariant = (int)appearance.HairColor + 1;
-                fontName = $"race-{raceType}-hair-{hairVariant}";
-                column = (int)appearance.HairCut;
-                row = appearance.HairStyle switch
-                {
-                    HairStyle.Long => 1,
-                    _ => 0
-                };
-            }
-        }
-
-        SetLayerAppearance(OnionLayerName.HairHelmet, fontName, row * 4, column * 3);
-    }
 
     /// <summary>
     /// Sets all frames on the given layer to the font provided and glyphs that
@@ -334,9 +157,15 @@ internal class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
     /// </summary>
     void UpdateLayers()
     {
+        UpdateWeaponFarLayer();
+        UpdateShieldFarLayer();
         UpdateBaseLayer();
+        UpdateClothesArmourLayer();
         UpdateBeardLayer();
         UpdateHairHelmetLayer();
+        UpdateWeaponNearLayer();
+        UpdateWeaponRightHandLayer();
+        UpdateShieldLeftHandLayer();
     }
 
     void AddEventHandlers()

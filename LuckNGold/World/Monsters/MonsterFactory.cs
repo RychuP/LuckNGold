@@ -16,20 +16,27 @@ static class MonsterFactory
             Name = "Player",
         };
 
-        // Generate appearance.
         var rnd = GlobalRandom.DefaultRNG;
         var identityComponent = new IdentityComponent("Henry", Race.Human);
+        var age = (Age)rnd.NextInt(3);
         var hairCut = (HairCut)rnd.NextInt(4);
         var hairStyle = (HairStyle)rnd.NextInt(4);
-        var beardStyle = (BeardStyle)rnd.NextInt(1, 3);
-        bool isAngry = rnd.NextBool();
+        
+        // Not all beard styles are available for each age.
+        BeardStyle beardStyle = age switch
+        {
+            Age.Adult => (BeardStyle)rnd.NextInt(1, 3),
+            Age.Old => (BeardStyle)rnd.NextInt(0, 2),
+            _ => BeardStyle.None
+        };
+
+        // Create appearance.
         identityComponent.Appearance = identityComponent.Appearance with 
         { 
-            Age = Age.Adult, 
+            Age = age, 
             HairStyle = hairStyle,
             HairCut = hairCut, 
-            BeardStyle = beardStyle, 
-            IsAngry = isAngry,
+            BeardStyle = beardStyle
         };
 
         // Add component that holds identity information.

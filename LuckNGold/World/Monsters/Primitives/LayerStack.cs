@@ -76,8 +76,8 @@ internal class LayerStack : ScreenSurface, ILayerStack
     public IOnionLayer WeaponNear => GetLayer(OnionLayerName.WeaponNear);
 
     /// <inheritdoc/>
-    public IOnionLayer WeaponHandRight => GetLayer(OnionLayerName.WeaponHandRight);
+    public IOnionLayer WeaponRightHand => GetLayer(OnionLayerName.WeaponRightHand);
 
     /// <inheritdoc/>
-    public IOnionLayer ShieldNearLeftHand => GetLayer(OnionLayerName.ShieldNearLeftHand);
+    public IOnionLayer ShieldLeftHand => GetLayer(OnionLayerName.ShieldLeftHand);
 }
