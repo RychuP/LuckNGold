@@ -7,6 +7,9 @@ using SadRogue.Integration;
 
 namespace LuckNGold.World.Monsters;
 
+/// <summary>
+/// Factory that produces monster entities.
+/// </summary>
 static class MonsterFactory
 {
     public static RogueLikeEntity Player()
@@ -45,7 +48,7 @@ static class MonsterFactory
         // Add component that represents worn and wielded equipment.
         player.AllComponents.Add(new EquipmentComponent());
 
-        // Add component that composes appearance of several layers.
+        // Add component that assembles appearance of several layers.
         player.AllComponents.Add(new OnionComponent());
 
         // Add inventory component.
@@ -54,11 +57,20 @@ static class MonsterFactory
         // Add wallet to hold coins.
         player.AllComponents.Add(new WalletComponent());
 
-        // Add quick access component displayed at the bottom of the screen.
+        // Add quick access inventory component (displayed at the bottom of the screen).
         player.AllComponents.Add(new QuickAccessComponent());
 
         // Add component for updating map's player FOV as they move.
         player.AllComponents.Add(new PlayerFOVController());
+
+        // Add component that tracks health and transient effects placed on the player.
+        player.AllComponents.Add(new HealthComponent(50));
+
+        // Add component that tracks stats of the player.
+        player.AllComponents.Add(new StatsComponent(2, 3, 1));
+
+        // Add component that tracks experience and level of the player.
+        player.AllComponents.Add(new LevelComponent());
 
         return player;
     }

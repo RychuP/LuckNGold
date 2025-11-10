@@ -2,10 +2,11 @@
 
 partial class OnionComponent
 {
+
     /// <summary>
-    /// Updates weapon near - layer 7.
+    /// Updates shoes, boots - layer 4.
     /// </summary>
-    void UpdateWeaponNearLayer()
+    void UpdateFootwearLayer()
     {
 
     }

@@ -117,12 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AmberBannerDescription" xml:space="preserve">
-    <value>A vibrant field of #1amber occupies the middle, its color suggesting something precious like solidified sunlight or ancient resin.</value>
-  </data>
-  <data name="BannerDescription" xml:space="preserve">
-    <value>A #0banner of heavy cloth hangs on the wall. The fabric is worn and fraying at the edges, giving it the appearance of an ancient relic. The image at its center was once something significant, perhaps a symbol of rank, an elemental sigil, or a forgotten noble house. </value>
-  </data>
   <data name="BlueFountainDescription" xml:space="preserve">
     <value>Water glows with a strange, cool #1blue #1light, casting dancing reflections on the drab walls and filling the space with a soft, ethereal illumination, its purpose shrouded in the quiet mystery of the room.</value>
   </data>
@@ -144,26 +138,14 @@
   <data name="CratesDescription" xml:space="preserve">
     <value>A stack of imposing, #0large #0wooden #0crates, their bulk casting deep shadows across the floor. The wood is thick and stained dark with age and moisture, and heavy iron straps, pitted with rust, secure their lids. They appear incredibly heavy and sturdy, as if meant to hold and protect valuable or dangerous cargo for a long journey. Some have a few broken or splintered planks, revealing nothing but darkness within.</value>
   </data>
-  <data name="DiamondBannerDescription" xml:space="preserve">
-    <value>A stark symbol of pure #1diamond blue remains clear and untarnished. It is not bright or brilliant, but holds a soft, enduring glow, as if capturing all the faint light and holding it fast. </value>
-  </data>
-  <data name="EmeraldBannerDescription" xml:space="preserve">
-    <value>Striking #1emerald color in the middle remains strangely vivid, its bright green a stark and captivating splash of life in the otherwise quiet and drab chamber. </value>
-  </data>
   <data name="FountainDescription" xml:space="preserve">
     <value>An aged #0stone #0fountain, its basin filled with running water that gurgles and splashes softly. The craftsmanship is intricate, depicting ancient, weathered faces carved into the lip of the fountain. They seem to stare out with a quiet, knowing gaze, their features worn smooth by centuries of flowing water.</value>
   </data>
   <data name="ClosedGateDescription" xml:space="preserve">
     <value>A large #0gate of blackened iron, its heavy bars thick as a man's arm and twisted into complex, arcane patterns. The rust has eaten away at much of the surface, but where it remains, it speaks of a forgotten craftsmanship. There is no visible latch or handle, only a solid stone arch surrounding the rusted metal, suggesting that whatever #1mechanisms control the gate are either deep within the stone or long since removed.</value>
   </data>
-  <data name="OnyxBannerDescription" xml:space="preserve">
-    <value>Large, rectangular piece of pure #1onyx cloth has been meticulously sewn into the fabric, its polished grayness standing in contrast to the light background. </value>
-  </data>
   <data name="RedFountainDescription" xml:space="preserve">
     <value>Water glows with a strange, #1red #1light, casting dancing reflections on the drab walls and coloring the ancient faces in an eerie, unsettling hue. A forgotten story or ritual now only whispered by the endless, red-tinged flow.</value>
-  </data>
-  <data name="RubyBannerDescription" xml:space="preserve">
-    <value>Rectangular symbol of deep #1ruby red at its heart remains oddly untouched by decay. It whispers of secrets that no longer have a voice and a story that has been obscured by time, leaving behind only the faintest, yet most captivating, trace.</value>
   </data>
   <data name="ShacklesDescription" xml:space="preserve">
     <value>Rusting iron #0shackles hanging from a heavy iron ring set into the wall. A length of thick, corroded chain trails down from the cuff. The metal is rough and cold to the touch, and the clanking of the empty restraints echoes menacingly in the silence.</value>
@@ -209,5 +191,53 @@
   </data>
   <data name="LeverDescription" xml:space="preserve">
     <value>A thick, #0heavy #0iron #0lever juts out from the cold floor, its surface rough with corrosion and age. It is set within a solid metal mount, bolted deep into the rock, giving it an appearance of immense strength and permanence. The handle is worn smooth in the center, as if from countless hands pulling it over the centuries. The heavy, unyielding feel of it in your hand and the quiet in the room tell of a potential, but forgotten purpose.</value>
+  </data>
+  <data name="OnyxGemstoneDescription" xml:space="preserve">
+    <value>Onyx gemstone description here.</value>
+  </data>
+  <data name="AmberGemstoneDescription" xml:space="preserve">
+    <value>Amber gemstone description here.</value>
+  </data>
+  <data name="EmeraldGemstoneDescription" xml:space="preserve">
+    <value>Emerald gemstone description here.</value>
+  </data>
+  <data name="RubyGemstoneDescription" xml:space="preserve">
+    <value>Ruby gemstone description here.</value>
+  </data>
+  <data name="DiamondGemstoneDescription" xml:space="preserve">
+    <value>Diamond gemstone description here.</value>
+  </data>
+  <data name="PeasantClothingDescription" xml:space="preserve">
+    <value>Peasant clothing description goes here.</value>
+  </data>
+  <data name="OnyxBannerDescription" xml:space="preserve">
+    <value>Large, rectangular piece of pure #1onyx cloth has been meticulously sewn into the fabric, its polished grayness standing in contrast to the light background. </value>
+  </data>
+  <data name="RubyBannerDescription" xml:space="preserve">
+    <value>Rectangular symbol of deep #1ruby red at its heart remains oddly untouched by decay. It whispers of secrets that no longer have a voice and a story that has been obscured by time, leaving behind only the faintest, yet most captivating, trace.</value>
+  </data>
+  <data name="DiamondBannerDescription" xml:space="preserve">
+    <value>A stark symbol of pure #1diamond blue remains clear and untarnished. It is not bright or brilliant, but holds a soft, enduring glow, as if capturing all the faint light and holding it fast. </value>
+  </data>
+  <data name="AmberBannerDescription" xml:space="preserve">
+    <value>A vibrant field of #1amber occupies the middle, its color suggesting something precious like solidified sunlight or ancient resin.</value>
+  </data>
+  <data name="EmeraldBannerDescription" xml:space="preserve">
+    <value>Striking #1emerald color in the middle remains strangely vivid, its bright green a stark and captivating splash of life in the otherwise quiet and drab chamber. </value>
+  </data>
+  <data name="BannerDescription" xml:space="preserve">
+    <value>A #0banner of heavy cloth hangs on the wall. The fabric is worn and fraying at the edges, giving it the appearance of an ancient relic. The image at its center was once something significant, perhaps a symbol of rank, an elemental sigil, or a forgotten noble house. </value>
+  </data>
+  <data name="PeasantClothingName" xml:space="preserve">
+    <value>Peasant Clothing</value>
+  </data>
+  <data name="ArmourTag" xml:space="preserve">
+    <value>Armour</value>
+  </data>
+  <data name="ClothingTag" xml:space="preserve">
+    <value>Clothing</value>
+  </data>
+  <data name="RobeTag" xml:space="preserve">
+    <value>Robe</value>
   </data>
 </root>

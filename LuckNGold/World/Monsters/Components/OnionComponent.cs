@@ -160,12 +160,13 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
         UpdateWeaponFarLayer();
         UpdateShieldFarLayer();
         UpdateBaseLayer();
-        UpdateClothesArmourLayer();
+        UpdateBodywearLayer();
+        UpdateFootwearLayer();
         UpdateBeardLayer();
-        UpdateHairHelmetLayer();
+        UpdateHeadwearLayer();
         UpdateWeaponNearLayer();
-        UpdateWeaponRightHandLayer();
-        UpdateShieldLeftHandLayer();
+        UpdateRightHandLayer();
+        UpdateLeftHandLayer();
     }
 
     void AddEventHandlers()

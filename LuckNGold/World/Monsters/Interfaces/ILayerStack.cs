@@ -20,24 +20,29 @@ internal interface ILayerStack : IOnionLayer
     IOnionLayer GetLayer(OnionLayerName layerName);
 
     /// <summary>
-    /// Layer 1 for weapons far.
+    /// Layer 0 for weapons far.
     /// </summary>
     IOnionLayer WeaponFar { get; }
 
     /// <summary>
-    /// Layer 2 for shields far.
+    /// Layer 1 for shields far.
     /// </summary>
     IOnionLayer ShieldFar { get; }
 
     /// <summary>
-    /// Layer 3 for base appearance.
+    /// Layer 2 for base appearance.
     /// </summary>
     IOnionLayer Base { get; }
 
     /// <summary>
-    /// Layer 4 for clothes / armour.
+    /// Layer 3 for clothes, robes, armour.
     /// </summary>
-    IOnionLayer ClothesArmour { get; }
+    IOnionLayer Bodywear { get; }
+
+    /// <summary>
+    /// Layer 4 for shoes, boots.
+    /// </summary>
+    IOnionLayer Footwear { get; }
 
     /// <summary>
     /// Layer 5 for beard.
@@ -45,9 +50,9 @@ internal interface ILayerStack : IOnionLayer
     IOnionLayer Beard { get; }
 
     /// <summary>
-    /// Layer 6 for hair / helmet.
+    /// Layer 6 for hair, helmets.
     /// </summary>
-    IOnionLayer HairHelmet { get; }
+    IOnionLayer Headwear { get; }
 
     /// <summary>
     /// Layer 7 for weapon near.
@@ -55,12 +60,12 @@ internal interface ILayerStack : IOnionLayer
     IOnionLayer WeaponNear { get; }
 
     /// <summary>
-    /// Layer 8 for weapon hand / empty right hand.
+    /// Layer 8 for empty right hand, weapon hand.
     /// </summary>
-    IOnionLayer WeaponRightHand { get; }
+    IOnionLayer RightHand { get; }
 
     /// <summary>
-    /// Layer 9 for shield near / empty left hand.
+    /// Layer 9 for empty left hand, shield near.
     /// </summary>
-    IOnionLayer ShieldLeftHand { get; }
+    IOnionLayer LeftHand { get; }
 }

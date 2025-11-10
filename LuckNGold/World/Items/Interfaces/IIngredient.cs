@@ -3,7 +3,7 @@
 namespace LuckNGold.World.Items.Interfaces;
 
 /// <summary>
-/// It can be used in crafting recepies.
+/// It can be used in crafting recepies. 
 /// </summary>
 internal interface IIngredient : IStackable
 {

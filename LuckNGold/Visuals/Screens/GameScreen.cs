@@ -26,6 +26,9 @@ partial class GameScreen : ScreenObject
     // Layer that displays monster onion appearances.
     readonly MonsterLayer _monsterLayer;
 
+    // Reference to the component added to the map, so that it can sometimes be called manually.
+    readonly FollowTargetComponent _followTargetComponent;
+
     IEnumerable<GameScreenKeybindingsComponent> KeybindingsComponents
     {
         get
@@ -65,9 +68,9 @@ partial class GameScreen : ScreenObject
         Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
 
         // Create a component that centers view on player as they move.
-        var followTargetComponent = new FollowTargetComponent(Player);
-        Map.DefaultRenderer!.SadComponents.Add(followTargetComponent);
-        followTargetComponent.ViewChanged += FollowTargetComponent_OnViewChanged;
+        _followTargetComponent = new FollowTargetComponent(Player);
+        Map.DefaultRenderer!.SadComponents.Add(_followTargetComponent);
+        _followTargetComponent.ViewChanged += FollowTargetComponent_OnViewChanged;
 
         // Debug screens with various testing info.
         AddDebugOverlays();
@@ -125,7 +128,6 @@ partial class GameScreen : ScreenObject
             {
                 var viewPosition = Map.DefaultRenderer!.Surface.ViewPosition;
                 onionComponent.CurrentFrame.Position = monster.Position - viewPosition;
-                //onionComponent.SetPosition(monster.Position - viewPosition);
             }
         }
     }

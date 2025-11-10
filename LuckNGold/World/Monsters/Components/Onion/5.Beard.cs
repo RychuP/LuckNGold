@@ -6,7 +6,7 @@ namespace LuckNGold.World.Monsters.Components;
 partial class OnionComponent
 {
     /// <summary>
-    /// Updates beard (5) layer.
+    /// Updates beard - layer 5.
     /// </summary>
     /// <exception cref="InvalidOperationException"></exception>
     void UpdateBeardLayer()

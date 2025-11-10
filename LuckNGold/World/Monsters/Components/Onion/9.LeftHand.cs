@@ -6,9 +6,9 @@ namespace LuckNGold.World.Monsters.Components;
 partial class OnionComponent
 {
     /// <summary>
-    /// Updates shield near / empty left hand (9) layer.
+    /// Updates empty left hand, shield near - layer 9.
     /// </summary>
-    void UpdateShieldLeftHandLayer()
+    void UpdateLeftHandLayer()
     {
         if (Parent == null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
@@ -45,6 +45,6 @@ partial class OnionComponent
             }
         }
 
-        SetLayerAppearance(OnionLayerName.ShieldLeftHand, fontName, row * 4, column * 3);
+        SetLayerAppearance(OnionLayerName.LeftHand, fontName, row * 4, column * 3);
     }
 }

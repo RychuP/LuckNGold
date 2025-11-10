@@ -210,6 +210,7 @@ partial class GameScreen
         e.NewValue.Position = onionComponent.Parent.Position - viewPosition;
     }
 
+    // Unused for now.
     void Monster_OnPositionChanged(object? o, ValueChangedEventArgs<Point> e)
     {
         if (o is not RogueLikeEntity monster) return;

@@ -5,20 +5,20 @@ using SadRogue.Integration;
 namespace LuckNGold.World.Monsters.Interfaces;
 
 /// <summary>
-/// It can hold entities with <see cref="IEquippable"/> in <see cref="BodyPart"/> slots.
+/// It can hold entities with <see cref="IEquippable"/> in <see cref="EquipSlot"/> slots.
 /// </summary>
 internal interface IEquipment
 {
     event EventHandler<ValueChangedEventArgs<RogueLikeEntity?>>? EquipmentChanged;
 
-    IReadOnlyDictionary<BodyPart, RogueLikeEntity?> Equipment { get; }
+    IReadOnlyDictionary<EquipSlot, RogueLikeEntity?> Equipment { get; }
 
     bool Equip(RogueLikeEntity item, out RogueLikeEntity? unequippedItem);
 
     bool Unequip(RogueLikeEntity item);
 
     RogueLikeEntity? Head { get; }
-    RogueLikeEntity? Torso { get; }
+    RogueLikeEntity? Body { get; }
     RogueLikeEntity? Feet { get; }
     RogueLikeEntity? LeftHand { get; }
     RogueLikeEntity? RightHand { get; }

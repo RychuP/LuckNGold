@@ -14,20 +14,20 @@ internal class EquipmentComponent : RogueLikeComponentBase<RogueLikeEntity>, IEq
 {
     public event EventHandler<ValueChangedEventArgs<RogueLikeEntity?>>? EquipmentChanged;
 
-    readonly Dictionary<BodyPart, RogueLikeEntity?> _equipment = new()
+    readonly Dictionary<EquipSlot, RogueLikeEntity?> _equipment = new()
     {
-        { BodyPart.Head, null },
-        { BodyPart.Torso, null },
-        { BodyPart.Feet, null },
-        { BodyPart.LeftHand, null },
-        { BodyPart.RightHand, null },
+        { EquipSlot.Head, null },
+        { EquipSlot.Body, null },
+        { EquipSlot.Feet, null },
+        { EquipSlot.LeftHand, null },
+        { EquipSlot.RightHand, null },
     };
-    public IReadOnlyDictionary<BodyPart, RogueLikeEntity?> Equipment => _equipment;
-    public RogueLikeEntity? Head => Equipment[BodyPart.Head];
-    public RogueLikeEntity? Torso => Equipment[BodyPart.Torso];
-    public RogueLikeEntity? Feet => Equipment[BodyPart.Feet];
-    public RogueLikeEntity? LeftHand => Equipment[BodyPart.LeftHand];
-    public RogueLikeEntity? RightHand => Equipment[BodyPart.RightHand];
+    public IReadOnlyDictionary<EquipSlot, RogueLikeEntity?> Equipment => _equipment;
+    public RogueLikeEntity? Head => Equipment[EquipSlot.Head];
+    public RogueLikeEntity? Body => Equipment[EquipSlot.Body];
+    public RogueLikeEntity? Feet => Equipment[EquipSlot.Feet];
+    public RogueLikeEntity? LeftHand => Equipment[EquipSlot.LeftHand];
+    public RogueLikeEntity? RightHand => Equipment[EquipSlot.RightHand];
 
     /// <summary>
     /// Initializes an instance of <see cref="EquipmentComponent"/> class.

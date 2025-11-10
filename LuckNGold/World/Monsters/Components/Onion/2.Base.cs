@@ -6,7 +6,7 @@ namespace LuckNGold.World.Monsters.Components;
 partial class OnionComponent
 {
     /// <summary>
-    /// Updates base (3) layer.
+    /// Updates base appearance - layer 2.
     /// </summary>
     void UpdateBaseLayer()
     {

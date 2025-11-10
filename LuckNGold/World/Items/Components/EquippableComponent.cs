@@ -9,8 +9,8 @@ namespace LuckNGold.World.Items.Components;
 /// Component for an item entity that can be equipped.
 /// </summary>
 /// <param name="slot">Slot where the item can be placed.</param>
-internal class EquippableComponent(BodyPart slot) :
+internal class EquippableComponent(EquipSlot slot) :
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IEquippable
 {
-    public BodyPart Slot => slot;
+    public EquipSlot Slot => slot;
 }

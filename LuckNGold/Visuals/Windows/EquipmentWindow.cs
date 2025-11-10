@@ -19,11 +19,11 @@ internal class EquipmentWindow : ScreenSurface
     public EquipmentWindow() : base(SlotSize * 3 + SlotSpacing * 2, 
         SlotSize * 3 + SlotSpacing * 2)
     {
-        AddSlot(BodyPart.Head, GetTranslatedPosition(1, 0), GetPlaceholder("Head"));
-        AddSlot(BodyPart.Torso, GetTranslatedPosition(1, 1), GetPlaceholder("Torso"));
-        AddSlot(BodyPart.Feet, GetTranslatedPosition(1, 2), GetPlaceholder("Feet"));
-        AddSlot(BodyPart.LeftHand, GetTranslatedPosition(0, 1), GetPlaceholder("Weapon"));
-        AddSlot(BodyPart.RightHand, GetTranslatedPosition(2, 1), GetPlaceholder("Shield"));
+        AddSlot(EquipSlot.Head, GetTranslatedPosition(1, 0), GetPlaceholder("Head"));
+        AddSlot(EquipSlot.Body, GetTranslatedPosition(1, 1), GetPlaceholder("Torso"));
+        AddSlot(EquipSlot.Feet, GetTranslatedPosition(1, 2), GetPlaceholder("Feet"));
+        AddSlot(EquipSlot.LeftHand, GetTranslatedPosition(0, 1), GetPlaceholder("Weapon"));
+        AddSlot(EquipSlot.RightHand, GetTranslatedPosition(2, 1), GetPlaceholder("Shield"));
     }
 
     public IEnumerable<Slot> Slots => Children
@@ -43,7 +43,7 @@ internal class EquipmentWindow : ScreenSurface
         return glyphDef.CreateColoredGlyph();
     }
 
-    void AddSlot(BodyPart bodyPart, Point position, ColoredGlyph placeHolder)
+    void AddSlot(EquipSlot bodyPart, Point position, ColoredGlyph placeHolder)
     {
         var slot = new Slot(SlotSize, $"{bodyPart}", placeHolder)
         {

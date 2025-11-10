@@ -1,7 +1,11 @@
-﻿using LuckNGold.Primitives;
+﻿using GoRogue.Random;
+using LuckNGold.Primitives;
+using LuckNGold.Resources;
+using LuckNGold.World.Common.Components;
 using LuckNGold.World.Items.Components;
 using LuckNGold.World.Items.Enums;
 using LuckNGold.World.Map;
+using LuckNGold.World.Monsters.Enums;
 using SadRogue.Integration;
 
 namespace LuckNGold.World.Items;
@@ -32,34 +36,64 @@ static class ItemFactory
         return coin;
     }
 
+    public static RogueLikeEntity PeasantClothing()
+    {
+        var clothing = GetEntity("PeasantClothing", Strings.PeasantClothingName, 
+            Strings.PeasantClothingDescription);
+        clothing.AllComponents.Add(new EquippableComponent(EquipSlot.Body));
+        return clothing;
+    }
+
     public static RogueLikeEntity Onyx() =>
-        Gemstone("Onyx", 2, Material.Onyx);
+        Gemstone("Onyx", 2, Strings.OnyxGemstoneDescription);
 
     public static RogueLikeEntity Amber() =>
-        Gemstone("Amber", 4, Material.Amber);
+        Gemstone("Amber", 4, Strings.AmberGemstoneDescription);
 
     public static RogueLikeEntity Emerald() =>
-        Gemstone("Emerald", 8, Material.Emerald);
+        Gemstone("Emerald", 8, Strings.EmeraldGemstoneDescription);
 
     public static RogueLikeEntity Ruby() =>
-        Gemstone("Ruby", 16, Material.Ruby);
+        Gemstone("Ruby", 16, Strings.RubyGemstoneDescription);
 
     public static RogueLikeEntity Diamond() =>
-        Gemstone("Diamond", 32, Material.Diamond);
+        Gemstone("Diamond", 32, Strings.DiamondGemstoneDescription);
 
-    static RogueLikeEntity Gemstone(string name, int value, Material material)
+    static RogueLikeEntity Gemstone(string name, int value, string description)
     {
-        if (material < Material.Onyx || material > Material.Diamond)
-            throw new ArgumentException("Incorrect material for a gemstone entity.");
-
-        var glyphDef = Program.Font.GetGlyphDefinition(name);
-        var appearance = glyphDef.CreateColoredGlyph();
-        var gemstone = new RogueLikeEntity(appearance, layer: (int)GameMap.Layer.Items)
-        {
-            Name = name
-        };
+        var gemstone = GetEntity(name, description: description);
         gemstone.AllComponents.Add(new ValueComponent(value));
-        gemstone.AllComponents.Add(new IngredientComponent(material, 1, 15));
         return gemstone;
+    }
+
+    static AnimatedRogueLikeEntity GetAnimatedEntity(string animationName, string name = "",
+        string description = "", bool animationIsReversable = false)
+    {
+        var entity = new AnimatedRogueLikeEntity(animationName, animationIsReversable,
+            GameMap.Layer.Items)
+        { Name = name != "" ? name : animationName };
+        AddDescriptionComponent(entity, description);
+        return entity;
+    }
+
+    static RogueLikeEntity GetEntity(string definitionName, string name = "", string description = "")
+    {
+        var glyphDef = Program.Font.GetGlyphDefinition(definitionName);
+        var appearance = glyphDef.CreateColoredGlyph();
+        var entity = new RogueLikeEntity(appearance, layer: (int)GameMap.Layer.Items)
+        {
+            Name = !string.IsNullOrEmpty(name) ? name : definitionName,
+        };
+        AddDescriptionComponent(entity, description);
+        return entity;
+    }
+
+    static void AddDescriptionComponent(RogueLikeEntity entity, string description)
+    {
+        if (!string.IsNullOrEmpty(description))
+        {
+            var descriptionComponent = new DescriptionComponent(description);
+            entity.AllComponents.Add(descriptionComponent);
+        }
     }
 }

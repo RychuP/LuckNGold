@@ -9,7 +9,7 @@ namespace LuckNGold.World.Items.Interfaces;
 internal interface IEquippable : ICarryable
 {
     /// <summary>
-    /// <see cref="IEquipment"/> slot where the <see cref="IEquippable"/> can be placed.
+    /// Slot in <see cref="IEquipment"/> where the <see cref="IEquippable"/> can be placed.
     /// </summary>
-    BodyPart Slot { get; }
+    EquipSlot Slot { get; }
 }

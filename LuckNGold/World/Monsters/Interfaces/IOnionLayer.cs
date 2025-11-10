@@ -7,6 +7,14 @@ namespace LuckNGold.World.Monsters.Interfaces;
 /// </summary>
 internal interface IOnionLayer : IScreenSurface
 {
+    /// <summary>
+    /// Name of the layer.
+    /// </summary>
     OnionLayerName Name { get; }
+
+    /// <summary>
+    /// Sets glyph in the only cell of the layer.
+    /// </summary>
+    /// <param name="glyph">Glyph index to be set.</param>
     void SetGlyph(int glyph);
 }

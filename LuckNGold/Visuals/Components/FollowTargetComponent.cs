@@ -1,4 +1,5 @@
-﻿using SadConsole.Components;
+﻿using SadConsole;
+using SadConsole.Components;
 
 namespace LuckNGold.Visuals.Components;
 
@@ -12,6 +13,7 @@ internal class FollowTargetComponent(IScreenObject target) : UpdateComponent
 
     Point _targetPosition = Point.None;
     Rectangle _view = Rectangle.Empty;
+    IScreenSurface? _host;
 
     IScreenObject _target = target;
     /// <summary>
@@ -32,27 +34,41 @@ internal class FollowTargetComponent(IScreenObject target) : UpdateComponent
     /// <inheritdoc/>
     public override void OnAdded(IScreenObject host)
     {
-        if (host is not IScreenSurface)
+        if (_host != null)
+            throw new InvalidOperationException("Component can only be added to one host.");
+        if (host is not IScreenSurface screenSurface)
             throw new ArgumentException("Component can only be added to an IScreenSurface.");
+        _host = screenSurface;
+    }
+
+    public override void OnRemoved(IScreenObject host)
+    {
+        base.OnRemoved(host);
+        _host = null;
     }
 
     public override void Update(IScreenObject host, TimeSpan delta)
     {
-        if (host is not IScreenSurface screenSurface) return;
-
-        if (_targetPosition != _target.Position || _view != screenSurface.Surface.View)
+        if (_targetPosition != _target.Position || _view != _host.Surface.View)
         {
-            // Update cached target position.
-            _targetPosition = _target.Position;
+            CenterViewOnTarget();
+        }
+    }
 
-            // Calculate new rectangle for the view.
-            screenSurface.Surface.View = screenSurface.Surface.View.WithCenter(_targetPosition);
-            if (screenSurface.Surface.View != _view)
-            {
-                // Update cached view.
-                _view = screenSurface.Surface.View;
-                OnViewChanged();
-            }
+    public void CenterViewOnTarget()
+    {
+        if (_host is null) return;
+
+        // Update cached target position.
+        _targetPosition = _target.Position;
+
+        // Calculate new rectangle for the view. 
+        _host.Surface.View = _host.Surface.View.WithCenter(_targetPosition);
+        if (_host.Surface.View != _view)
+        {
+            // Update cached view.
+            _view = _host.Surface.View;
+            OnViewChanged();
         }
     }
 

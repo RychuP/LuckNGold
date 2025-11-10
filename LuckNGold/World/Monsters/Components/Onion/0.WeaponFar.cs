@@ -5,9 +5,9 @@ namespace LuckNGold.World.Monsters.Components;
 partial class OnionComponent
 {
     /// <summary>
-    /// Updates shield far (2) layer.
+    /// Updates weapon far - layer 0.
     /// </summary>
-    void UpdateShieldFarLayer()
+    void UpdateWeaponFarLayer()
     {
         if (Parent == null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
@@ -16,19 +16,19 @@ partial class OnionComponent
         string fontName = string.Empty;
         int row = 0, column = 0;
 
-        // Wielding a shield in the left hand.
-        if (equipment.LeftHand != null)
+        // Wielding a weapon in the right hand.
+        if (equipment.RightHand != null)
         {
 
         }
 
-        // Left hand empty.
+        // Right hand empty.
         else
         {
-            EraseLayer(OnionLayerName.ShieldFar);
+            EraseLayer(OnionLayerName.WeaponFar);
             return;
         }
 
-        SetLayerAppearance(OnionLayerName.ShieldFar, fontName, row * 4, column * 3);
+        SetLayerAppearance(OnionLayerName.WeaponFar, fontName, row * 4, column * 3);
     }
 }

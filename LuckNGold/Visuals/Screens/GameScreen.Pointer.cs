@@ -17,7 +17,7 @@ partial class GameScreen
     public void ShowPointer()
     {
         Map.AddEntity(Pointer, Player.Position);
-        SetFollowComponentsTarget(Pointer);
+        SetFollowComponentTarget(Pointer);
         SadComponents.Remove(_playerKeybindingsComponent);
         SadComponents.Add(_pointerKeybindingsComponent);
     }
@@ -25,14 +25,15 @@ partial class GameScreen
     public void HidePointer()
     {
         Map.RemoveEntity(Pointer);
-        SetFollowComponentsTarget(Player);
+        SetFollowComponentTarget(Player);
         if (_entityInfoWindow.IsVisible)
             HideEntityInfo();
         SadComponents.Remove(_pointerKeybindingsComponent);
         SadComponents.Add(_playerKeybindingsComponent);
+        _followTargetComponent.CenterViewOnTarget();
     }
 
-    void SetFollowComponentsTarget(RogueLikeEntity target)
+    void SetFollowComponentTarget(RogueLikeEntity target)
     {
         var mapFollowTargetComponent = Map.DefaultRenderer!.SadComponents
             .Where(c => c is FollowTargetComponent).First() as FollowTargetComponent;

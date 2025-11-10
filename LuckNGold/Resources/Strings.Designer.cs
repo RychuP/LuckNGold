@@ -79,6 +79,24 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amber gemstone description here..
+        /// </summary>
+        internal static string AmberGemstoneDescription {
+            get {
+                return ResourceManager.GetString("AmberGemstoneDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Armour.
+        /// </summary>
+        internal static string ArmourTag {
+            get {
+                return ResourceManager.GetString("ArmourTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A #0banner of heavy cloth hangs on the wall. The fabric is worn and fraying at the edges, giving it the appearance of an ancient relic. The image at its center was once something significant, perhaps a symbol of rank, an elemental sigil, or a forgotten noble house. .
         /// </summary>
         internal static string BannerDescription {
@@ -160,6 +178,15 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clothing.
+        /// </summary>
+        internal static string ClothingTag {
+            get {
+                return ResourceManager.GetString("ClothingTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A stack of imposing, #0large #0wooden #0crates, their bulk casting deep shadows across the floor. The wood is thick and stained dark with age and moisture, and heavy iron straps, pitted with rust, secure their lids. They appear incredibly heavy and sturdy, as if meant to hold and protect valuable or dangerous cargo for a long journey. Some have a few broken or splintered planks, revealing nothing but darkness within..
         /// </summary>
         internal static string CratesDescription {
@@ -174,6 +201,15 @@ namespace LuckNGold.Resources {
         internal static string DiamondBannerDescription {
             get {
                 return ResourceManager.GetString("DiamondBannerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diamond gemstone description here..
+        /// </summary>
+        internal static string DiamondGemstoneDescription {
+            get {
+                return ResourceManager.GetString("DiamondGemstoneDescription", resourceCulture);
             }
         }
         
@@ -201,6 +237,15 @@ namespace LuckNGold.Resources {
         internal static string EmeraldBannerDescription {
             get {
                 return ResourceManager.GetString("EmeraldBannerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Emerald gemstone description here..
+        /// </summary>
+        internal static string EmeraldGemstoneDescription {
+            get {
+                return ResourceManager.GetString("EmeraldGemstoneDescription", resourceCulture);
             }
         }
         
@@ -259,11 +304,38 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Onyx gemstone description here..
+        /// </summary>
+        internal static string OnyxGemstoneDescription {
+            get {
+                return ResourceManager.GetString("OnyxGemstoneDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Heavy, blackened bars pulled to the side and the deep grooves in the stone where the #0gate once slid. It did not #1retract completely. A jagged, broken section of the heavy iron bars remains jutting out from the opening, a rusted tooth in the mouth of the stone, a testimony to the violent force that tore it open..
         /// </summary>
         internal static string OpenGateDescription {
             get {
                 return ResourceManager.GetString("OpenGateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Peasant clothing description goes here..
+        /// </summary>
+        internal static string PeasantClothingDescription {
+            get {
+                return ResourceManager.GetString("PeasantClothingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Peasant Clothing.
+        /// </summary>
+        internal static string PeasantClothingName {
+            get {
+                return ResourceManager.GetString("PeasantClothingName", resourceCulture);
             }
         }
         
@@ -277,11 +349,29 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Robe.
+        /// </summary>
+        internal static string RobeTag {
+            get {
+                return ResourceManager.GetString("RobeTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rectangular symbol of deep #1ruby red at its heart remains oddly untouched by decay. It whispers of secrets that no longer have a voice and a story that has been obscured by time, leaving behind only the faintest, yet most captivating, trace..
         /// </summary>
         internal static string RubyBannerDescription {
             get {
                 return ResourceManager.GetString("RubyBannerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ruby gemstone description here..
+        /// </summary>
+        internal static string RubyGemstoneDescription {
+            get {
+                return ResourceManager.GetString("RubyGemstoneDescription", resourceCulture);
             }
         }
         

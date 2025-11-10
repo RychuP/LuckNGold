@@ -1,6 +1,5 @@
 ﻿using LuckNGold.World.Monsters.Enums;
 using LuckNGold.World.Monsters.Interfaces;
-using static SadConsole.Readers.Playscii;
 
 namespace LuckNGold.World.Monsters.Primitives;
 
@@ -25,7 +24,6 @@ internal class LayerStack : ScreenSurface, ILayerStack
         }
     }
 
-    /// <inheritdoc/>
     public void SetFontSize(int multiplier)
     {
         FontSize = Font.GetFontSize(IFont.Sizes.One) * multiplier;
@@ -36,7 +34,6 @@ internal class LayerStack : ScreenSurface, ILayerStack
             (child as IOnionLayer)!.FontSize = FontSize;
     }
 
-    /// <inheritdoc/>
     public IOnionLayer GetLayer(OnionLayerName layerName)
     {
         if (layerName == OnionLayerName.WeaponFar) 
@@ -54,30 +51,15 @@ internal class LayerStack : ScreenSurface, ILayerStack
         Surface.SetGlyph(0, 0, glyph);
     }
 
-    /// <inheritdoc/>
     public IOnionLayer WeaponFar => this;
-
-    /// <inheritdoc/>
     public IOnionLayer ShieldFar => GetLayer(OnionLayerName.ShieldFar);
-
-    /// <inheritdoc/>
     public IOnionLayer Base => GetLayer(OnionLayerName.Base);
-
-    /// <inheritdoc/>
-    public IOnionLayer ClothesArmour => GetLayer(OnionLayerName.ClothesArmour);
-
-    /// <inheritdoc/>
+    public IOnionLayer Bodywear => GetLayer(OnionLayerName.Bodywear);
+    public IOnionLayer Footwear => GetLayer(OnionLayerName.Footwear);
     public IOnionLayer Beard => GetLayer(OnionLayerName.Beard);
-
-    /// <inheritdoc/>
-    public IOnionLayer HairHelmet => GetLayer(OnionLayerName.HairHelmet);
-
-    /// <inheritdoc/>
+    public IOnionLayer Headwear => GetLayer(OnionLayerName.Headwear);
     public IOnionLayer WeaponNear => GetLayer(OnionLayerName.WeaponNear);
+    public IOnionLayer RightHand => GetLayer(OnionLayerName.RightHand);
+    public IOnionLayer LeftHand => GetLayer(OnionLayerName.LeftHand);
 
-    /// <inheritdoc/>
-    public IOnionLayer WeaponRightHand => GetLayer(OnionLayerName.WeaponRightHand);
-
-    /// <inheritdoc/>
-    public IOnionLayer ShieldLeftHand => GetLayer(OnionLayerName.ShieldLeftHand);
 }

@@ -6,9 +6,9 @@ namespace LuckNGold.World.Monsters.Components;
 partial class OnionComponent
 {
     /// <summary>
-    /// Updates hair / helmet (6) layer.
+    /// Updates hair, helmet - layer 6.
     /// </summary>
-    void UpdateHairHelmetLayer()
+    void UpdateHeadwearLayer()
     {
         if (Parent == null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
@@ -39,7 +39,7 @@ partial class OnionComponent
             if (appearance.HairStyle == HairStyle.Bald ||
                 appearance.HairStyle == HairStyle.Shaved)
             {
-                EraseLayer(OnionLayerName.HairHelmet);
+                EraseLayer(OnionLayerName.Headwear);
                 return;
             }
 
@@ -57,6 +57,6 @@ partial class OnionComponent
             };
         }
 
-        SetLayerAppearance(OnionLayerName.HairHelmet, fontName, row * 4, column * 3);
+        SetLayerAppearance(OnionLayerName.Headwear, fontName, row * 4, column * 3);
     }
 }
