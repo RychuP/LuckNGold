@@ -38,8 +38,7 @@ static class ItemFactory
 
     public static RogueLikeEntity PeasantClothing()
     {
-        var clothing = GetEntity("PeasantClothing", Strings.PeasantClothingName, 
-            Strings.PeasantClothingDescription);
+        var clothing = GetEntity(Strings.PeasantClothingName, Strings.PeasantClothingDescription);
         clothing.AllComponents.Add(new EquippableComponent(EquipSlot.Body));
         return clothing;
     }
@@ -76,13 +75,13 @@ static class ItemFactory
         return entity;
     }
 
-    static RogueLikeEntity GetEntity(string definitionName, string name = "", string description = "")
+    public static RogueLikeEntity GetEntity(string name = "", string description = "")
     {
-        var glyphDef = Program.Font.GetGlyphDefinition(definitionName);
+        var glyphDef = Program.Font.GetGlyphDefinition(name);
         var appearance = glyphDef.CreateColoredGlyph();
         var entity = new RogueLikeEntity(appearance, layer: (int)GameMap.Layer.Items)
         {
-            Name = !string.IsNullOrEmpty(name) ? name : definitionName,
+            Name = name
         };
         AddDescriptionComponent(entity, description);
         return entity;
