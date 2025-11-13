@@ -1,4 +1,6 @@
 ﻿using LuckNGold.Generation.Items;
+using LuckNGold.Generation.Items.Weapons;
+using LuckNGold.Generation.Items.Weapons.Swords;
 using LuckNGold.World.Items;
 using SadRogue.Integration;
 
@@ -30,5 +32,11 @@ partial class GameMap
     public static RogueLikeEntity CreateItem(Item item) =>
         item is Key key ? ItemFactory.Key(key.Material) :
         item is Coin ? ItemFactory.Coin() :
+        item is Weapon weapon ? CreateWeapon(weapon) :
         throw new ArgumentException("Item not implemented.");
+
+    static RogueLikeEntity CreateWeapon(Weapon weapon) =>
+        weapon is ArmingSword armingSword ? WeaponFactory.ArmingSword(armingSword.Material, 
+            armingSword.Attacks) :
+        throw new ArgumentException("Weapon not implemented.");
 }

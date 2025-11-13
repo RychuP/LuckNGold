@@ -5,7 +5,9 @@ using GoRogue.Random;
 using LuckNGold.Generation.Decors;
 using LuckNGold.Generation.Furnitures;
 using LuckNGold.Generation.Items;
+using LuckNGold.Generation.Items.Weapons.Swords;
 using LuckNGold.Generation.Map;
+using LuckNGold.World.Items.Enums;
 
 namespace LuckNGold.Generation;
 
@@ -47,6 +49,11 @@ internal class FirstRoomGenerator() : GenerationStep("FirstRoom",
             var coin = new Coin(Point.None);
             chest.Items.Add(coin);
         }
+
+        // Sample sword
+        var swordPosition = firstRoom.Area.Center + Direction.Up;
+        var sword = new ArmingSword(swordPosition, Material.MoonSteel);
+        firstRoom.AddEntity(sword);
 
         yield break;
     }

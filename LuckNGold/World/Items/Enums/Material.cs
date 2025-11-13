@@ -13,5 +13,7 @@ enum Material
     Bone,
     Leather,
     Wood,
-    Iron
+    Iron,
+
+    MoonSteel,
 }
