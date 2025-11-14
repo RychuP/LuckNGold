@@ -11,10 +11,13 @@ namespace LuckNGold.Visuals.Windows;
 /// </summary>
 internal class CharacterWindow : Window
 {
+    readonly CharacterWindowTabControl _tabControl;
+
     public CharacterWindow() : base(Program.Width / 2, Program.Height / 2)
     {
         CalculatePosition();
-        AddTabs();
+        _tabControl = CreateTabs();
+        Controls.Add(_tabControl);
         Hide();
     }
 
@@ -25,13 +28,12 @@ internal class CharacterWindow : Window
         Position = new Point(x, y);
     }
 
-    void AddTabs()
+    CharacterWindowTabControl CreateTabs()
     {
         var equipmentTab = CreateEquipmentTab();
         var skillsTab = CreateSkillsTab();
         TabItem[] tabItems = [equipmentTab, skillsTab];
-        TabControl tab = new CharacterWindowTabControl(tabItems, Width, Height);
-        Controls.Add(tab);
+        return new CharacterWindowTabControl(tabItems, Width, Height);
     }
 
     TabItem CreateEquipmentTab()
@@ -48,17 +50,37 @@ internal class CharacterWindow : Window
         return tabItem;
     }
 
+    void SelectNextTab()
+    {
+        int index = _tabControl.ActiveTabIndex + 1;
+        if (index >= _tabControl.Tabs.Count())
+            index = 0;
+        _tabControl.SetActiveTab(index);
+    }
+
     protected override void OnVisibleChanged()
     {
         base.OnVisibleChanged();
         IsFocused = IsVisible;
+        if (IsVisible)
+            _tabControl.SetActiveTab(0);
     }
 
     public override bool ProcessKeyboard(Keyboard state)
     {
-        if (state.IsKeyPressed(Keys.Escape) || state.IsKeyPressed(Keybindings.CharacterWindow))
+        if (state.IsKeyDown(Keys.LeftControl))
         {
-            IsVisible = false;
+            if (state.IsKeyPressed(Keybindings.CharacterWindow))
+            {
+                SelectNextTab();
+            }
+        }
+        else
+        {
+            if (state.IsKeyPressed(Keys.Escape) || state.IsKeyPressed(Keybindings.CharacterWindow))
+            {
+                IsVisible = false;
+            }
         }
 
         return base.ProcessKeyboard(state);

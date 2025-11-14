@@ -43,9 +43,9 @@ internal class EquipmentSlots : ScreenSurface
         return glyphDef.CreateColoredGlyph();
     }
 
-    void AddSlot(EquipSlot bodyPart, Point position, ColoredGlyph placeHolder)
+    void AddSlot(EquipSlot equipSlot, Point position, ColoredGlyph placeHolder)
     {
-        var slot = new Slot(SlotSize, $"{bodyPart}", placeHolder)
+        var slot = new Slot(SlotSize, $"{equipSlot}", placeHolder)
         {
             Position = position
         };
