@@ -20,23 +20,14 @@ partial class GameScreen : ScreenObject
     // Window that displays player health, wealth and other stats
     readonly StatusWindow _statusWindow;
 
-    // Window that displays an info about a pointer selected entity.
+    // Window that displays info about an entity selected by the pointer .
     readonly EntityInfoWindow _entityInfoWindow = new();
 
     // Layer that displays monster onion appearances.
     readonly MonsterLayer _monsterLayer;
 
-    // Reference to the component added to the map, so that it can sometimes be called manually.
+    // Component that keeps the screen centered on either player or pointer.
     readonly FollowTargetComponent _followTargetComponent;
-
-    IEnumerable<GameScreenKeybindingsComponent> KeybindingsComponents
-    {
-        get
-        {
-            yield return _playerKeybindingsComponent;
-            yield return _pointerKeybindingsComponent;
-        }
-    }
 
     /// <summary>
     /// Initializes an instance of <see cref="GameScreen"/> class with default parameters.
@@ -75,7 +66,7 @@ partial class GameScreen : ScreenObject
         // Debug screens with various testing info.
         AddDebugOverlays();
 
-        // Create a window to display player's inventory
+        // Create a window to display player's inventory.
         var quickAccess = Player.AllComponents.GetFirst<QuickAccessComponent>();
         _quickAccessWindow = new QuickAccessWindow(quickAccess);
         int x = (Program.Width - _quickAccessWindow.Width) / 2;
@@ -83,39 +74,32 @@ partial class GameScreen : ScreenObject
         _quickAccessWindow.Position = (x, y);
         Children.Add(_quickAccessWindow);
 
-        // Create a window to display player status
+        // Create a window to display player status.
         var wallet = Player.AllComponents.GetFirst<WalletComponent>();
         _statusWindow = new StatusWindow(wallet) { Position = (0, 1) };
         Children.Add(_statusWindow);
 
-        // Add a window that displays information about the selected entity.
+        // Add inactive windows to Children.
         Children.Add(_entityInfoWindow);
-    }
+        Children.Add(_characterWindow);
 
-    public bool IsShowingPopUpWindow()
-    {
-        return _entityInfoWindow.IsVisible;
+        // Add visibility changed event handler to character window.
+        _characterWindow.IsVisibleChanged += CharacterWindow_OnIsVisibleChanged;
     }
-
-    public void ClosePopUpWindows()
-    {
-        HideEntityInfo();
-    }
-
-    public void ClosePopUpOrHidePointer()
-    {
-        if (IsShowingPopUpWindow())
-            ClosePopUpWindows();
-        else
-            HidePointer();
-    }
-
+    
+    /// <summary>
+    /// Updates keybindings based on the control from the settings page.
+    /// </summary>
+    /// <param name="control">Control from the settings screen.</param>
     public void UpdateKeybindings(ControlBase control)
     {
-        foreach (var keybindingsComponent in KeybindingsComponents)
-            keybindingsComponent.UpdateKeybindings(control);
+        _playerKeybindingsComponent.UpdateKeybindings(control);
+        _pointerKeybindingsComponent.UpdateKeybindings(control);
     }
 
+    /// <summary>
+    /// Updates onion appearance position in the monster layer after the position change of the view.
+    /// </summary>
     void FollowTargetComponent_OnViewChanged(object? sender, EventArgs e)
     {
         var visibleMonsters = Map.Monsters

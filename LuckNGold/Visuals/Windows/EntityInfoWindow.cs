@@ -16,6 +16,9 @@ internal class EntityInfoWindow : Window
     readonly string _foregroundColor;
     readonly string[] _highlights = ["LightGreen", "Yellow", "Tomato", "DeepSkyBlue", ];
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="EntityInfoWindow"/> class.
+    /// </summary>
     public EntityInfoWindow() : base(DesiredWidth, DesiredHeight)
     {
         Hide();

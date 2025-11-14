@@ -2,7 +2,7 @@
 using LuckNGold.Primitives;
 using SadRogue.Integration;
 
-namespace LuckNGold.Visuals.Windows;
+namespace LuckNGold.Visuals.Windows.Panels;
 
 /// <summary>
 /// Surface that represents slots for equipment or items in player inventory.
@@ -62,7 +62,6 @@ internal class Slot : ScreenSurface
         ColoredGlyphBase appearance = item is AnimatedRogueLikeEntity animated ?
             animated.StaticAppearance : item.AppearanceSingle!.Appearance;
         appearance.CopyAppearanceTo(_itemSurface.Surface[0]);
-        //_itemSurface.Surface.SetGlyph(0, 0, appearance.Glyph);
     }
 
     /// <summary>

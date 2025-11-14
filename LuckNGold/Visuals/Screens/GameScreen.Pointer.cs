@@ -47,6 +47,9 @@ partial class GameScreen
         }
     }
 
+    /// <summary>
+    /// Toggles visibility of the entity info window.
+    /// </summary>
     public void ToggleEntityInfo()
     {
         if (!_entityInfoWindow.IsVisible)
@@ -55,7 +58,10 @@ partial class GameScreen
             HideEntityInfo();
     }
 
-    public void ShowEntityInfo()
+    /// <summary>
+    /// Shows entity info window.
+    /// </summary>
+    void ShowEntityInfo()
     {
         var entities = Map.GetEntitiesAt<RogueLikeEntity>(Pointer.Position).ToArray();
         if (entities.Length <= 1)
@@ -82,9 +88,33 @@ partial class GameScreen
         _entityInfoWindow.Show();
     }
 
+    /// <summary>
+    /// Hides entity info pop up window.
+    /// </summary>
     public void HideEntityInfo()
     {
         _entityInfoWindow.Hide();
+    }
+
+    /// <summary>
+    /// Checks if there are any pop up windows showing.
+    /// </summary>
+    /// <returns>True if a pop up window is visible, false otherwise.</returns>
+    bool EntityInfoVisible()
+    {
+        return _entityInfoWindow.IsVisible;
+    }
+
+    /// <summary>
+    /// Hides entity info (if visible) or pointer.
+    /// </summary>
+    /// <remarks>Action for the escape button in pointer look mode.</remarks>
+    public void HideEntityInfoOrPointer()
+    {
+        if (EntityInfoVisible())
+            HideEntityInfo();
+        else
+            HidePointer();
     }
 
     Point GetEntityInfoWindowPosition()

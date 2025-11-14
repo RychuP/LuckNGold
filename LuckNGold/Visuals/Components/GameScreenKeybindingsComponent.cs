@@ -1,4 +1,6 @@
-﻿using LuckNGold.Visuals.Screens;
+﻿using LuckNGold.Config;
+using LuckNGold.Visuals.Screens;
+using LuckNGold.Visuals.Windows;
 using SadConsole.Input;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
@@ -17,28 +19,39 @@ abstract class GameScreenKeybindingsComponent : KeybindingsComponentBase
     protected readonly static Keys[] QuickAccessKeys = [Keys.D0, Keys.D1, Keys.D2, Keys.D3, 
         Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9];
 
+    /// <summary>
+    /// Initializes an instance of <see cref="GameScreenKeybindingsComponent"/> class.
+    /// </summary>
+    /// <param name="gameScreen">Gamescreen parent.</param>
+    /// <param name="motionTarget">Target for the motion controls.</param>
     public GameScreenKeybindingsComponent(GameScreen gameScreen, RogueLikeEntity motionTarget)
     {
         GameScreen = gameScreen;
         MotionTarget = motionTarget;
-
-        // Add common controls.
-        AddPointerControls();
-        AddMapZoomControls();
-        AddDebugControls();
+        AddCharacterWindowControls();
     }
 
-    protected virtual void AddPointerControls() { }
-
-    void AddMapZoomControls()
+    /// <summary>
+    /// Keyboard shortcut that toggles <see cref="CharacterWindow"/> visibility.
+    /// </summary>
+    void AddCharacterWindowControls()
     {
-        SetAction(Keys.C, GameScreen.Map.ZoomViewIn);
-        SetAction(Keys.Z, GameScreen.Map.ZoomViewOut);
+        SetAction(Keybindings.CharacterWindow, GameScreen.ShowCharacterWindow);
     }
 
+    /// <summary>
+    /// Map zoom controls.
+    /// </summary>
+    protected void AddMapZoomControls()
+    {
+        SetAction(Keybindings.ZoomIn, GameScreen.Map.ZoomViewIn);
+        SetAction(Keybindings.ZoomOut, GameScreen.Map.ZoomViewOut);
+    }
 
-    // Adds keyboard shortcuts to show debug overlay screens.
-    void AddDebugControls()
+    /// <summary>
+    /// Keyboard shortcuts relating to debug overlay screens.
+    /// </summary>
+    protected void AddDebugControls()
     {
         if (!GameScreen.DebugEnabled) return;
 
@@ -56,6 +69,9 @@ abstract class GameScreenKeybindingsComponent : KeybindingsComponentBase
         });
     }
 
+    /// <summary>
+    /// Escape button behaviour.
+    /// </summary>
     protected override void HandleEscape()
     {
         Program.RootScreen.Show<PauseScreen>();

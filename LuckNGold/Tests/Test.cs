@@ -1,5 +1,6 @@
 ﻿using LuckNGold.Visuals.Screens;
 using LuckNGold.Visuals.Windows;
+using LuckNGold.Visuals.Windows.Panels;
 using LuckNGold.World.Monsters;
 
 namespace LuckNGold.Tests;
@@ -12,13 +13,13 @@ internal class Test : SimpleSurface
     public Test()
     {
         var player = MonsterFactory.Player();
-        var preview = new CharacterPreview(player)
+        var preview = new CharacterPreviewPanel(player)
         {
             Position = (2, 2)
         };
         Children.Add(preview);
 
-        var equipment = new EquipmentWindow()
+        var equipment = new EquipmentSlots()
         {
             Position = (20, 2)
         };

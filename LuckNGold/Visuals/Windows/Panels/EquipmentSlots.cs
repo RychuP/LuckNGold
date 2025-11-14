@@ -1,22 +1,22 @@
 ﻿using LuckNGold.World.Monsters.Enums;
 
-namespace LuckNGold.Visuals.Windows;
+namespace LuckNGold.Visuals.Windows.Panels;
 
 /// <summary>
-/// Window for managing player equipment slots.
+/// Player equipment slots.
 /// </summary>
-/// <remarks>The <see cref="EquipmentWindow"/> class provides a visual interface for equipping 
+/// <remarks>The <see cref="EquipmentSlots"/> class provides a visual interface for equipping 
 /// items to different body parts. It initializes with predefined slots for head, body, feet, 
 /// left hand, and right hand, each represented by a <see cref="Slot"/> object.</remarks>
-internal class EquipmentWindow : ScreenSurface
+internal class EquipmentSlots : ScreenSurface
 {
     const int SlotSize = 7;
     const int SlotSpacing = 0;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EquipmentWindow"/> class.
+    /// Initializes a new instance of the <see cref="EquipmentSlots"/> class.
     /// </summary>
-    public EquipmentWindow() : base(SlotSize * 3 + SlotSpacing * 2, 
+    public EquipmentSlots() : base(SlotSize * 3 + SlotSpacing * 2, 
         SlotSize * 3 + SlotSpacing * 2)
     {
         AddSlot(EquipSlot.Head, GetTranslatedPosition(1, 0), GetPlaceholder("Head"));

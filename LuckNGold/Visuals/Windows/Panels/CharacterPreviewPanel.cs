@@ -3,12 +3,12 @@ using SadConsole.Entities;
 using SadConsole.Instructions;
 using SadRogue.Integration;
 
-namespace LuckNGold.Visuals.Windows;
+namespace LuckNGold.Visuals.Windows.Panels;
 
 /// <summary>
 /// Surface that show a character entity marching in all cardinal directions.
 /// </summary>
-internal class CharacterPreview : ScreenSurface
+internal class CharacterPreviewPanel : ScreenSurface
 {
     const int BoxSize = 7;
     const int StartIndex = BoxSize - 1;
@@ -21,10 +21,10 @@ internal class CharacterPreview : ScreenSurface
     int _positionIndex = StartIndex;
 
     /// <summary>
-    /// Initializes an instance of <see cref="CharacterPreview"/> class.
+    /// Initializes an instance of <see cref="CharacterPreviewPanel"/> class.
     /// </summary>
     /// <param name="characterEntity">Character entity to be shown in preview.</param>
-    public CharacterPreview(RogueLikeEntity characterEntity) : base(BoxSize, BoxSize)
+    public CharacterPreviewPanel(RogueLikeEntity characterEntity) : base(BoxSize, BoxSize)
     {
         _characterEntity = characterEntity;
 
