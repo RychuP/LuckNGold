@@ -51,5 +51,9 @@ internal interface IInventory
     /// false otherwise.</returns>
     bool TryAddAt(int index, RogueLikeEntity item);
 
+    /// <summary>
+    /// Checks if there any slots available in <see cref="IInventory"/>.
+    /// </summary>
+    /// <returns>True if <see cref="IInventory"/> is full, false otherwise.</returns>
     bool IsFull();
 }

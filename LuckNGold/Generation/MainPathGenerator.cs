@@ -1,5 +1,6 @@
 ﻿using GoRogue.MapGeneration;
 using GoRogue.Random;
+using LuckNGold.Config;
 using LuckNGold.Generation.Map;
 using LuckNGold.Visuals.Screens;
 using ShaiRandom.Generators;
@@ -41,7 +42,7 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
 
             CreateRooms(ref mainPath, ref corridors, context, firstRoom, roomCount);
 
-            distance = Program.Distance.Calculate(mainPath.FirstRoom.Area.Center,
+            distance = GameSettings.Distance.Calculate(mainPath.FirstRoom.Area.Center,
                 mainPath.LastRoom.Area.Center);
         }
         // Keep generating the main path until the required number of rooms is achieved.

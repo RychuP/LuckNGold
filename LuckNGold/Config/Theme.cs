@@ -2,7 +2,7 @@
 
 namespace LuckNGold.Config;
 
-static class Colors
+static class Theme
 {
     // Map colors.
     public static readonly Color Floor = new(61, 37, 59);
@@ -15,7 +15,7 @@ static class Colors
     public static readonly Color Ruby = new(213, 72, 78);
     public static readonly Color Diamond = new(40, 204, 223);
 
-    public static readonly Dictionary<Gemstone, Color> FromGemstone = new()
+    public static readonly Dictionary<Gemstone, Color> GemstoneColors = new()
     {
         {Gemstone.None, Color.Yellow },
         {Gemstone.Onyx, Onyx },
@@ -27,15 +27,13 @@ static class Colors
 
     /// <summary>
     /// Color of the highlighted entity name in the entity info window.
-    /// Command #1.
     /// </summary>
-    public static readonly Color EntityHighlight = Color.LightGreen;
+    public const string EntityHighlight = "LightGreen";
 
     /// <summary>
     /// Color of the highlighted entity state in the entity info window.
-    /// Command #2.
     /// </summary>
-    public static readonly Color StateHightlight = Color.Yellow;
+    public const string StateHightlight = "Yellow";
 
     /// <summary>
     /// Tint of the explored area out of fov.

@@ -2,7 +2,6 @@
 using GoRogue.MapGeneration.ContextComponents;
 using LuckNGold.Config;
 using LuckNGold.Generation.Map;
-using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Map.Components;
 using SadRogue.Integration;
 using SadRogue.Integration.Maps;
@@ -85,21 +84,21 @@ partial class GameMap : RogueLikeMap
     /// </summary>
     /// <param name="context">Generation context.</param>
     public GameMap(GenerationContext context) : base(context.Width, context.Height, 
-        null, Enum.GetValues<Layer>().Length - 1, Program.Distance)
+        null, Enum.GetValues<Layer>().Length - 1, GameSettings.Distance)
     {
         // Save generated data for testing and debugging purposes.
-        Paths = GameScreen.DebugEnabled ? context.GetFirst<ItemList<RoomPath>>().Items : [];
-        Sections = GameScreen.DebugEnabled ? context.GetFirst<ItemList<Section>>().Items : [];
+        Paths = GameSettings.DebugEnabled ? context.GetFirst<ItemList<RoomPath>>().Items : [];
+        Sections = GameSettings.DebugEnabled ? context.GetFirst<ItemList<Section>>().Items : [];
 
         // Create renderer.
-        Point viewSize = new(Program.Width / FontSizeMultiplier,
-            Program.Height / FontSizeMultiplier);
+        Point viewSize = new(GameSettings.Width / FontSizeMultiplier,
+            GameSettings.Height / FontSizeMultiplier);
         DefaultRenderer = CreateRenderer(viewSize);
         DefaultRenderer.Font = Program.Font;
         DefaultRenderer.FontSize *= FontSizeMultiplier;
 
         // Change default bg color to match wall color.
-        DefaultRenderer.Surface.DefaultBackground = Colors.Wall;
+        DefaultRenderer.Surface.DefaultBackground = Theme.Wall;
         DefaultRenderer.Surface.Clear();
 
         // FOV handler.
@@ -111,8 +110,8 @@ partial class GameMap : RogueLikeMap
     /// </summary>
     void ResizeView(int fontSizeMultiplier)
     {
-        var width = Program.Width / fontSizeMultiplier;
-        var height = Program.Height / fontSizeMultiplier;
+        var width = GameSettings.Width / fontSizeMultiplier;
+        var height = GameSettings.Height / fontSizeMultiplier;
         DefaultRenderer!.Surface.View = new Rectangle(0, 0, width, height);
         var size = DefaultRenderer.Font.GetFontSize(IFont.Sizes.One) * fontSizeMultiplier;
         DefaultRenderer.FontSize = size;

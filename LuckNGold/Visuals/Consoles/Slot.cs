@@ -2,7 +2,7 @@
 using LuckNGold.Primitives;
 using SadRogue.Integration;
 
-namespace LuckNGold.Visuals.Windows.Panels;
+namespace LuckNGold.Visuals.Consoles;
 
 /// <summary>
 /// Surface that represents slots for equipment or items in player inventory.
@@ -11,15 +11,15 @@ internal class Slot : ScreenSurface
 {
     readonly ScreenSurface _itemSurface;
     readonly ColoredGlyph? _placeHolder;
-    public string Tag { get; init; }
+    public string Name { get; init; }
 
     public Slot(int size, string tag, ColoredGlyph? placeHolder = null) : base(size, size)
     {
         _placeHolder = placeHolder;
-        Tag = tag;
+        Name = tag;
 
         // Draw slot border.
-        var shapeParameters = ShapeParameters.CreateStyledBoxThin(Colors.SelectorBorder);
+        var shapeParameters = ShapeParameters.CreateStyledBoxThin(Theme.SelectorBorder);
         var itemBorder = new Rectangle(0, 0, size, size);
         Surface.DrawBox(itemBorder, shapeParameters);
 
@@ -50,7 +50,7 @@ internal class Slot : ScreenSurface
     {
         int y = Width - 1;
         Surface.Print(1, y, $"{(char)180} {(char)195}");
-        Surface.Print(2, y, $"{digit}", Colors.SlotDigit);
+        Surface.Print(2, y, $"{digit}", Theme.SlotDigit);
     }
 
     /// <summary>
@@ -61,7 +61,8 @@ internal class Slot : ScreenSurface
     {
         ColoredGlyphBase appearance = item is AnimatedRogueLikeEntity animated ?
             animated.StaticAppearance : item.AppearanceSingle!.Appearance;
-        appearance.CopyAppearanceTo(_itemSurface.Surface[0]);
+        _itemSurface.Surface[0].CopyAppearanceFrom(appearance);
+        _itemSurface.Surface.IsDirty = true;
     }
 
     /// <summary>

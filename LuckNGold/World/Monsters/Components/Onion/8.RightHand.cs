@@ -1,5 +1,7 @@
-﻿using LuckNGold.World.Monsters.Enums;
+﻿using LuckNGold.World.Items.Interfaces;
+using LuckNGold.World.Monsters.Enums;
 using LuckNGold.World.Monsters.Primitives;
+using SadRogue.Integration;
 
 namespace LuckNGold.World.Monsters.Components;
 
@@ -29,9 +31,24 @@ partial class OnionComponent
         int row = 0, column = 0;
 
         // Weapon in right hand.
-        if (equipment.RightHand != null)
+        if (equipment.RightHand is RogueLikeEntity weapon)
         {
+            if (race == Race.Human)
+            {
+                fontName = $"race-{raceType}-weapon-hands{skinTone}";
+            }
 
+            if (weapon.AllComponents.Contains<IMeleeAttack>())
+            {
+                if (weapon.Name.Contains("Sword"))
+                {
+                    if (weapon.Name.Contains("Arming"))
+                    {
+                        row = 0;
+                        column = 0;
+                    }
+                }
+            }
         }
 
         // Empty right hand.

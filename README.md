@@ -2,20 +2,22 @@
 Dungeon exploration game in early stages of development. I don't think this will be an overly serious RogueLike with lots of complexity. I am aiming for something easy to pick up and pleasant to play. There should be plenty of skeletons to smash and gold to collect. Time will tell what it will actually become.
 
 ## Game Controls:
-1. Arrow keys, numerical, wasd or vi = move
-2. G = pick up
-3. 1 to 0 = use item
-4. Shift + 1 to 0 = drop item
-5. F = interact
+- Arrow keys, numerical, wasd or vi = move
+- G = pick up
+- F = interact
+- 1 to 0 = use item
+- Shift + 1 to 0 = drop item
+- Ctrl + 1 to 0 = equip item
+- Tab = show character window
 
 ## Map Controls:
-1. C, Z = zoom in and out
-2. X = look around (turn pointer on and off)
-3. F = show entity description (if available)
+- C, Z = zoom in and out
+- X = look around (turn pointer on and off)
+- F = show entity description (if available)
 
 ## Debug Controls:
-1. Shift + Tilde = Debug console
-1. Ctrl + Tilde = Map layout (zoom out to sync views first)
+- Shift + Tilde = Debug console
+- Ctrl + Tilde = Map layout (zoom out to sync views first)
 
 ## Credits:
 [TheSadRogue.Integration](https://github.com/thesadrogue/TheSadRogue.Integration) game engine.<br>

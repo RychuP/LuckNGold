@@ -26,7 +26,7 @@ internal class Wall : RogueLikeCell
     };
 
     public Wall(Point position, IGridView<bool> grid) :
-        base(position, Color.White, Colors.Wall, 0, (int)GameMap.Layer.Terrain, false, false)
+        base(position, Color.White, Theme.Wall, 0, (int)GameMap.Layer.Terrain, false, false)
     {
         var wallFlags = GetNeighbourAsFlags(position, grid);
 

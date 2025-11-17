@@ -9,14 +9,13 @@ partial class GameScreen
     /// <summary>
     /// Window that deals with player character management.
     /// </summary>
-    readonly CharacterWindow _characterWindow = new();
+    readonly CharacterWindow _characterWindow;
 
     /// <summary>
     /// Shows <see cref="CharacterWindow"/>.
     /// </summary>
     public void ShowCharacterWindow()
     {
-        // Show window.
         _characterWindow.Show();
     }
 

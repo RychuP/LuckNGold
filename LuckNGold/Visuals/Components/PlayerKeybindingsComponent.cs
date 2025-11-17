@@ -22,7 +22,6 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
         _quickAccess = gameScreen.Player.AllComponents.GetFirst<QuickAccessComponent>();
 
         AddMapZoomControls();
-        AddDebugControls();
         AddQuickAccessControls();
         AddInteractionControls();
         AddPointerControls();
@@ -31,11 +30,12 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
     // Keyboard shortcuts relating to the quick access window.
     void AddQuickAccessControls()
     {
-        // Add quick access actions
+        // Add quick access actions.
         foreach (var key in QuickAccessKeys)
         {
             AddDropItemAction(key);
             AddUseAction(key);
+            AddEquipAction(key);
         }
     }
 
@@ -53,6 +53,13 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
         SetAction(key, () => _quickAccess.Use(slotIndex));
     }
 
+    void AddEquipAction(Keys key)
+    {
+        int slotIndex = GetSlotIndex(key);
+        InputKey inputKey = new(key, KeyModifiers.Ctrl);
+        SetAction(inputKey, () => _quickAccess.Equip(slotIndex));
+    }
+
     // Adds action that will drop the item on pressing the given key with shift as modifier.
     void AddDropItemAction(Keys key)
     {
@@ -67,7 +74,7 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
 
     void Interact()
     {
-        var neighbours = Program.Adjacency.Neighbors(GameScreen.Player.Position);
+        var neighbours = GameSettings.Adjacency.Neighbors(GameScreen.Player.Position);
 
         // TODO: collect all interactable components and make the player choose one.
         foreach (var point in neighbours)

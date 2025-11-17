@@ -1,4 +1,6 @@
-﻿namespace LuckNGold.Visuals.Overlays;
+﻿using LuckNGold.Config;
+
+namespace LuckNGold.Visuals.Overlays;
 
 /// <summary>
 /// Overlay screen that serves as a debug console.
@@ -6,7 +8,7 @@
 /// </summary>
 internal class DebugConsole : Console
 {
-    public DebugConsole() : base(Program.Width, Program.Height)
+    public DebugConsole() : base(GameSettings.Width, GameSettings.Height)
     {
         IsVisible = false;
     }

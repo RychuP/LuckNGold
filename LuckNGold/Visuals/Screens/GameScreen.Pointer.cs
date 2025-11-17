@@ -1,4 +1,5 @@
-﻿using LuckNGold.Visuals.Components;
+﻿using LuckNGold.Config;
+using LuckNGold.Visuals.Components;
 using LuckNGold.World.Common.Interfaces;
 using LuckNGold.World.Map.Components;
 using SadRogue.Integration;
@@ -39,7 +40,7 @@ partial class GameScreen
             .Where(c => c is FollowTargetComponent).First() as FollowTargetComponent;
         mapFollowTargetComponent!.Target = target;
 
-        if (DebugEnabled)
+        if (GameSettings.DebugEnabled)
         {
             var debugFollowTargetComponent = MapLayout.SadComponents
                 .Where(c => c is FollowTargetComponent).First() as FollowTargetComponent;

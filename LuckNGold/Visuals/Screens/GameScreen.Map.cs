@@ -1,6 +1,7 @@
 ﻿using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
+using LuckNGold.Config;
 using LuckNGold.Generation;
 using LuckNGold.Generation.Decors;
 using LuckNGold.Generation.Furnitures;
@@ -69,7 +70,7 @@ partial class GameScreen
                 else if (entity is Furniture furniture)
                 {
                     map.PlaceFurniture(furniture);
-                    if (DebugEnabled && furniture is Gate gate)
+                    if (GameSettings.DebugEnabled && furniture is Gate gate)
                     {
                         gateCount++;
                         if (gate.IsDouble)
@@ -80,7 +81,7 @@ partial class GameScreen
                     map.PlaceItem(item);
             }
         }
-        if (DebugEnabled)
+        if (GameSettings.DebugEnabled)
             Print($"Gate count: {gateCount}, of which double: {doubleGateCount}");
 
         return map;

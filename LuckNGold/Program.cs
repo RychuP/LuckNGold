@@ -1,4 +1,5 @@
-﻿using LuckNGold.Tests;
+﻿using LuckNGold.Config;
+using LuckNGold.Tests;
 using LuckNGold.Visuals.Screens;
 using SadConsole.Configuration;
 
@@ -6,15 +7,8 @@ namespace LuckNGold;
 
 static class Program
 {
-    public const int Width = 84;
-    public const int Height = 60;
-    public const string Title = "Luck N' Gold";
-
     public static RootScreen RootScreen { get; } = new();
-    public static Rectangle Bounds => new(0, 0, Width, Height);
     public static IFont Font => Game.Instance.Fonts["PixelDungeon"];
-    public static Distance Distance => Distance.Chebyshev;
-    public static AdjacencyRule Adjacency => AdjacencyRule.EightWay;
     public static Color RandomColor => Color.White.GetRandomColor(Game.Instance.Random);
     public static Color RandomBrightColor
     {
@@ -29,12 +23,12 @@ static class Program
 
     static void Main()
     {
-        Settings.WindowTitle = Title;
+        Settings.WindowTitle = GameSettings.Title;
         Settings.ResizeMode = Settings.WindowResizeOptions.Fit;
 
         // Configure how SadConsole starts up.
         Builder builder = new Builder()
-            .SetScreenSize(Width, Height)
+            .SetScreenSize(GameSettings.Width, GameSettings.Height)
             .ConfigureFonts(FontLoader)
             .OnStart(RootScreen.Init);
             //.SetStartingScreen<Test>();
@@ -74,7 +68,8 @@ static class Program
             int rowCount = fontTexture.Height / 16;
             int columnCount = fontTexture.Width / 16;
             var name = Path.GetFileNameWithoutExtension(file);
-            SadFont font = new(16, 16, 0, rowCount, columnCount, 1, fontTexture, name);
+            SadFont font = new(GameSettings.FontSize.X, GameSettings.FontSize.Y, 0, 
+                rowCount, columnCount, 1, fontTexture, name);
             host.Fonts[name] = font;
         }
     }

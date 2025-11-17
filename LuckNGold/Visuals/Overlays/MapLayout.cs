@@ -17,7 +17,7 @@ internal class MapLayout : ScreenSurface
     readonly ColoredGlyph DeadEndAppearance = new(Color.Red, Color.Transparent, 'X');
     readonly ColoredGlyph ExitAppearance = new(Color.LightGreen, Color.Transparent, 'E');
 
-    public MapLayout() : base(Program.Width, Program.Height)
+    public MapLayout() : base(GameSettings.Width, GameSettings.Height)
     {
         IsVisible = false;
     }
@@ -28,8 +28,8 @@ internal class MapLayout : ScreenSurface
         if (Width != map.Width || Height != map.Height)
         {
             (Surface as ICellSurfaceResize)!.Resize(map.Width, map.Height, false);
-            ViewWidth = Program.Width;
-            ViewHeight = Program.Height;
+            ViewWidth = GameSettings.Width;
+            ViewHeight = GameSettings.Height;
         }
         
         //Surface.DefaultForeground = Color.CornflowerBlue;
@@ -60,7 +60,7 @@ internal class MapLayout : ScreenSurface
 
     void DrawRoom(Room room)
     {
-        var color = Colors.FromGemstone[room.Section?.Gemstone ?? Gemstone.None];
+        var color = Theme.GemstoneColors[room.Section?.Gemstone ?? Gemstone.None];
         var shapeParams = ShapeParameters.CreateStyledBoxThin(color);
         Surface.DrawBox(room.Bounds, shapeParams);
     }

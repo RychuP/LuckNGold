@@ -1,4 +1,4 @@
-﻿namespace LuckNGold.Visuals.Windows.Panels;
+﻿namespace LuckNGold.Visuals.Controls;
 
 internal class SkillsPanel : CharacterWindowPanel
 {

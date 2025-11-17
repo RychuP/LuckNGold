@@ -12,7 +12,7 @@ internal class Floor : RogueLikeCell
     readonly static Rectangle s_floorDecals = new(6, 0, 4, 4);
 
     public Floor(Point position) :
-        base(position, Color.White, Colors.Floor, 0, (int) GameMap.Layer.Terrain)
+        base(position, Color.White, Theme.Floor, 0, (int) GameMap.Layer.Terrain)
     {
         // allocate a random decal to the floor
         var glyphPos = GlobalRandom.DefaultRNG.RandomPosition(s_floorDecals);

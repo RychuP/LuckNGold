@@ -30,7 +30,7 @@ class TerrainDrawingTest : ScreenSurface
 
         if (IsFloor(position))
         {
-            Surface.SetBackground(x, y, Colors.Floor);
+            Surface.SetBackground(x, y, Theme.Floor);
             DecorateFloor(x, y);
         }
 
@@ -42,7 +42,7 @@ class TerrainDrawingTest : ScreenSurface
             // wall is completely surrounded by other walls
             if (wallFlags == byte.MaxValue)
             {
-                Surface.SetBackground(x, y, Colors.Wall);
+                Surface.SetBackground(x, y, Theme.Wall);
             }
             else
             {

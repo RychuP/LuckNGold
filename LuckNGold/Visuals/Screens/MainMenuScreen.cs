@@ -1,4 +1,6 @@
-﻿namespace LuckNGold.Visuals.Screens;
+﻿using LuckNGold.Config;
+
+namespace LuckNGold.Visuals.Screens;
 
 /// <summary>
 /// Screen that is displayed when the game first starts or when player chooses 
@@ -10,7 +12,7 @@ internal class MainMenuScreen : MenuScreen
 
     public MainMenuScreen() : base()
     {
-        PrintTitle(Program.Title);
+        PrintTitle(GameSettings.Title);
         AddButton("Start Game", Program.RootScreen.CreateNewGame, "Create a New Game");
         AddButton(SettingsScreen.Name, Program.RootScreen.Show<SettingsScreen>, 
             SettingsScreen.Description);

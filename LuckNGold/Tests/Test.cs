@@ -1,7 +1,6 @@
-﻿using LuckNGold.Visuals.Screens;
-using LuckNGold.Visuals.Windows;
-using LuckNGold.Visuals.Windows.Panels;
+﻿using LuckNGold.Visuals.Consoles;
 using LuckNGold.World.Monsters;
+using LuckNGold.World.Monsters.Interfaces;
 
 namespace LuckNGold.Tests;
 
@@ -19,7 +18,8 @@ internal class Test : SimpleSurface
         };
         Children.Add(preview);
 
-        var equipment = new EquipmentSlots()
+        var equipmentComponent = player.AllComponents.GetFirst<IEquipment>();
+        var equipment = new CharacterLoadout(equipmentComponent)
         {
             Position = (20, 2)
         };

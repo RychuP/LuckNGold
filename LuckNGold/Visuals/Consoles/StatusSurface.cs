@@ -1,20 +1,21 @@
-﻿using LuckNGold.World.Monsters.Components;
+﻿using LuckNGold.Config;
+using LuckNGold.World.Monsters.Components;
 
-namespace LuckNGold.Visuals.Windows;
+namespace LuckNGold.Visuals.Consoles;
 
 /// <summary>
-/// Window that displays player health, coins and other at-a-glance information.
+/// Surface that displays player health, coins and other at-a-glance information.
 /// </summary>
-internal class StatusWindow : ScreenSurface
+internal class StatusSurface : ScreenSurface
 {
     readonly int _coinsTextX;
     readonly string _coinsText = "Coins: ";
 
     /// <summary>
-    /// Initializes an instance of <see cref="StatusWindow"/> class.
+    /// Initializes an instance of <see cref="StatusSurface"/> class.
     /// </summary>
-    /// <param name="wallet">Source component for the window.</param>
-    public StatusWindow(WalletComponent wallet) : base(Program.Width, 1)
+    /// <param name="wallet">Source component for the surface.</param>
+    public StatusSurface(WalletComponent wallet) : base(GameSettings.Width, 1)
     {
         wallet.CoinsChanged += WalletComponent_OnCoinsChanged;
         _coinsTextX = (Width - _coinsText.Length - 1) / 2;

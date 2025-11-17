@@ -14,7 +14,7 @@ internal class MapFOVHandler() : FieldOfViewHandlerBase(State.Enabled)
     /// <summary>
     /// Decorator being used to tint terrain that is outside of FOV but has been explored.
     /// </summary>
-    readonly CellDecorator ExploredDecorator = new(Colors.Tint, 1, Mirror.None);
+    readonly CellDecorator ExploredDecorator = new(Theme.Tint, 1, Mirror.None);
 
     /// <summary>
     /// Makes entity visible.

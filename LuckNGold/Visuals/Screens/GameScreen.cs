@@ -1,4 +1,6 @@
-﻿using LuckNGold.Visuals.Components;
+﻿using LuckNGold.Config;
+using LuckNGold.Visuals.Components;
+using LuckNGold.Visuals.Consoles;
 using LuckNGold.Visuals.Overlays;
 using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Map;
@@ -15,10 +17,10 @@ namespace LuckNGold.Visuals.Screens;
 partial class GameScreen : ScreenObject
 {
     // Window that shows player's quick access inventory
-    readonly QuickAccessWindow _quickAccessWindow;
+    readonly QuickAccessSlots _quickAccessWindow;
 
     // Window that displays player health, wealth and other stats
-    readonly StatusWindow _statusWindow;
+    readonly StatusSurface _statusWindow;
 
     // Window that displays info about an entity selected by the pointer .
     readonly EntityInfoWindow _entityInfoWindow = new();
@@ -64,23 +66,28 @@ partial class GameScreen : ScreenObject
         _followTargetComponent.ViewChanged += FollowTargetComponent_OnViewChanged;
 
         // Debug screens with various testing info.
-        AddDebugOverlays();
+        if (GameSettings.DebugEnabled)
+            AddDebugOverlays();
 
         // Create a window to display player's inventory.
         var quickAccess = Player.AllComponents.GetFirst<QuickAccessComponent>();
-        _quickAccessWindow = new QuickAccessWindow(quickAccess);
-        int x = (Program.Width - _quickAccessWindow.Width) / 2;
-        int y = Program.Height - _quickAccessWindow.Height - 1;
+        _quickAccessWindow = new QuickAccessSlots(quickAccess);
+        int x = (GameSettings.Width * GameSettings.FontSize.X - _quickAccessWindow.Width) / 2;
+        int y = GameSettings.Height * GameSettings.FontSize.Y - 
+            _quickAccessWindow.Height - GameSettings.FontSize.Y;
         _quickAccessWindow.Position = (x, y);
         Children.Add(_quickAccessWindow);
 
         // Create a window to display player status.
         var wallet = Player.AllComponents.GetFirst<WalletComponent>();
-        _statusWindow = new StatusWindow(wallet) { Position = (0, 1) };
+        _statusWindow = new StatusSurface(wallet) { Position = (0, 1) };
         Children.Add(_statusWindow);
 
-        // Add inactive windows to Children.
+        // Add entity info window to Children.
         Children.Add(_entityInfoWindow);
+
+        // Create character window.
+        _characterWindow = new(Player);
         Children.Add(_characterWindow);
 
         // Add visibility changed event handler to character window.

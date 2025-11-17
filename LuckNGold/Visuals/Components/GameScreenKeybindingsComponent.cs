@@ -29,6 +29,8 @@ abstract class GameScreenKeybindingsComponent : KeybindingsComponentBase
         GameScreen = gameScreen;
         MotionTarget = motionTarget;
         AddCharacterWindowControls();
+        if (GameSettings.DebugEnabled)
+            AddDebugControls();
     }
 
     /// <summary>
@@ -53,8 +55,6 @@ abstract class GameScreenKeybindingsComponent : KeybindingsComponentBase
     /// </summary>
     protected void AddDebugControls()
     {
-        if (!GameScreen.DebugEnabled) return;
-
         // Debug console on and off
         var inputKey = new InputKey(Keys.OemTilde, KeyModifiers.LeftShift);
         SetAction(inputKey, () => GameScreen.DebugConsole.IsVisible

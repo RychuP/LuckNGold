@@ -259,6 +259,15 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Equipment.
+        /// </summary>
+        internal static string EquipmentTabName {
+            get {
+                return ResourceManager.GetString("EquipmentTabName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An aged #0stone #0fountain, its basin filled with running water that gurgles and splashes softly. The craftsmanship is intricate, depicting ancient, weathered faces carved into the lip of the fountain. They seem to stare out with a quiet, knowing gaze, their features worn smooth by centuries of flowing water..
         /// </summary>
         internal static string FountainDescription {
@@ -381,6 +390,15 @@ namespace LuckNGold.Resources {
         internal static string ShacklesDescription {
             get {
                 return ResourceManager.GetString("ShacklesDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skills.
+        /// </summary>
+        internal static string SkillsTabName {
+            get {
+                return ResourceManager.GetString("SkillsTabName", resourceCulture);
             }
         }
         

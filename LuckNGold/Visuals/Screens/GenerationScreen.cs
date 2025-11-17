@@ -1,4 +1,5 @@
-﻿using SadConsole.Instructions;
+﻿using LuckNGold.Config;
+using SadConsole.Instructions;
 
 namespace LuckNGold.Visuals.Screens;
 
@@ -12,7 +13,7 @@ internal class GenerationScreen : ScreenSurface
     readonly TimeSpan _gap = TimeSpan.FromMilliseconds(500);
     string _dots = string.Empty;
 
-    public GenerationScreen() : base(Program.Width, Program.Height)
+    public GenerationScreen() : base(GameSettings.Width, GameSettings.Height)
     {
         int y = (Height - 1) / 2;
         int maxTextWidth = _text.Length + MaxDotCount;

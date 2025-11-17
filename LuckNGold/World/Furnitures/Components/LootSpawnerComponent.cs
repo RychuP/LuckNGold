@@ -1,4 +1,5 @@
 ﻿using GoRogue.Random;
+using LuckNGold.Config;
 using LuckNGold.World.Furnitures.Interfaces;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
@@ -37,7 +38,7 @@ class LootSpawnerComponent : RogueLikeComponentBase<RogueLikeEntity>, ILootSpawn
             throw new InvalidOperationException("Parent needs to be on the map.");
 
         // Get points surrounding parent entity.
-        var neighbours = Program.Adjacency.Neighbors(Parent.Position);
+        var neighbours = GameSettings.Adjacency.Neighbors(Parent.Position);
 
         // Create a list for valid spawn positions.
         List<Point> spawnPositions = [];

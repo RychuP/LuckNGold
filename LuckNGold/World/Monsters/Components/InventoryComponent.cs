@@ -33,10 +33,8 @@ internal class InventoryComponent(int capacity) : InventoryBase(capacity)
         if (index < 0 || index >= Items.Count)
             throw new ArgumentOutOfRangeException(nameof(index));
 
-        var item = Items[index] ?? 
-            throw new InvalidOperationException("No item at the given index.");
-
-        Drop(item);
+        if (Items[index] is RogueLikeEntity item)
+            Drop(item);
     }
 
     /// <summary>
@@ -142,6 +140,15 @@ internal class InventoryComponent(int capacity) : InventoryBase(capacity)
             return false;
 
         return true;
+    }
+
+    public bool Equip(int index)
+    {
+        if (index < 0 || index >= Items.Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
+
+        var item = Items[index];
+        return item is not null && Equip(item);
     }
 
     public bool Equip(RogueLikeEntity item)

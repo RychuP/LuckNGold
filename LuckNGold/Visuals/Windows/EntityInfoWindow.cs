@@ -1,4 +1,5 @@
-﻿using SadConsole.UI;
+﻿using LuckNGold.Config;
+using SadConsole.UI;
 using System.Text;
 
 namespace LuckNGold.Visuals.Windows;
@@ -10,11 +11,12 @@ internal class EntityInfoWindow : Window
 {
     const int DesiredWidth = 30;
     const int DesiredHeight = 50;
-    readonly string[] _articles = { "a", "an", "i", "the"};
+
+    // Articles at the end of a line that trigger new line.
+    readonly string[] _articles = {"a", "an", "i", "the"};
     
     // Colors for the colored string parser.
     readonly string _foregroundColor;
-    readonly string[] _highlights = ["LightGreen", "Yellow", "Tomato", "DeepSkyBlue", ];
 
     /// <summary>
     /// Initializes a new instance of <see cref="EntityInfoWindow"/> class.
@@ -181,10 +183,8 @@ internal class EntityInfoWindow : Window
 
                 coloredWord = command switch
                 {
-                    '0' => $"[c:r f:{_highlights[0]}]{trimmedWord}[c:u]",
-                    '1' => $"[c:r f:{_highlights[1]}]{trimmedWord}[c:u]",
-                    '2' => $"[c:r f:{_highlights[2]}]{trimmedWord}[c:u]",
-                    '3' => $"[c:r f:{_highlights[3]}]{trimmedWord}[c:u]",
+                    '0' => $"[c:r f:{Theme.EntityHighlight}]{trimmedWord}[c:u]",
+                    '1' => $"[c:r f:{Theme.StateHightlight}]{trimmedWord}[c:u]",
                     _ => $"{trimmedWord}",
                 };
 
@@ -199,7 +199,7 @@ internal class EntityInfoWindow : Window
     /// </summary>
     void OnPositionChanged(object? o, EventArgs e)
     {
-        if (Width >= Program.Width) return;
+        if (Width >= GameSettings.Width) return;
 
         Point horizontalDelta;
         do
@@ -207,11 +207,11 @@ internal class EntityInfoWindow : Window
             horizontalDelta = Point.Zero;
 
             Point rightSidePosition = Position + (Width - 1, 0);
-            if (!Program.Bounds.Contains(rightSidePosition))
+            if (!GameSettings.Bounds.Contains(rightSidePosition))
             {
                 horizontalDelta = Point.Zero + Direction.Left;
             }
-            else if (!Program.Bounds.Contains(Position))
+            else if (!GameSettings.Bounds.Contains(Position))
             {
                 horizontalDelta = Point.Zero + Direction.Right;
             }

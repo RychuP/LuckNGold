@@ -240,4 +240,10 @@
   <data name="RobeTag" xml:space="preserve">
     <value>Robe</value>
   </data>
+  <data name="EquipmentTabName" xml:space="preserve">
+    <value>Equipment</value>
+  </data>
+  <data name="SkillsTabName" xml:space="preserve">
+    <value>Skills</value>
+  </data>
 </root>

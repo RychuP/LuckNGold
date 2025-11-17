@@ -1,4 +1,5 @@
-﻿using LuckNGold.Visuals.Components;
+﻿using LuckNGold.Config;
+using LuckNGold.Visuals.Components;
 using SadConsole.UI;
 using SadConsole.UI.Controls;
 
@@ -7,7 +8,7 @@ namespace LuckNGold.Visuals.Screens;
 /// <summary>
 /// Base class to all menu screens.
 /// </summary>
-abstract class MenuScreen() : ControlsConsole(Program.Width, Program.Height)
+abstract class MenuScreen() : ControlsConsole(GameSettings.Width, GameSettings.Height)
 {
     /// <summary>
     /// Vertical spacing between controls.

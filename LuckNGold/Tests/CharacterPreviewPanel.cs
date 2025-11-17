@@ -3,7 +3,7 @@ using SadConsole.Entities;
 using SadConsole.Instructions;
 using SadRogue.Integration;
 
-namespace LuckNGold.Visuals.Windows.Panels;
+namespace LuckNGold.Tests;
 
 /// <summary>
 /// Surface that show a character entity marching in all cardinal directions.

@@ -1,19 +1,16 @@
-﻿using LuckNGold.Visuals.Components;
+﻿using LuckNGold.Config;
+using LuckNGold.Visuals.Components;
 using LuckNGold.Visuals.Overlays;
-using SadConsole.Components;
 
 namespace LuckNGold.Visuals.Screens;
 
 partial class GameScreen
 {
-    public static readonly bool DebugEnabled = true;
     public static DebugConsole DebugConsole { get; } = new();
     public static MapLayout MapLayout { get; } = new();
 
     void AddDebugOverlays()
     {
-        if (!DebugEnabled) return;
-
         MapLayout.DrawOverlay(Map);
         MapLayout.SadComponents.Clear();
         FollowTargetComponent followTargetComponent = new(Player);

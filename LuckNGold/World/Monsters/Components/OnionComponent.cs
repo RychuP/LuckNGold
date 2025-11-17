@@ -1,4 +1,5 @@
-﻿using LuckNGold.World.Monsters.Enums;
+﻿using LuckNGold.World.Items.Interfaces;
+using LuckNGold.World.Monsters.Enums;
 using LuckNGold.World.Monsters.Interfaces;
 using LuckNGold.World.Monsters.Primitives;
 using SadRogue.Integration;
@@ -133,6 +134,7 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
                 int glyph = firstGlyphIndex + deltaY + x;
                 var layer = Frames[i].GetLayer(layerName);
                 layer.Font = font;
+                layer.FontSize = font.GetFontSize(IFont.Sizes.One) * FontSizeMultiplier;
                 layer.SetGlyph(glyph);
             }
         }
@@ -166,6 +168,19 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
         UpdateHeadwearLayer();
         UpdateWeaponNearLayer();
         UpdateRightHandLayer();
+        UpdateLeftHandLayer();
+    }
+
+    void UpdateWeapon()
+    {
+        UpdateWeaponFarLayer();
+        UpdateWeaponNearLayer();
+        UpdateRightHandLayer();
+    }
+
+    void UpdateShield()
+    {
+        UpdateShieldFarLayer();
         UpdateLeftHandLayer();
     }
 
@@ -230,6 +245,22 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
 
     void IEquipment_OnEquipmentChanged(object? o, ValueChangedEventArgs<RogueLikeEntity?> e)
     {
-        UpdateLayers();
+        var item =
+            e.NewValue is not null ? e.NewValue :
+            e.OldValue is not null ? e.OldValue :
+            throw new InvalidOperationException("Event with both values set to null");
+
+        var equippable = item.AllComponents.GetFirst<IEquippable>();
+        var equipSlot = equippable.Slot;
+        switch (equipSlot)
+        {
+            case EquipSlot.RightHand:
+                UpdateWeapon();
+                break;
+
+            default:
+                UpdateLayers();
+                break;
+        }
     }
 }

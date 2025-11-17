@@ -1,7 +1,7 @@
 ﻿using SadConsole.Input;
 using SadConsole.UI.Controls;
 
-namespace LuckNGold.Visuals.Windows.Panels;
+namespace LuckNGold.Visuals.Controls;
 
 internal class CharacterWindowPanel : Panel
 {

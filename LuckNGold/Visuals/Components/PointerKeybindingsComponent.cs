@@ -18,7 +18,6 @@ internal class PointerKeybindingsComponent : GameScreenKeybindingsComponent
         : base(gameScreen, gameScreen.Pointer)
     {
         AddMapZoomControls();
-        AddDebugControls();
         AddPointerControls();
     }
 
