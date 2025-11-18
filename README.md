@@ -1,7 +1,7 @@
 # Luck N' Gold
 Dungeon exploration game in early stages of development. I don't think this will be an overly serious RogueLike with lots of complexity. I am aiming for something easy to pick up and pleasant to play. There should be plenty of skeletons to smash and gold to collect. Time will tell what it will actually become.
 
-## Game Controls:
+## Player Controls:
 - Arrow keys, numerical, wasd or vi = move
 - G = pick up
 - F = interact
