@@ -9,37 +9,38 @@ namespace LuckNGold.Visuals.Consoles;
 /// </summary>
 internal class Slot : ScreenSurface
 {
-    readonly ScreenSurface _itemSurface;
-    readonly ColoredGlyph? _placeHolder;
-    public string Name { get; init; }
+    protected ScreenSurface ItemSurface { get; init; }
 
-    public Slot(int size, string tag, ColoredGlyph? placeHolder = null) : base(size, size)
+    bool _isSelected = false;
+    public bool IsSelected
     {
-        _placeHolder = placeHolder;
-        Name = tag;
+        get => _isSelected;
+        set
+        {
+            if (_isSelected == value) return;
+            _isSelected = value;
+            OnIsSelectedChanged();
+        }
+    }
 
-        // Draw slot border.
-        var shapeParameters = ShapeParameters.CreateStyledBoxThin(Theme.SelectorBorder);
-        var itemBorder = new Rectangle(0, 0, size, size);
-        Surface.DrawBox(itemBorder, shapeParameters);
+    public Slot(int size) : base(size, size)
+    {
+        DrawBorder();
 
         // Create surface for the item.
-        _itemSurface = new ScreenSurface(1, 1)
+        ItemSurface = new ScreenSurface(1, 1)
         {
             Font = Program.Font,
             UsePixelPositioning = true
         };
-        Children.Add(_itemSurface);
-
-        // Draw placeholder if any.
-        EraseItem();
+        Children.Add(ItemSurface);
 
         // Specify the font size for the item.
-        _itemSurface.FontSize *= size - 2;
+        ItemSurface.FontSize *= size - 2;
 
         // Shift pixel position of the item surface to place it in the middle of the border.
-        int offset = (HeightPixels - _itemSurface.HeightPixels) / 2;
-        _itemSurface.Position = AbsolutePosition + (offset, offset);
+        int offset = (HeightPixels - ItemSurface.HeightPixels) / 2;
+        ItemSurface.Position = AbsolutePosition + (offset, offset);
     }
 
     /// <summary>
@@ -61,18 +62,28 @@ internal class Slot : ScreenSurface
     {
         ColoredGlyphBase appearance = item is AnimatedRogueLikeEntity animated ?
             animated.StaticAppearance : item.AppearanceSingle!.Appearance;
-        _itemSurface.Surface[0].CopyAppearanceFrom(appearance);
-        _itemSurface.Surface.IsDirty = true;
+        ItemSurface.Surface[0].CopyAppearanceFrom(appearance);
+        ItemSurface.Surface.IsDirty = true;
     }
 
     /// <summary>
     /// Clears the item surface.
     /// </summary>
-    public void EraseItem()
+    public virtual void EraseItem()
     {
-        if (_placeHolder != null)
-            _placeHolder.CopyAppearanceTo(_itemSurface.Surface[0]);
-        else
-            _itemSurface.Surface.SetGlyph(0, 0, 0);
+        ItemSurface.Surface.SetGlyph(0, 0, 0);
+    }
+
+    void DrawBorder()
+    {
+        var borderColor = IsSelected ? Theme.SlotSelected : Theme.SlotBorder;
+        var shapeParameters = ShapeParameters.CreateStyledBoxThin(borderColor);
+        var itemBorder = new Rectangle(0, 0, Width, Height);
+        Surface.DrawBox(itemBorder, shapeParameters);
+    }
+
+    void OnIsSelectedChanged()
+    {
+        DrawBorder();
     }
 }

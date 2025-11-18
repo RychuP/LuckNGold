@@ -11,12 +11,12 @@ partial class GameScreen
     /// </summary>
     readonly CharacterWindow _characterWindow;
 
-    /// <summary>
-    /// Shows <see cref="CharacterWindow"/>.
-    /// </summary>
-    public void ShowCharacterWindow()
+    public void ToggleCharacterWindow()
     {
-        _characterWindow.Show();
+        if (_characterWindow.IsVisible)
+            _characterWindow.Hide();
+        else
+            _characterWindow.Show();
     }
 
     void CharacterWindow_OnIsVisibleChanged(object? o, EventArgs e)

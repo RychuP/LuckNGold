@@ -1,9 +1,16 @@
-﻿using LuckNGold.World.Items.Enums;
+﻿using LuckNGold.Visuals.Consoles;
+using LuckNGold.World.Items.Enums;
+using SadConsole.UI;
 
 namespace LuckNGold.Config;
 
 static class Theme
 {
+    /// <summary>
+    /// SadConsole UI colors.
+    /// </summary>
+    public static Colors Colors = Colors.CreateAnsi();
+
     // Map colors.
     public static readonly Color Floor = new(61, 37, 59);
     public static readonly Color Wall = new(37, 19, 26);
@@ -41,12 +48,17 @@ static class Theme
     public static readonly Color Tint = new(0.05f, 0.05f, 0.05f, 0.5f);
 
     /// <summary>
-    /// Color of the border around items in the inventory window.
+    /// Color of the <see cref="Slot"/> border in normal mode.
     /// </summary>
-    public static readonly Color SelectorBorder = Color.DarkGray;
+    public static readonly Color SlotBorder = Colors.GrayDark;
 
     /// <summary>
-    /// Color of the digit on the bottom line of the slot border.
+    /// Color of the <see cref="Slot"/> border when it is selected.
+    /// </summary>
+    public static readonly Color SlotSelected = Colors.Gray;
+
+    /// <summary>
+    /// Color of the digit on the bottom line of the <see cref="Slot"/> border.
     /// </summary>
     public static readonly Color SlotDigit = Color.LightBlue;
 }

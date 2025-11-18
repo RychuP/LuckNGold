@@ -87,7 +87,7 @@ partial class GameScreen : ScreenObject
         Children.Add(_entityInfoWindow);
 
         // Create character window.
-        _characterWindow = new(Player);
+        _characterWindow = new(this);
         Children.Add(_characterWindow);
 
         // Add visibility changed event handler to character window.

@@ -10,6 +10,8 @@ namespace LuckNGold.Visuals.Consoles;
 /// </summary>
 internal class EquipmentPage : ScreenObject
 {
+    public CharacterLoadout CharacterLoadout { get; init; }
+
     public EquipmentPage(IEquipment equipmentComponent)
     {
         int height = (GameSettings.CharacterWindowHeight - 4) * GameSettings.FontSize.Y;
@@ -21,9 +23,10 @@ internal class EquipmentPage : ScreenObject
         int y = (height - charLoadout.Height) / 2;
         charLoadout.Position = (x, y);
         Children.Add(charLoadout);
+        CharacterLoadout = charLoadout;
 
-        var inventory = new Inventory();
-        inventory.Position = (width - inventory.Width, 0);
+        //var inventory = new Inventory();
+        //inventory.Position = (width - inventory.Width, 0);
         //Children.Add(inventory);
     }
 }

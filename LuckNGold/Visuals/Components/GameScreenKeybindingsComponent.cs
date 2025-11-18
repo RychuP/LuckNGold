@@ -1,6 +1,7 @@
 ﻿using LuckNGold.Config;
 using LuckNGold.Visuals.Screens;
 using LuckNGold.Visuals.Windows;
+using LuckNGold.World.Monsters.Components;
 using SadConsole.Input;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
@@ -38,7 +39,7 @@ abstract class GameScreenKeybindingsComponent : KeybindingsComponentBase
     /// </summary>
     void AddCharacterWindowControls()
     {
-        SetAction(Keybindings.CharacterWindow, GameScreen.ShowCharacterWindow);
+        SetAction(Keybindings.CharacterWindow, GameScreen.ToggleCharacterWindow);
     }
 
     /// <summary>
@@ -76,4 +77,45 @@ abstract class GameScreenKeybindingsComponent : KeybindingsComponentBase
     {
         Program.RootScreen.Show<PauseScreen>();
     }
+
+    // Keyboard shortcuts relating to the quick access window.
+    protected void AddQuickAccessControls()
+    {
+        // Add quick access actions.
+        foreach (var key in QuickAccessKeys)
+        {
+            AddDropItemAction(key);
+            AddUseAction(key);
+            AddEquipAction(key);
+        }
+    }
+
+    // Adds action that will use the item on pressing the given key.
+    void AddUseAction(Keys key)
+    {
+        int slotIndex = GetSlotIndex(key);
+        SetAction(key, () => GameScreen.Player.AllComponents
+            .GetFirst<QuickAccessComponent>().Use(slotIndex));
+    }
+
+    void AddEquipAction(Keys key)
+    {
+        int slotIndex = GetSlotIndex(key);
+        InputKey inputKey = new(key, KeyModifiers.Ctrl);
+        SetAction(inputKey, () => GameScreen.Player.AllComponents
+            .GetFirst<QuickAccessComponent>().Equip(slotIndex));
+    }
+
+    // Adds action that will drop the item on pressing the given key with shift as modifier.
+    void AddDropItemAction(Keys key)
+    {
+        int slotIndex = GetSlotIndex(key);
+        InputKey inputKey = new(key, KeyModifiers.Shift);
+        SetAction(inputKey, () => GameScreen.Player.AllComponents
+            .GetFirst<QuickAccessComponent>().Drop(slotIndex));
+    }
+
+    // Converts shortcut keyboard key to 0 based slot index of the quick access.
+    static int GetSlotIndex(Keys key) =>
+        key == Keys.D0 ? 9 : (int)key - 49;
 }

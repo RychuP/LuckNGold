@@ -10,24 +10,16 @@ partial class OnionComponent
     /// </summary>
     void UpdateHeadwearLayer()
     {
-        if (Parent == null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
-
-        var identityComponent = Parent.AllComponents.GetFirst<IdentityComponent>();
-
         // Check if the race can grow hair at all.
-        Race race = (Race)identityComponent.Race;
+        Race race = IdentityComponent.Race;
         if (!race.CanGrowHair) return;
 
-        var equipment = Parent.AllComponents.GetFirst<EquipmentComponent>();
-        var appearance = identityComponent.Appearance;
-
-        
+        var appearance = IdentityComponent.Appearance;
         string fontName = string.Empty;
         int row = 0, column = 0;
 
         // Helmet on the head.
-        if (equipment.Head != null)
+        if (EquipmentComponent.Head != null)
         {
 
         }
@@ -43,7 +35,7 @@ partial class OnionComponent
                 return;
             }
 
-            string raceType = race.RaceType.ToString().ToLower();
+            string raceType = GetRaceTypeText(race);
             string skinTone = race.RaceType == RaceType.Elf && race.SkinTone == SkinTone.Dark ?
                 "dark-" : string.Empty;
             var hairVariant = (int)appearance.HairColor + 1;

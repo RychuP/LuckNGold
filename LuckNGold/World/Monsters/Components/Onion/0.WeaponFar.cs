@@ -8,44 +8,15 @@ namespace LuckNGold.World.Monsters.Components;
 partial class OnionComponent
 {
     /// <summary>
-    /// Updates weapon far - layer 0.
+    /// Draws weapon far - layer 0.
     /// </summary>
-    void UpdateWeaponFarLayer()
+    void DrawWeaponFar(string fontName, int row, int col)
     {
-        if (Parent == null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
+        SetLayerAppearance(OnionLayerName.WeaponFar, $"{fontName}-far", row * 4, col * 3);
+    }
 
-        var equipment = Parent.AllComponents.GetFirst<EquipmentComponent>();
-        string fontName = string.Empty;
-        int row = 0, column = 0;
-
-        // Wielding a weapon in the right hand.
-        if (equipment.RightHand is RogueLikeEntity weapon)
-        {
-            var materialComponent = weapon.AllComponents.GetFirst<IMaterial>();
-            var material = materialComponent.Material;
-            fontName = "weapons-1-far";
-
-            if (weapon.AllComponents.Contains<IMeleeAttack>())
-            {
-                if (weapon.Name.Contains("Sword"))
-                {
-                    if (weapon.Name.Contains("Arming"))
-                    {
-                        row = 0;
-                        column = 0;
-                    }
-                }
-            }
-        }
-
-        // Right hand empty.
-        else
-        {
-            EraseLayer(OnionLayerName.WeaponFar);
-            return;
-        }
-
-        SetLayerAppearance(OnionLayerName.WeaponFar, fontName, row * 4, column * 3);
+    void EraseWeaponFar()
+    {
+        EraseLayer(OnionLayerName.WeaponFar);
     }
 }

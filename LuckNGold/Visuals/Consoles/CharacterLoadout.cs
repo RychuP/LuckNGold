@@ -27,9 +27,6 @@ internal class CharacterLoadout : SlotHolder
         AddSlot(EquipSlot.RightHand, GetTranslatedPosition(0, 1), GetPlaceholder("Weapon"), equipmentComponent);
     }
 
-    public IEnumerable<Slot> Slots => Children
-        .Cast<Slot>();
-
     static ColoredGlyph GetPlaceholder(string placeholderName)
     {
         var glyphDef = Program.Font.GetGlyphDefinition(placeholderName);
@@ -40,7 +37,7 @@ internal class CharacterLoadout : SlotHolder
         IEquipment equipmentComponent)
     {
         // Create a slot.
-        var slot = new Slot(SlotSize, $"{equipSlot}", placeHolder)
+        var slot = new EquipmentSlot(SlotSize, equipSlot, placeHolder)
         {
             Position = position
         };
@@ -71,14 +68,14 @@ internal class CharacterLoadout : SlotHolder
         }
     }
 
-    Slot GetSlot(RogueLikeEntity item)
+    EquipmentSlot GetSlot(RogueLikeEntity item)
     {
         var equippable = item.AllComponents.GetFirst<IEquippable>();
         var equipSlot = equippable.Slot;
 
         return Children
-            .Cast<Slot>()
-            .Where(s => s.Name == $"{equipSlot}")
+            .Cast<EquipmentSlot>()
+            .Where(s => s.EquipSlot == equipSlot)
             .First();
     }
 }

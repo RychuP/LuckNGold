@@ -25,7 +25,7 @@ internal class QuickAccessSlots : SlotHolder
         for (int x = 0; x < QuickAccessComponent.Max; x++)
         {
             int index = x < 9 ? x + 1 : 0;
-            var slot = new Slot(SlotSize, index.ToString())
+            var slot = new Slot(SlotSize)
             {
                 Position = GetTranslatedPosition(x, 0)
             };

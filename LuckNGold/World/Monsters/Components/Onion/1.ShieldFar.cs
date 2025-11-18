@@ -31,4 +31,9 @@ partial class OnionComponent
 
         SetLayerAppearance(OnionLayerName.ShieldFar, fontName, row * 4, column * 3);
     }
+
+    void DrawShieldFar()
+    {
+
+    }
 }

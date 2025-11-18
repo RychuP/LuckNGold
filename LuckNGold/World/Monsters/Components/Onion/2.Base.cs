@@ -10,28 +10,15 @@ partial class OnionComponent
     /// </summary>
     void UpdateBaseLayer()
     {
-        if (Parent == null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
-
-        var identityComponent = Parent.AllComponents.GetFirst<IdentityComponent>();
-        var equipment = Parent.AllComponents.GetFirst<EquipmentComponent>();
-
-        Race race = (Race)identityComponent.Race;
-        var appearance = identityComponent.Appearance;
-
-        string raceType = race.RaceType.ToString().ToLower();
-        string skinTone = race.SkinTone switch
-        {
-            SkinTone.Pale => "-pale",
-            SkinTone.Dark => "-dark",
-            _ => string.Empty,
-        };
-
+        Race race = IdentityComponent.Race;
+        var appearance = IdentityComponent.Appearance;
+        string raceType = GetRaceTypeText(race);
+        string skinTone = GetSkinToneText(race);
         string fontName = $"race-{raceType}-base{skinTone}";
         int row = 0, column = 0;
 
         // Wearing a hood or a helmet. Hair not visible.
-        if (equipment.Head != null)
+        if (EquipmentComponent.Head != null)
         {
 
         }

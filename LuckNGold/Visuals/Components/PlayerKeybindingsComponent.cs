@@ -27,50 +27,12 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
         AddPointerControls();
     }
 
-    // Keyboard shortcuts relating to the quick access window.
-    void AddQuickAccessControls()
-    {
-        // Add quick access actions.
-        foreach (var key in QuickAccessKeys)
-        {
-            AddDropItemAction(key);
-            AddUseAction(key);
-            AddEquipAction(key);
-        }
-    }
-
     // Keyboard shortcuts relating to player interaction with environment.
     void AddInteractionControls()
     {
         SetAction(Keybindings.PickUp, () => _quickAccess.PickUp());
         SetAction(Keybindings.Interact, Interact);
     }
-
-    // Adds action that will use the item on pressing the given key.
-    void AddUseAction(Keys key)
-    {
-        int slotIndex = GetSlotIndex(key);
-        SetAction(key, () => _quickAccess.Use(slotIndex));
-    }
-
-    void AddEquipAction(Keys key)
-    {
-        int slotIndex = GetSlotIndex(key);
-        InputKey inputKey = new(key, KeyModifiers.Ctrl);
-        SetAction(inputKey, () => _quickAccess.Equip(slotIndex));
-    }
-
-    // Adds action that will drop the item on pressing the given key with shift as modifier.
-    void AddDropItemAction(Keys key)
-    {
-        int slotIndex = GetSlotIndex(key);
-        InputKey inputKey = new(key, KeyModifiers.Shift);
-        SetAction(inputKey, () => _quickAccess.Drop(slotIndex));
-    }
-
-    // Converts shortcut keyboard key to 0 based slot index of the quick access.
-    static int GetSlotIndex(Keys key) =>
-        key == Keys.D0 ? 9 : (int)key - 49;
 
     void Interact()
     {

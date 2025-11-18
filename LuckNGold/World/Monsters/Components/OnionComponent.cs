@@ -14,12 +14,33 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
 {
     public event EventHandler<ValueChangedEventArgs<ILayerStack>>? CurrentFrameChanged;
 
+    /// <summary>
+    /// Parent's current direction of movement.
+    /// </summary>
     Direction _currentDirection = Direction.None;
     int _currentMotionStep = 0;
     int _frameChangeDelta = 1;
 
+    /// <summary>
+    /// Parent's identity component.
+    /// </summary>
+    IdentityComponent IdentityComponent => 
+        Parent!.AllComponents.GetFirst<IdentityComponent>();
+
+    /// <summary>
+    /// Parent's equipment component.
+    /// </summary>
+    EquipmentComponent EquipmentComponent =>
+        Parent!.AllComponents.GetFirst<EquipmentComponent>();
+
+    /// <summary>
+    /// Array of motion frames (3 per direction).
+    /// </summary>
     public LayerStack[] Frames { get; } = new LayerStack[12];
 
+    /// <summary>
+    /// Currently applied font size multiplier.
+    /// </summary>
     public int FontSizeMultiplier { get; private set; } = -1;
 
     ILayerStack _currentFrame;
@@ -45,11 +66,6 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
             Frames[i] = new LayerStack();
 
         _currentFrame = Frames[1];
-
-        //CurrentFrame.Base.Font = Game.Instance.Fonts["race-human-base-pale"];
-        //CurrentFrame.Base.SetGlyph(19);
-
-        //SetLayerAppearance(OnionLayerName.Base, "race-human-base-pale", 0, 0);
     }
 
     public void SetFontSize(int fontSizeMultiplier)
@@ -61,9 +77,6 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
 
     public void UpdateCurrentFrame(Direction direction)
     {
-        if (Parent == null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
-
         direction =
             direction.DeltaX < 0 ? Direction.Left :
             direction.DeltaX > 0 ? Direction.Right :
@@ -154,34 +167,76 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
     }
 
     /// <summary>
-    /// Updates fonts and glyphs of all frames and layers 
-    /// based on the contents of identity and equipment components.
+    /// Draws all frames when the component is first added to an entity,
     /// </summary>
-    void UpdateLayers()
+    void DrawInitialAppearance()
     {
-        UpdateWeaponFarLayer();
-        UpdateShieldFarLayer();
+        var equipment = EquipmentComponent;
+
         UpdateBaseLayer();
         UpdateBodywearLayer();
         UpdateFootwearLayer();
-        UpdateBeardLayer();
+        UpdateBeard();
         UpdateHeadwearLayer();
-        UpdateWeaponNearLayer();
-        UpdateRightHandLayer();
-        UpdateLeftHandLayer();
+
+        if (equipment.RightHand is RogueLikeEntity weapon)
+            DrawWeapon(weapon);
+        else
+            DrawRightEmptyHand();
+
+        if (equipment.LeftHand is RogueLikeEntity shield)
+            DrawShield(shield);
+        else
+            DrawLeftEmptyHand();
     }
 
-    void UpdateWeapon()
+    void DrawWeapon(RogueLikeEntity weapon)
     {
-        UpdateWeaponFarLayer();
-        UpdateWeaponNearLayer();
-        UpdateRightHandLayer();
+        var materialComponent = weapon.AllComponents.GetFirst<IMaterial>();
+        var material = materialComponent.Material;
+        string fontName = "weapons-1";
+        int row = 0, col = 0;
+
+        if (weapon.AllComponents.Contains<IMeleeAttack>())
+        {
+            if (weapon.Name.Contains("Sword"))
+            {
+                if (weapon.Name.Contains("Arming"))
+                {
+                    row = 0;
+                    col = 0;
+                }
+            }
+        }
+
+        DrawWeaponFar(fontName, row, col);
+        DrawWeaponNear(fontName, row, col);
+        DrawRightWeaponHand(row, col);
     }
 
-    void UpdateShield()
+    void EraseWeapon()
     {
-        UpdateShieldFarLayer();
-        UpdateLeftHandLayer();
+        EraseWeaponFar();
+        EraseWeaponNear();
+        DrawRightEmptyHand();
+    }
+
+    void DrawShield(RogueLikeEntity shield)
+    {
+
+    }
+
+    static string GetRaceTypeText(Race race) =>
+        race.RaceType.ToString().ToLower();
+
+    static string GetSkinToneText(Race race)
+    {
+        return race.SkinTone switch
+        {
+            SkinTone.Pale => "-pale",
+            SkinTone.Dark => "-dark",
+            _ => string.Empty,
+        };
     }
 
     void AddEventHandlers()
@@ -206,19 +261,15 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
         Parent.PositionChanged -= ScreenObject_OnPositionChanged;
-
-        var identityComponent = Parent.AllComponents.GetFirst<IdentityComponent>();
-        identityComponent.AppearanceChanged -= IIdentity_OnAppearanceChanged;
-
-        var equipmentComponent = Parent.AllComponents.GetFirst<EquipmentComponent>();
-        equipmentComponent.EquipmentChanged -= IEquipment_OnEquipmentChanged;
+        IdentityComponent.AppearanceChanged -= IIdentity_OnAppearanceChanged;
+        EquipmentComponent.EquipmentChanged -= IEquipment_OnEquipmentChanged;
     }
 
     public override void OnAdded(IScreenObject host)
     {
         base.OnAdded(host);
         AddEventHandlers();
-        UpdateLayers();
+        DrawInitialAppearance();
     }
 
     public override void OnRemoved(IScreenObject host)
@@ -240,7 +291,7 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
 
     void IIdentity_OnAppearanceChanged(object? o, ValueChangedEventArgs<Appearance> e)
     {
-        UpdateLayers();
+        DrawInitialAppearance();
     }
 
     void IEquipment_OnEquipmentChanged(object? o, ValueChangedEventArgs<RogueLikeEntity?> e)
@@ -255,11 +306,14 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
         switch (equipSlot)
         {
             case EquipSlot.RightHand:
-                UpdateWeapon();
+                if (item == e.NewValue)
+                    DrawWeapon(item);
+                else
+                    EraseWeapon();
                 break;
 
             default:
-                UpdateLayers();
+                DrawInitialAppearance();
                 break;
         }
     }

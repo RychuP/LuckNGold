@@ -8,7 +8,7 @@ internal class Inventory : SlotHolder
         {
             for (int x = 0; x < SlotCountX; x++)
             {
-                var slot = new Slot(SlotSize, string.Empty)
+                var slot = new Slot(SlotSize)
                 {
                     Position = GetTranslatedPosition(x, y)
                 };

@@ -1,9 +1,10 @@
 ﻿using LuckNGold.Config;
 using LuckNGold.Resources;
+using LuckNGold.Visuals.Components;
 using LuckNGold.Visuals.Consoles;
 using LuckNGold.Visuals.Controls;
+using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Monsters.Interfaces;
-using SadConsole.Input;
 using SadConsole.UI;
 using SadConsole.UI.Controls;
 using SadRogue.Integration;
@@ -16,18 +17,31 @@ namespace LuckNGold.Visuals.Windows;
 internal class CharacterWindow : Window
 {
     readonly CharacterWindowTabControl _tabControl;
-    readonly EquipmentPage _equipmentPage;
+    readonly GameScreen _gameScreen;
 
-    public CharacterWindow(RogueLikeEntity player) : base(GameSettings.CharacterWindowWidth, 
-        GameSettings.CharacterWindowHeight)
+    // to be changed back into a field...
+    public readonly EquipmentPage EquipmentPage;
+
+    public CharacterWindow(GameScreen gameScreen) : 
+        base(GameSettings.CharacterWindowWidth, GameSettings.CharacterWindowHeight)
     {
+        _gameScreen = gameScreen;
         CalculatePosition();
+
+        // Create tab control.
         _tabControl = CreateTabs();
-        var equipmentComponent = player.AllComponents.GetFirst<IEquipment>();
-        _equipmentPage = new(equipmentComponent);
-        Controls.Add(_tabControl);
-        Children.Add(_equipmentPage);
         _tabControl.ActiveTabItemChanged += TabControl_OnActiveTabItemChanged;
+        Controls.Add(_tabControl);
+
+        // Create equipment page for the equipment tab.
+        var equipmentComponent = gameScreen.Player.AllComponents.GetFirst<IEquipment>();
+        EquipmentPage = new(equipmentComponent);
+        Children.Add(EquipmentPage);
+
+        // Create keybindings component.
+        var keybindingsComponent = new CharacterWindowKeybindings(gameScreen, this);
+        SadComponents.Add(keybindingsComponent);
+
         Hide();
     }
 
@@ -60,7 +74,7 @@ internal class CharacterWindow : Window
         return tabItem;
     }
 
-    void SelectNextTab()
+    public void SelectNextTab()
     {
         int index = _tabControl.ActiveTabIndex + 1;
         if (index >= _tabControl.Tabs.Count())
@@ -72,11 +86,11 @@ internal class CharacterWindow : Window
     {
         if (e.NewValue != null && e.NewValue.Header == Strings.EquipmentTabName)
         {
-            _equipmentPage.IsVisible = true;
+            EquipmentPage.IsVisible = true;
         }
         else if (e.OldValue != null && e.OldValue.Header == Strings.EquipmentTabName)
         {
-            _equipmentPage.IsVisible = false;
+            EquipmentPage.IsVisible = false;
         }
     }
 
@@ -85,26 +99,9 @@ internal class CharacterWindow : Window
         base.OnVisibleChanged();
         IsFocused = IsVisible;
         if (IsVisible)
+        {
             _tabControl.SetActiveTab(0);
-    }
-
-    public override bool ProcessKeyboard(Keyboard state)
-    {
-        if (state.IsKeyDown(Keys.LeftControl))
-        {
-            if (state.IsKeyPressed(Keybindings.CharacterWindow))
-            {
-                SelectNextTab();
-            }
+            EquipmentPage.CharacterLoadout.SelectSlot(0);
         }
-        else
-        {
-            if (state.IsKeyPressed(Keys.Escape) || state.IsKeyPressed(Keybindings.CharacterWindow))
-            {
-                IsVisible = false;
-            }
-        }
-
-        return base.ProcessKeyboard(state);
     }
 }
