@@ -5,10 +5,15 @@ Dungeon exploration game in early stages of development. I don't think this will
 - Arrow keys, numerical, wasd or vi = move
 - G = pick up
 - F = interact
+
+## Quick Access Inventory Controls:
 - 1 to 0 = use item
 - Shift + 1 to 0 = drop item
 - Ctrl + 1 to 0 = equip item
+
+## Character Window Controls:
 - Tab = show character window
+- Shift + Tab = next tab
 
 ## Map Controls:
 - C, Z = zoom in and out
