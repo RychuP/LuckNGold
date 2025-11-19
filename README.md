@@ -14,6 +14,7 @@ Dungeon exploration game in early stages of development. I don't think this will
 ## Character Window Controls:
 - Tab = show character window
 - Shift + Tab = next tab
+- F = interact (unequip, etc)
 
 ## Map Controls:
 - C, Z = zoom in and out

@@ -46,7 +46,7 @@ internal class DecorGenerator() : GenerationStep("Decorators",
             if (room.GetEntityAt(cornerPosition) is null)
             {
                 // Add decor to corner of the room.
-                switch (s_rnd.NextInt(4))
+                switch (s_rnd.NextInt(5))
                 {
                     // Large boxes.
                     case 0:
@@ -95,6 +95,11 @@ internal class DecorGenerator() : GenerationStep("Decorators",
                         }
                         else
                             AddWeb(room, orientation, cornerPosition);
+                        break;
+
+                    case 4:
+                        AddEntityOrWeb(room, orientation,
+                            new Barrel(cornerPosition), 1);
                         break;
 
                     // Spider web.
@@ -210,7 +215,12 @@ internal class DecorGenerator() : GenerationStep("Decorators",
                 if (s_rnd.NextBool() && room.PositionIsFree(topWallCenter + Direction.Down))
                     AddFountain(room);
                 else
-                    AddTorch(topWallCenter, room);
+                {
+                    if (s_rnd.NextBool())
+                        AddTorch(topWallCenter, room);
+                    else
+                        AddPrisoner(topWallCenter, room);
+                }
             }
             else
             {
@@ -234,23 +244,42 @@ internal class DecorGenerator() : GenerationStep("Decorators",
                 topWallCenter.X + delta + 1;
             freeTopWallPositions.Add(new Point(x, room.Bounds.MinExtentY));
 
-            // Place either shackles or torches depending what's already there.
-            bool placeShackles = true;
-            if (!room.Contains<Torch>() && !room.Contains<Shackle>())
+            // Check which decors are already present on the top wall.
+            List<int> topWallDecor = [];
+            if (!room.Contains<Torch>())
+                topWallDecor.Add(0);
+            if (!room.Contains<Shackle>())
+                topWallDecor.Add(1);
+            if (!room.Contains<Prisoner>())
+                topWallDecor.Add(2);
+
+
+            // Reduce the chance of prisoner spawns.
+            int chosenDecor = topWallDecor[0];
+            for (int i = 0; i < 3; i++)
             {
-                placeShackles = s_rnd.NextBool();
-            }
-            else if (room.Contains<Shackle>())
-            {
-                placeShackles = false;
+                chosenDecor = s_rnd.RandomElement(topWallDecor);
+                if (chosenDecor != 2)
+                    break;
             }
 
+            // Place top wall decor in the selected top wall positions.
             foreach (var point in freeTopWallPositions)
             {
-                if (placeShackles)
-                    AddShackle(point, room);
-                else
-                    AddTorch(point, room);
+                switch (chosenDecor)
+                {
+                    case 0:
+                        AddTorch(point, room);
+                        break;
+
+                    case 1:
+                        AddShackle(point, room);
+                        break;
+
+                    case 2:
+                        AddPrisoner(point, room);
+                        break;
+                }
             }
         }
     }
@@ -266,6 +295,12 @@ internal class DecorGenerator() : GenerationStep("Decorators",
     {
         var torch = new Torch(position);
         room.AddEntity(torch);
+    }
+
+    static void AddPrisoner(Point position, Room room)
+    {
+        var prisoner = new Prisoner(position);
+        room.AddEntity(prisoner);
     }
 
     static void AddFountain(Room room)

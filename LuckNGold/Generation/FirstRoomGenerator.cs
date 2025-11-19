@@ -50,10 +50,18 @@ internal class FirstRoomGenerator() : GenerationStep("FirstRoom",
             chest.Items.Add(coin);
         }
 
-        // Sample sword
-        var swordPosition = firstRoom.Area.Center + Direction.Up;
-        var sword = new ArmingSword(swordPosition, Material.MoonSteel);
-        firstRoom.AddEntity(sword);
+        // Sample swords
+        var swordPosition = firstRoom.Area.Center + Direction.UpLeft;
+        var armingSword = new ArmingSword(swordPosition, Material.MoonSteel);
+        firstRoom.AddEntity(armingSword);
+
+        swordPosition += Direction.Right;
+        var gladiusSword = new GladiusSword(swordPosition, Material.MoonSteel);
+        firstRoom.AddEntity(gladiusSword);
+
+        swordPosition += Direction.Right;
+        var scimitarSword = new ScimitarSword(swordPosition, Material.MoonSteel);
+        firstRoom.AddEntity(scimitarSword);
 
         yield break;
     }

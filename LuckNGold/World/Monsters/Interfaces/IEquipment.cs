@@ -17,6 +17,8 @@ internal interface IEquipment
 
     bool Unequip(RogueLikeEntity item);
 
+    bool Unequip(EquipSlot equipSlot);
+
     RogueLikeEntity? Head { get; }
     RogueLikeEntity? Body { get; }
     RogueLikeEntity? Feet { get; }

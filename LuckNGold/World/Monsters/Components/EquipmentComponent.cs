@@ -1,4 +1,5 @@
-﻿using LuckNGold.World.Items.Interfaces;
+﻿using LuckNGold.Visuals.Consoles;
+using LuckNGold.World.Items.Interfaces;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Enums;
 using LuckNGold.World.Monsters.Interfaces;
@@ -77,23 +78,64 @@ internal class EquipmentComponent : RogueLikeComponentBase<RogueLikeEntity>, IEq
         if (Parent.CurrentMap == null)
             throw new InvalidOperationException("Parent needs to be on the map.");
 
-        if (item.Layer != (int)GameMap.Layer.Items)
-            throw new InvalidOperationException("Wearable entity is not an item.");
-
         // Check the entity can be equipped.
         var equippableComponent = item.AllComponents.GetFirstOrDefault<IEquippable>();
         if (equippableComponent is null)
             return false;
 
-        // Check item is currently equipped.
+        // Get equip slot from the item.
         var slot = equippableComponent.Slot;
-        var prevItem = Equipment[slot];
-        if (prevItem != item)
+
+        // Check equipped item matches with the given item.
+        var equippedItem = Equipment[slot];
+        if (equippedItem != item)
             return false;
 
-        // Unequip the item.
+        // Check parent has an inventory.
+        var inventory = Parent.AllComponents.GetFirstOrDefault<IInventory>();
+        if (inventory is null)
+            return false;
+
+        // Check inventory has space.
+        if (inventory.IsFull())
+            return false;
+
+        // Unequip item.
         _equipment[slot] = null;
-        OnEquipmentChanged(prevItem, null);
+        OnEquipmentChanged(equippedItem, null);
+
+        // Send the item to the inventory.
+        inventory.Add(equippedItem);
+
+        return true;
+    }
+
+    public bool Unequip(EquipSlot slot)
+    {
+        if (Parent == null)
+            throw new InvalidOperationException("Component needs to be attached to an entity.");
+
+        // Get equipped item.
+        var equippedItem = Equipment[slot];
+        if (equippedItem is null) 
+            return false;
+
+        // Check parent has an inventory.
+        var inventory = Parent.AllComponents.GetFirstOrDefault<IInventory>();
+        if (inventory is null)
+            return false;
+
+        // Check inventory has space.
+        if (inventory.IsFull())
+            return false;
+
+        // Unequip item.
+        _equipment[slot] = null;
+        OnEquipmentChanged(equippedItem, null);
+
+        // Send the item to the inventory.
+        inventory.Add(equippedItem);
+
         return true;
     }
 

@@ -36,7 +36,12 @@ partial class GameMap
         throw new ArgumentException("Item not implemented.");
 
     static RogueLikeEntity CreateWeapon(Weapon weapon) =>
-        weapon is ArmingSword armingSword ? WeaponFactory.ArmingSword(armingSword.Material, 
-            armingSword.Attacks) :
-        throw new ArgumentException("Weapon not implemented.");
+        weapon is Sword sword ? CreateSword(sword) :
+        throw new ArgumentException("Weapon is not implemented.");
+
+    static RogueLikeEntity CreateSword(Sword sword) =>
+        sword is ArmingSword arming ? WeaponFactory.ArmingSword(arming.Material, arming.Attacks) :
+        sword is GladiusSword gladius ? WeaponFactory.GladiusSword(gladius.Material, gladius.Attacks) :
+        sword is ScimitarSword scimitar ? WeaponFactory.ScimitarSword(scimitar.Material, scimitar.Attacks) :
+        throw new ArgumentException("Sword is not implemented.");
 }

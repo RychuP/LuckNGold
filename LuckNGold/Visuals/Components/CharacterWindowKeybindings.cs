@@ -24,7 +24,7 @@ internal class CharacterWindowKeybindings : GameScreenKeybindingsComponent
         var nextTabInput = new InputKey(Keybindings.CharacterWindow, KeyModifiers.LeftShift);
         SetAction(nextTabInput, _characterWindow.SelectNextTab);
 
-
+        SetAction(Keybindings.Interact, _characterWindow.Interact);
     }
 
     // Controls the pointer in the character window.

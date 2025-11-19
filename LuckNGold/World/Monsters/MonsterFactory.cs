@@ -52,7 +52,7 @@ static class MonsterFactory
         player.AllComponents.Add(new OnionComponent());
 
         // Add inventory component.
-        player.AllComponents.Add(new InventoryComponent(20));
+        //player.AllComponents.Add(new InventoryComponent(20));
 
         // Add wallet to hold coins.
         player.AllComponents.Add(new WalletComponent());

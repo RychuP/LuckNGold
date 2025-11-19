@@ -201,11 +201,15 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
         {
             if (weapon.Name.Contains("Sword"))
             {
-                if (weapon.Name.Contains("Arming"))
-                {
-                    row = 0;
-                    col = 0;
-                }
+                row = weapon.Name.Contains("Arming") ? 0 :
+                    weapon.Name.Contains("Gladius") ? 0 :
+                    weapon.Name.Contains("Scimitar") ? 0 :
+                    throw new InvalidOperationException("Unknown sword.");
+
+                col = weapon.Name.Contains("Arming") ? 0 :
+                    weapon.Name.Contains("Gladius") ? 1 :
+                    weapon.Name.Contains("Scimitar") ? 2 :
+                    throw new InvalidOperationException("Unknown sword.");
             }
         }
 

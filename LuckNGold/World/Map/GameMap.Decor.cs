@@ -42,5 +42,7 @@ partial class GameMap
         decor is Bones ? DecorFactory.Bones() :
         decor is Urn ? DecorFactory.Urn() :
         decor is Cauldron ? DecorFactory.Cauldron() :
+        decor is Barrel ? DecorFactory.Barrel() : 
+        decor is Prisoner ? DecorFactory.Prisoner() :
         throw new ArgumentException("Item not implemented.");
 }

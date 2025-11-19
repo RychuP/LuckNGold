@@ -19,5 +19,6 @@ internal class EquipmentSlot : Slot
     public override void EraseItem()
     {
         _placeHolder.CopyAppearanceTo(ItemSurface.Surface[0]);
+        ItemSurface.IsDirty = true;
     }
 }

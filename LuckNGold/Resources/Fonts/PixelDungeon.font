@@ -112,6 +112,9 @@
 "Torch3": {"Glyph": 97, "Mirror": 0},
 "Torch4": {"Glyph": 98, "Mirror": 0},
 
+"Prisoner": {"Glyph": 89, "Mirror": 0},
+"Barrel": {"Glyph": 99, "Mirror": 0},
+
 "OpenDoorTopLeft": {"Glyph": 136, "Mirror": 2},
 "OpenDoorTopRight": {"Glyph": 136, "Mirror": 0},
 "OpenDoorBottomLeft": {"Glyph": 136, "Mirror": 3},
@@ -251,4 +254,6 @@
 "Necklace": {"Glyph": 176, "Mirror": 0},
 
 "MoonSteel Arming Sword": {"Glyph": 180, "Mirror": 0},
+"MoonSteel Gladius Sword": {"Glyph": 181, "Mirror": 0},
+"MoonSteel Scimitar Sword": {"Glyph": 182, "Mirror": 0},
 }}

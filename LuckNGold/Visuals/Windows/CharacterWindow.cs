@@ -82,6 +82,15 @@ internal class CharacterWindow : Window
         _tabControl.SetActiveTab(index);
     }
 
+    public void Interact()
+    {
+        var tab = _tabControl.CurrentTab;
+        if (tab.Header == Strings.EquipmentTabName)
+        {
+            EquipmentPage.Interact();
+        }
+    }
+
     void TabControl_OnActiveTabItemChanged(object? o, ValueChangedEventArgs<TabItem?> e)
     {
         if (e.NewValue != null && e.NewValue.Header == Strings.EquipmentTabName)

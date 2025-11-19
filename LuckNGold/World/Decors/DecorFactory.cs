@@ -52,6 +52,12 @@ static class DecorFactory
         GetEntity($"Shackle{size}", name: "Shackles", 
             description: Strings.ShacklesDescription);
 
+    public static RogueLikeEntity Prisoner() =>
+        GetEntity("Prisoner");
+
+    public static RogueLikeEntity Barrel() =>
+        GetEntity("Barrel", isWalkable: false);
+
     /// <summary>
     /// Steps leading to upper or lower levels.
     /// </summary>

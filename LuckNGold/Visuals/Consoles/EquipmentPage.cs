@@ -10,10 +10,13 @@ namespace LuckNGold.Visuals.Consoles;
 /// </summary>
 internal class EquipmentPage : ScreenObject
 {
+    readonly IEquipment _equipmentComponent;
     public CharacterLoadout CharacterLoadout { get; init; }
 
     public EquipmentPage(IEquipment equipmentComponent)
     {
+        _equipmentComponent = equipmentComponent;
+
         int height = (GameSettings.CharacterWindowHeight - 4) * GameSettings.FontSize.Y;
         int width = (GameSettings.CharacterWindowWidth - 2) * GameSettings.FontSize.X;
         Position = (1 * GameSettings.FontSize.X, 3 * GameSettings.FontSize.Y);
@@ -28,5 +31,12 @@ internal class EquipmentPage : ScreenObject
         //var inventory = new Inventory();
         //inventory.Position = (width - inventory.Width, 0);
         //Children.Add(inventory);
+    }
+
+    public void Interact()
+    {
+        var selectedSlot = CharacterLoadout.SelectedSlot as EquipmentSlot;
+        var equipSlot = selectedSlot!.EquipSlot;
+        _equipmentComponent.Unequip(equipSlot);
     }
 }

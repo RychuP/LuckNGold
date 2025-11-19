@@ -52,29 +52,18 @@ internal class InventoryComponent(int capacity) : InventoryBase(capacity)
         if (Parent.CurrentMap == null)
             throw new InvalidOperationException("Parent has to be on the map.");
 
-        var wallet = Parent.AllComponents.GetFirstOrDefault<WalletComponent>();
-
         foreach (var item in Parent.CurrentMap.GetEntitiesAt<RogueLikeEntity>(Parent.Position))
         {
-            // Check if any of the components of the entity allow it to be picked up
-            if (!item.AllComponents.Contains<ICarryable>()) 
-                continue;
+            // Mark item as not collected.
+            var collected = false;
 
-            if (item.AllComponents.GetFirstOrDefault<CurrencyComponent>() is 
-                CurrencyComponent currency)
-            {
-                if (wallet is not null)
-                {
-                    wallet.Coins += currency.Amount;
-                    item.CurrentMap!.RemoveEntity(item);
-                }
-            }
+            // Check item is carryable and try to collect it.
+            if (item.AllComponents.Contains<ICarryable>())
+                collected = Allocate(item);
 
-            else if (Add(item))
-            {
-                item.CurrentMap!.RemoveEntity(item);
+            // Check item was collected and return success if so.
+            if (collected)
                 return true;
-            }
         }
 
         return false;
@@ -94,6 +83,49 @@ internal class InventoryComponent(int capacity) : InventoryBase(capacity)
         if (item.Position != Parent.Position)
             throw new InvalidOperationException("Item and Parent need to have the same position.");
 
+        return Allocate(item);
+    }
+
+    /// <summary>
+    /// Tries to allocate an item to a more appropriate component if space is available
+    /// before adding the item to the inventory.
+    /// </summary>
+    /// <param name="item">Item to be examined and allocated to either wall, equipment or inventory.</param>
+    bool Allocate(RogueLikeEntity item)
+    {
+        // Check item is currency.
+        if (item.AllComponents.GetFirstOrDefault<CurrencyComponent>() is
+            CurrencyComponent currency)
+        {
+            if (Parent!.AllComponents.GetFirstOrDefault<WalletComponent>() is
+                WalletComponent wallet)
+            {
+                wallet.Coins += currency.Amount;
+                item.CurrentMap!.RemoveEntity(item);
+                return true;
+            }
+        }
+
+        // Check item can be equipped.
+        if (item.AllComponents.GetFirstOrDefault<IEquippable>() is IEquippable equippable)
+        {
+            // Check if parent has equipment component.
+            if (Parent!.AllComponents.GetFirstOrDefault<IEquipment>() is IEquipment equipment)
+            {
+                var slot = equippable.Slot;
+
+                // Check if the slot is occupied.
+                if (equipment.Equipment[slot] is null)
+                {
+                    // Equip item.
+                    equipment.Equip(item, out RogueLikeEntity? _);
+                    item.CurrentMap!.RemoveEntity(item);
+                    return true;
+                }
+            }
+        }
+
+        // All other items add to inventory.
         if (Add(item))
         {
             item.CurrentMap!.RemoveEntity(item);
