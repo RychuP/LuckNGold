@@ -19,7 +19,7 @@ namespace LuckNGold.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Strings {
@@ -93,6 +93,15 @@ namespace LuckNGold.Resources {
         internal static string ArmourTag {
             get {
                 return ResourceManager.GetString("ArmourTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bandit.
+        /// </summary>
+        internal static string BanditTag {
+            get {
+                return ResourceManager.GetString("BanditTag", resourceCulture);
             }
         }
         
@@ -286,6 +295,24 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Helmet.
+        /// </summary>
+        internal static string HelmetTag {
+            get {
+                return ResourceManager.GetString("HelmetTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hood.
+        /// </summary>
+        internal static string HoodTag {
+            get {
+                return ResourceManager.GetString("HoodTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A squat, heavy chest of blackened iron sits heavily in the shallow alcove, its very presence radiating a sense of unyielding permanence. Its surface is a mottled landscape of rust and corrosion, the result of long years in the damp air. .
         /// </summary>
         internal static string IronChestDescription {
@@ -300,6 +327,15 @@ namespace LuckNGold.Resources {
         internal static string LeverDescription {
             get {
                 return ResourceManager.GetString("LeverDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linen.
+        /// </summary>
+        internal static string LinenTag {
+            get {
+                return ResourceManager.GetString("LinenTag", resourceCulture);
             }
         }
         
@@ -340,11 +376,11 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Peasant Clothing.
+        ///   Looks up a localized string similar to Peasant.
         /// </summary>
-        internal static string PeasantClothingName {
+        internal static string PeasantTag {
             get {
-                return ResourceManager.GetString("PeasantClothingName", resourceCulture);
+                return ResourceManager.GetString("PeasantTag", resourceCulture);
             }
         }
         

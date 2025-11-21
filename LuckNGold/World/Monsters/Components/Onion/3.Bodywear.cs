@@ -1,6 +1,5 @@
 ﻿using LuckNGold.Resources;
 using LuckNGold.World.Monsters.Enums;
-using LuckNGold.World.Monsters.Primitives;
 using SadRogue.Integration;
 
 namespace LuckNGold.World.Monsters.Components;
@@ -8,53 +7,45 @@ namespace LuckNGold.World.Monsters.Components;
 partial class OnionComponent
 {
     /// <summary>
-    /// Updates clothes, robes, armour - layer 3.
+    /// Draws clothes, robes, armour - layer 3.
     /// </summary>
-    void UpdateBodywearLayer()
+    void DrawBodywear(RogueLikeEntity bodywear)
     {
-        if (Parent == null)
-            throw new InvalidOperationException("Component needs to be attached to an entity.");
+        string fontName;
+        int row = 0, col = 0;
 
-        var equipment = Parent.AllComponents.GetFirst<EquipmentComponent>();
-        string fontName = string.Empty;
-        int row = 0, column = 0;
-
-        // Wearing clothes / armour.
-        if (equipment.Body is RogueLikeEntity bodyEquipment)
+        // Armour
+        if (bodywear.Name.Contains(Strings.ArmourTag))
         {
-            // Armour
-            if (bodyEquipment.Name.Contains(Strings.ArmourTag))
-            {
-                fontName = "armour";
-            }
-
-            // Clothes / Robes
-            else
-            {
-                fontName = "clothes";
-
-                // Robes
-                if (bodyEquipment.Name.Contains(Strings.RobeTag))
-                {
-                    column = 1;
-                }
-
-                // Clothing
-                else
-                {
-                    column = 0;
-                    
-                }
-            }
+            fontName = "armour";
         }
 
-        // Not wearing anything.
+        // Clothes / Robes
         else
         {
-            EraseLayer(OnionLayerName.Bodywear);
-            return;
+            fontName = "clothes";
+
+            // Robes
+            if (bodywear.Name.Contains(Strings.RobeTag))
+            {
+                col = 1;
+            }
+
+            // Clothing
+            else
+            {
+                col = 0;
+
+                row = bodywear.Name.Contains(Strings.LinenTag) ? 0 :
+                    throw new InvalidOperationException("Uknown clothing type.");
+            }
         }
 
-        SetLayerAppearance(OnionLayerName.Bodywear, fontName, row * 4, column * 3);
+        SetLayerAppearance(OnionLayerName.Bodywear, fontName, row * 4, col * 3);
+    }
+
+    void EraseBodywear()
+    {
+        EraseLayer(OnionLayerName.Bodywear);
     }
 }

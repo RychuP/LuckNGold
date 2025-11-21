@@ -1,13 +1,11 @@
-﻿using LuckNGold.World.Items.Enums;
+﻿using LuckNGold.World.Items.Materials.Interfaces;
 
 namespace LuckNGold.Generation.Items.Weapons;
 
 abstract record Weapon : Item
 {
-    public Material Material { get; init; }
-
-    public Weapon(Point position, Material material) : base(position)
+    public Weapon(Point position, IMaterial material) : base(position, material)
     {
-        Material = material;
+        
     }
 }

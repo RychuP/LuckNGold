@@ -1,6 +1,6 @@
 ﻿using LuckNGold.World.Common.Enums;
 using LuckNGold.World.Furnitures.Interfaces;
-using LuckNGold.World.Items.Interfaces;
+using LuckNGold.World.Items.Components.Interfaces;
 using LuckNGold.World.Map;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;

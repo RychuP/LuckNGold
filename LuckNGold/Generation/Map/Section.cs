@@ -6,13 +6,13 @@ namespace LuckNGold.Generation.Map;
 /// <summary>
 /// Part of the dungeon between two progressively more difficult locked doors.</remarks>
 /// </summary>
-internal class Section(Gemstone gemstone)
+internal class Section(GemstoneType gemstone)
 {
     /// <summary>
     /// Gemstone of the section.
     /// </summary>
     /// <remarks>Lower index of the gemstone means easier difficulty of the section.</remarks>
-    public Gemstone Gemstone => gemstone;
+    public GemstoneType GemstoneType => gemstone;
 
     /// <summary>
     /// Room of the main path that is the first room of the section.
@@ -40,7 +40,6 @@ internal class Section(Gemstone gemstone)
     /// List of all the rooms in the section.
     /// </summary>
     public IReadOnlyList<Room> Rooms => _rooms;
-
 
     List<Room> _singleRooms = [];
     /// <summary>
@@ -153,5 +152,5 @@ internal class Section(Gemstone gemstone)
     /// </summary>
     /// <returns></returns>
     public bool IsFirst() =>
-        Gemstone == Gemstone.Onyx;
+        GemstoneType == GemstoneType.Onyx;
 }

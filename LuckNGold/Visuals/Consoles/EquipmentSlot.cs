@@ -1,13 +1,15 @@
-﻿using LuckNGold.World.Monsters.Enums;
+﻿using LuckNGold.Config;
+using LuckNGold.World.Monsters.Enums;
 
 namespace LuckNGold.Visuals.Consoles;
 
 internal class EquipmentSlot : Slot
 {
-    ColoredGlyph _placeHolder;
+    readonly ColoredGlyph _placeHolder;
     public EquipSlot EquipSlot { get; init; }
 
-    public EquipmentSlot(int size, EquipSlot equipSlot, ColoredGlyph placeHolder) : base(size)
+    public EquipmentSlot(int size, EquipSlot equipSlot, ColoredGlyph placeHolder) : 
+        base(size, Theme.SlotBackground)
     {
         _placeHolder = placeHolder;
         EquipSlot = equipSlot;

@@ -1,4 +1,4 @@
-﻿using LuckNGold.World.Items.Interfaces;
+﻿using LuckNGold.World.Items.Components.Interfaces;
 using LuckNGold.World.Monsters.Enums;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;

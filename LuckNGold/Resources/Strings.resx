@@ -228,9 +228,6 @@
   <data name="BannerDescription" xml:space="preserve">
     <value>A #0banner of heavy cloth hangs on the wall. The fabric is worn and fraying at the edges, giving it the appearance of an ancient relic. The image at its center was once something significant, perhaps a symbol of rank, an elemental sigil, or a forgotten noble house. </value>
   </data>
-  <data name="PeasantClothingName" xml:space="preserve">
-    <value>Peasant Clothing</value>
-  </data>
   <data name="ArmourTag" xml:space="preserve">
     <value>Armour</value>
   </data>
@@ -245,5 +242,20 @@
   </data>
   <data name="SkillsTabName" xml:space="preserve">
     <value>Skills</value>
+  </data>
+  <data name="LinenTag" xml:space="preserve">
+    <value>Linen</value>
+  </data>
+  <data name="HelmetTag" xml:space="preserve">
+    <value>Helmet</value>
+  </data>
+  <data name="HoodTag" xml:space="preserve">
+    <value>Hood</value>
+  </data>
+  <data name="BanditTag" xml:space="preserve">
+    <value>Bandit</value>
+  </data>
+  <data name="PeasantTag" xml:space="preserve">
+    <value>Peasant</value>
   </data>
 </root>

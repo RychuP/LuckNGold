@@ -1,4 +1,5 @@
-﻿using LuckNGold.World.Monsters.Components;
+﻿using LuckNGold.Config;
+using LuckNGold.World.Monsters.Components;
 
 namespace LuckNGold.Visuals.Consoles;
 
@@ -25,7 +26,7 @@ internal class QuickAccessSlots : SlotHolder
         for (int x = 0; x < QuickAccessComponent.Max; x++)
         {
             int index = x < 9 ? x + 1 : 0;
-            var slot = new Slot(SlotSize)
+            var slot = new Slot(SlotSize, Theme.SlotBackground)
             {
                 Position = GetTranslatedPosition(x, 0)
             };

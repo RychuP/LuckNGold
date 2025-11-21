@@ -1,4 +1,4 @@
-﻿using LuckNGold.World.Items.Interfaces;
+﻿using LuckNGold.World.Items.Components.Interfaces;
 using LuckNGold.World.Monsters.Enums;
 using LuckNGold.World.Monsters.Interfaces;
 using LuckNGold.World.Monsters.Primitives;
@@ -171,63 +171,51 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
     /// </summary>
     void DrawInitialAppearance()
     {
+        // Get equipment component.
         var equipment = EquipmentComponent;
 
+        // Draw base.
         UpdateBaseLayer();
-        UpdateBodywearLayer();
-        UpdateFootwearLayer();
-        UpdateBeard();
-        UpdateHeadwearLayer();
+        
+        // Draw bodywear.
+        if (equipment.Body is RogueLikeEntity bodywear)
+            DrawBodywear(bodywear);
 
+        // Draw footwear.
+        if (equipment.Feet is RogueLikeEntity footwear)
+            DrawFootwear(footwear);
+
+        // Draw helmet and beard.
+        Race race = IdentityComponent.Race;
+        if (equipment.Head is RogueLikeEntity headwear)
+        {
+            DrawHeadwear(headwear);
+
+            if (race.CanGrowBeard)
+                DrawBeard(headwear);
+        }
+        else
+        {
+            if (race.CanGrowHair)
+                DrawHair();
+            else
+                EraseHeadwear();
+
+            if (race.CanGrowBeard)
+                DrawBeard();
+        }
+
+        // Draw right hand.
         if (equipment.RightHand is RogueLikeEntity weapon)
             DrawWeapon(weapon);
         else
             DrawRightEmptyHand();
 
+        // Draw left land.
         if (equipment.LeftHand is RogueLikeEntity shield)
             DrawShield(shield);
         else
             DrawLeftEmptyHand();
-    }
-
-    void DrawWeapon(RogueLikeEntity weapon)
-    {
-        var materialComponent = weapon.AllComponents.GetFirst<IMaterial>();
-        var material = materialComponent.Material;
-        string fontName = "weapons-1";
-        int row = 0, col = 0;
-
-        if (weapon.AllComponents.Contains<IMeleeAttack>())
-        {
-            if (weapon.Name.Contains("Sword"))
-            {
-                row = weapon.Name.Contains("Arming") ? 0 :
-                    weapon.Name.Contains("Gladius") ? 0 :
-                    weapon.Name.Contains("Scimitar") ? 0 :
-                    throw new InvalidOperationException("Unknown sword.");
-
-                col = weapon.Name.Contains("Arming") ? 0 :
-                    weapon.Name.Contains("Gladius") ? 1 :
-                    weapon.Name.Contains("Scimitar") ? 2 :
-                    throw new InvalidOperationException("Unknown sword.");
-            }
-        }
-
-        DrawWeaponFar(fontName, row, col);
-        DrawWeaponNear(fontName, row, col);
-        DrawRightWeaponHand(row, col);
-    }
-
-    void EraseWeapon()
-    {
-        EraseWeaponFar();
-        EraseWeaponNear();
-        DrawRightEmptyHand();
-    }
-
-    void DrawShield(RogueLikeEntity shield)
-    {
-
     }
 
     static string GetRaceTypeText(Race race) =>
@@ -309,11 +297,52 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
         var equipSlot = equippable.Slot;
         switch (equipSlot)
         {
+            case EquipSlot.Body:
+                if (item == e.NewValue)
+                    DrawBodywear(item);
+                else
+                    EraseBodywear();
+                break;
+
             case EquipSlot.RightHand:
                 if (item == e.NewValue)
                     DrawWeapon(item);
                 else
                     EraseWeapon();
+                break;
+
+            case EquipSlot.LeftHand:
+                if (item == e.NewValue)
+                    DrawShield(item);
+                else
+                    EraseShield();
+                break;
+
+            case EquipSlot.Feet:
+                if (item == e.NewValue)
+                    DrawFootwear(item);
+                else
+                    EraseFootwear();
+                break;
+
+            case EquipSlot.Head:
+                Race race = IdentityComponent.Race;
+                if (item == e.NewValue)
+                {
+                    DrawHeadwear(item);
+                    if (race.CanGrowBeard)
+                        DrawBeard(item);
+                }
+                else
+                {
+                    if (race.CanGrowHair)
+                        DrawHair();
+                    else
+                        EraseHeadwear();
+
+                    if (race.CanGrowBeard)
+                        DrawBeard();
+                }
                 break;
 
             default:

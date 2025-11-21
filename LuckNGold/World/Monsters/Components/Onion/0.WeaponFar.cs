@@ -1,7 +1,4 @@
-﻿using LuckNGold.Generation.Items.Weapons;
-using LuckNGold.World.Items.Interfaces;
-using LuckNGold.World.Monsters.Enums;
-using SadRogue.Integration;
+﻿using LuckNGold.World.Monsters.Enums;
 
 namespace LuckNGold.World.Monsters.Components;
 

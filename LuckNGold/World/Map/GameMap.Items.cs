@@ -1,7 +1,18 @@
 ﻿using LuckNGold.Generation.Items;
+using LuckNGold.Generation.Items.Bodywears;
+using LuckNGold.Generation.Items.Bodywears.Armours;
+using LuckNGold.Generation.Items.Bodywears.Clothings;
+using LuckNGold.Generation.Items.Collectables;
+using LuckNGold.Generation.Items.Footwears;
+using LuckNGold.Generation.Items.Footwears.Boots;
+using LuckNGold.Generation.Items.Footwears.Shoes;
+using LuckNGold.Generation.Items.Helmets;
+using LuckNGold.Generation.Items.Shields;
+using LuckNGold.Generation.Items.Tools;
 using LuckNGold.Generation.Items.Weapons;
 using LuckNGold.Generation.Items.Weapons.Swords;
 using LuckNGold.World.Items;
+using LuckNGold.World.Items.Materials.Interfaces;
 using SadRogue.Integration;
 
 namespace LuckNGold.World.Map;
@@ -9,6 +20,66 @@ namespace LuckNGold.World.Map;
 // Translates item data objects from generator to RogueLike entities.
 partial class GameMap
 {
+    public static RogueLikeEntity CreateItem(Item item) =>
+        item is Tool tool ? CreateTool(tool) :
+        item is Weapon weapon ? CreateWeapon(weapon) :
+        item is Shield shield ? CreateShield(shield) :
+        item is Bodywear bodywear ? CreateBodywear(bodywear) :
+        item is Footwear footwear ? CreateFootwear(footwear) :
+        item is Helmet helmet ? CreateHelmet(helmet) :
+        item is Collectable collectable ? CreateCollectable(collectable) :
+        throw new ArgumentException("Item not implemented.");
+
+    static RogueLikeEntity CreateWeapon(Weapon weapon) =>
+        weapon is Sword sword ? CreateSword(sword) :
+        throw new ArgumentException("Weapon is not implemented.");
+
+    static RogueLikeEntity CreateSword(Sword sword) =>
+        sword is ArmingSword arming ? WeaponFactory.ArmingSword(arming.Material, arming.Attacks) :
+        sword is GladiusSword gladius ? WeaponFactory.GladiusSword(gladius.Material, gladius.Attacks) :
+        sword is ScimitarSword scimitar ? WeaponFactory.ScimitarSword(scimitar.Material, scimitar.Attacks) :
+        throw new ArgumentException("Sword is not implemented.");
+
+    static RogueLikeEntity CreateBodywear(Bodywear bodywear) =>
+        bodywear is Clothing clothing ? CreateClothing(clothing) :
+        bodywear is Armour armour ? CreateArmour(armour) :
+        throw new ArgumentException("Bodywear is not implemented.");
+
+    static RogueLikeEntity CreateClothing(Clothing clothing) =>
+        clothing is LinenClothing ? ClothingFactory.LinenClothing() :
+        throw new ArgumentException("Clothing is not implemented.");
+
+    static RogueLikeEntity CreateArmour(Armour armour) =>
+        throw new ArgumentException("Armour is not implemented.");
+
+    static RogueLikeEntity CreateFootwear(Footwear footwear) =>
+        footwear is Shoe shoes ? CreateShoes(shoes) :
+        footwear is Boot boots ? CreateBoots(boots) :
+        throw new ArgumentException("Footwear is not implemented.");
+
+    static RogueLikeEntity CreateShoes(Shoe shoes) =>
+        shoes is PeasantShoes ? FootwearFactory.PeasantShoes(shoes.Material) :
+        throw new ArgumentException("Shoes are not implemented.");
+
+    static RogueLikeEntity CreateBoots(Boot boots) =>
+        throw new ArgumentException("Boots are not implemented.");
+
+    static RogueLikeEntity CreateHelmet(Helmet helmet) =>
+        helmet is BanditHelmet ? ArmourFactory.BanditHelmet(helmet.Material) :
+        throw new ArgumentException("Helmet is not implemented.");
+
+    static RogueLikeEntity CreateShield(Shield shield) =>
+        shield is BanditShield ? ArmourFactory.BanditShield(shield.Material) :
+        throw new ArgumentException("Shield is not implemented.");
+
+    static RogueLikeEntity CreateTool(Tool tool) =>
+        tool is Key key ? ToolFactory.Key((IGemstone)key.Material) :
+        throw new ArgumentException("Tool is not implemented.");
+
+    static RogueLikeEntity CreateCollectable(Collectable collectable) =>
+        collectable is Coin ? CollectableFactory.Coin() :
+        throw new ArgumentException("Collectable is not implemented.");
+
     public void PlaceItem(Item item)
     {
         if (item.Position == Point.None)
@@ -21,27 +92,4 @@ partial class GameMap
         entity = CreateItem(item);
         AddEntity(entity, item.Position);
     }
-
-    /// <summary>
-    /// Converts data object into a <see cref="RogueLikeEntity"/> that can be placed on the map.
-    /// </summary>
-    /// <param name="item">Data object from generator.</param>
-    /// <returns>An instance of <see cref="RogueLikeEntity"/> 
-    /// created from given data object.</returns>
-    /// <exception cref="ArgumentException"></exception>
-    public static RogueLikeEntity CreateItem(Item item) =>
-        item is Key key ? ItemFactory.Key(key.Material) :
-        item is Coin ? ItemFactory.Coin() :
-        item is Weapon weapon ? CreateWeapon(weapon) :
-        throw new ArgumentException("Item not implemented.");
-
-    static RogueLikeEntity CreateWeapon(Weapon weapon) =>
-        weapon is Sword sword ? CreateSword(sword) :
-        throw new ArgumentException("Weapon is not implemented.");
-
-    static RogueLikeEntity CreateSword(Sword sword) =>
-        sword is ArmingSword arming ? WeaponFactory.ArmingSword(arming.Material, arming.Attacks) :
-        sword is GladiusSword gladius ? WeaponFactory.GladiusSword(gladius.Material, gladius.Attacks) :
-        sword is ScimitarSword scimitar ? WeaponFactory.ScimitarSword(scimitar.Material, scimitar.Attacks) :
-        throw new ArgumentException("Sword is not implemented.");
 }

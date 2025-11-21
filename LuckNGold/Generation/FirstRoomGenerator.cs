@@ -1,13 +1,15 @@
 ﻿using GoRogue.Components;
 using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.ContextComponents;
-using GoRogue.Random;
-using LuckNGold.Generation.Decors;
 using LuckNGold.Generation.Furnitures;
-using LuckNGold.Generation.Items;
+using LuckNGold.Generation.Items.Bodywears.Clothings;
+using LuckNGold.Generation.Items.Collectables;
+using LuckNGold.Generation.Items.Footwears.Shoes;
+using LuckNGold.Generation.Items.Helmets;
+using LuckNGold.Generation.Items.Shields;
 using LuckNGold.Generation.Items.Weapons.Swords;
 using LuckNGold.Generation.Map;
-using LuckNGold.World.Items.Enums;
+using LuckNGold.World.Items.Materials;
 
 namespace LuckNGold.Generation;
 
@@ -52,16 +54,33 @@ internal class FirstRoomGenerator() : GenerationStep("FirstRoom",
 
         // Sample swords
         var swordPosition = firstRoom.Area.Center + Direction.UpLeft;
-        var armingSword = new ArmingSword(swordPosition, Material.MoonSteel);
+        var armingSword = new ArmingSword(swordPosition, Metal.MoonSteel);
         firstRoom.AddEntity(armingSword);
 
         swordPosition += Direction.Right;
-        var gladiusSword = new GladiusSword(swordPosition, Material.MoonSteel);
+        var gladiusSword = new GladiusSword(swordPosition, Metal.MoonSteel);
         firstRoom.AddEntity(gladiusSword);
 
         swordPosition += Direction.Right;
-        var scimitarSword = new ScimitarSword(swordPosition, Material.MoonSteel);
+        var scimitarSword = new ScimitarSword(swordPosition, Metal.MoonSteel);
         firstRoom.AddEntity(scimitarSword);
+
+        // Clothing
+        var clothingPosition = firstRoom.Area.Center + Direction.Down;
+        var linenClothing = new LinenClothing(clothingPosition);
+        firstRoom.AddEntity(linenClothing);
+
+        var helmetPosition = clothingPosition + Direction.Right;
+        var banditHelmet = new BanditHelmet(helmetPosition, Metal.MoonSteel);
+        firstRoom.AddEntity(banditHelmet);
+
+        var shieldPosition = clothingPosition + Direction.Left;
+        var banditShield = new BanditShield(shieldPosition, Wood.Darkwood);
+        firstRoom.AddEntity(banditShield);
+
+        var shoesPosition = firstRoom.Area.Center;
+        var peasantShoes = new PeasantShoes(shoesPosition, Leather.BovineHide);
+        firstRoom.AddEntity(peasantShoes);
 
         yield break;
     }

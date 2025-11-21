@@ -109,16 +109,16 @@ static class DecorFactory
     /// Animated banner that can be placed on the top wall of a room.
     /// </summary>
     /// <param name="color">Color of the inner portion of the banner that corresponds 
-    /// to the given <see cref="Gemstone"/>.</param>
-    public static AnimatedRogueLikeEntity Banner(Gemstone color)
+    /// to the given <see cref="GemstoneType"/>.</param>
+    public static AnimatedRogueLikeEntity Banner(GemstoneType color)
     {
         string colorDescription = color switch
         {
-            Gemstone.Onyx => Strings.OnyxBannerDescription,
-            Gemstone.Amber => Strings.AmberBannerDescription,
-            Gemstone.Emerald => Strings.EmeraldBannerDescription,
-            Gemstone.Ruby => Strings.RubyBannerDescription,
-            Gemstone.Diamond => Strings.DiamondBannerDescription,
+            GemstoneType.Onyx => Strings.OnyxBannerDescription,
+            GemstoneType.Amber => Strings.AmberBannerDescription,
+            GemstoneType.Emerald => Strings.EmeraldBannerDescription,
+            GemstoneType.Ruby => Strings.RubyBannerDescription,
+            GemstoneType.Diamond => Strings.DiamondBannerDescription,
             _ => string.Empty
         };
 

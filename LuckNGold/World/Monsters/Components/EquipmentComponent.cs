@@ -1,5 +1,5 @@
 ﻿using LuckNGold.Visuals.Consoles;
-using LuckNGold.World.Items.Interfaces;
+using LuckNGold.World.Items.Components.Interfaces;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Enums;
 using LuckNGold.World.Monsters.Interfaces;

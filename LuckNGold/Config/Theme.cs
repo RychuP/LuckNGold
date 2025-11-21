@@ -22,14 +22,14 @@ static class Theme
     public static readonly Color Ruby = new(213, 72, 78);
     public static readonly Color Diamond = new(40, 204, 223);
 
-    public static readonly Dictionary<Gemstone, Color> GemstoneColors = new()
+    public static readonly Dictionary<GemstoneType, Color> GemstoneColors = new()
     {
-        {Gemstone.None, Color.Yellow },
-        {Gemstone.Onyx, Onyx },
-        {Gemstone.Amber, Amber },
-        {Gemstone.Emerald, Emerald },
-        {Gemstone.Ruby, Ruby },
-        {Gemstone.Diamond, Diamond },
+        {GemstoneType.None, Color.Yellow },
+        {GemstoneType.Onyx, Onyx },
+        {GemstoneType.Amber, Amber },
+        {GemstoneType.Emerald, Emerald },
+        {GemstoneType.Ruby, Ruby },
+        {GemstoneType.Diamond, Diamond },
     };
 
     /// <summary>
@@ -51,6 +51,8 @@ static class Theme
     /// Color of the <see cref="Slot"/> border in normal mode.
     /// </summary>
     public static readonly Color SlotBorder = Colors.GrayDark;
+
+    public static readonly Color SlotBackground = Color.DarkSlateGray;
 
     /// <summary>
     /// Color of the <see cref="Slot"/> border when it is selected.

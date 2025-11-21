@@ -1,54 +1,67 @@
-﻿using LuckNGold.World.Monsters.Enums;
+﻿using LuckNGold.Generation.Items.Weapons;
+using LuckNGold.Resources;
+using LuckNGold.World.Items.Components.Interfaces;
+using LuckNGold.World.Monsters.Enums;
 using LuckNGold.World.Monsters.Primitives;
+using SadRogue.Integration;
 
 namespace LuckNGold.World.Monsters.Components;
 
 partial class OnionComponent
 {
     /// <summary>
-    /// Updates hair, helmet - layer 6.
+    /// Draws hair - layer 6.
     /// </summary>
-    void UpdateHeadwearLayer()
+    void DrawHair()
     {
-        // Check if the race can grow hair at all.
         Race race = IdentityComponent.Race;
-        if (!race.CanGrowHair) return;
-
         var appearance = IdentityComponent.Appearance;
-        string fontName = string.Empty;
-        int row = 0, column = 0;
 
-        // Helmet on the head.
-        if (EquipmentComponent.Head != null)
+        // Shaved or bald head don't need hair.
+        if (appearance.HairStyle == HairStyle.Bald ||
+            appearance.HairStyle == HairStyle.Shaved)
         {
-
+            EraseHeadwear();
+            return;
         }
 
-        // Hair only. Applies to humans and elves. All other races don't grow hair.
-        else
+        string raceType = GetRaceTypeText(race);
+        string skinTone = race.RaceType == RaceType.Elf && race.SkinTone == SkinTone.Dark ?
+            "dark-" : string.Empty;
+        var hairVariant = (int)appearance.HairColor + 1;
+        string fontName = $"race-{skinTone}{raceType}-hair-{hairVariant}";
+
+        int col = (int)appearance.HairCut;
+        int row = appearance.HairStyle switch
         {
-            // Shaved or bald head don't need hair.
-            if (appearance.HairStyle == HairStyle.Bald ||
-                appearance.HairStyle == HairStyle.Shaved)
-            {
-                EraseLayer(OnionLayerName.Headwear);
-                return;
-            }
+            HairStyle.Long => 1,
+            _ => 0
+        };
 
-            string raceType = GetRaceTypeText(race);
-            string skinTone = race.RaceType == RaceType.Elf && race.SkinTone == SkinTone.Dark ?
-                "dark-" : string.Empty;
-            var hairVariant = (int)appearance.HairColor + 1;
-            fontName = $"race-{skinTone}{raceType}-hair-{hairVariant}";
+        SetLayerAppearance(OnionLayerName.Headwear, fontName, row * 4, col * 3);
+    }
 
-            column = (int)appearance.HairCut;
-            row = appearance.HairStyle switch
+    void DrawHeadwear(RogueLikeEntity headwear)
+    {
+        var composition = headwear.AllComponents.GetFirst<IComposition>();
+        var material = composition.Material;
+        string fontName = "helmets-1";
+        int row = 0, col = 0;
+
+        if (headwear.Name.Contains(Strings.HelmetTag))
+        {
+            var helmetType = headwear.Name.Split(' ')[1];
+            (row, col) = helmetType switch
             {
-                HairStyle.Long => 1,
-                _ => 0
+                _ => (0, 0),    // Bandit
             };
         }
 
-        SetLayerAppearance(OnionLayerName.Headwear, fontName, row * 4, column * 3);
+        SetLayerAppearance(OnionLayerName.Headwear, fontName, row * 4, col * 3);
+    }
+
+    void EraseHeadwear()
+    {
+        EraseLayer(OnionLayerName.Headwear);
     }
 }

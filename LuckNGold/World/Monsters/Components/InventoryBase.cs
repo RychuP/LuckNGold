@@ -1,4 +1,4 @@
-﻿using LuckNGold.World.Items.Interfaces;
+﻿using LuckNGold.World.Items.Components.Interfaces;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Interfaces;
 using SadRogue.Integration;

@@ -1,12 +1,13 @@
-﻿using LuckNGold.World.Items.Enums;
-using LuckNGold.World.Items.Interfaces;
-using LuckNGold.World.Items.Primitives;
+﻿using LuckNGold.World.Items.Damage;
+using LuckNGold.World.Items.Damage.Interfaces;
+using LuckNGold.World.Items.Enums;
+using LuckNGold.World.Items.Materials.Interfaces;
 
 namespace LuckNGold.Generation.Items.Weapons.Swords;
 
 record ArmingSword : Sword
 {
-    public ArmingSword(Point position, Material material) : base(position, material, 
+    public ArmingSword(Point position, IMetal material) : base(position, material, 
         new Dictionary<MeleeAttackType, IAttackDamage> 
         {
             { 

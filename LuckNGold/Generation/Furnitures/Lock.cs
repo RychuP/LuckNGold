@@ -1,4 +1,4 @@
-﻿using LuckNGold.Generation.Items;
+﻿using LuckNGold.Generation.Items.Tools;
 using LuckNGold.World.Common.Enums;
 using LuckNGold.World.Items.Enums;
 
@@ -9,5 +9,5 @@ record Lock(Difficulty Difficulty)
     /// <summary>
     /// Material of a matching <see cref="Key"/>.
     /// </summary>
-    public Gemstone Gemstone => (Gemstone) Difficulty;
+    public GemstoneType Gemstone => (GemstoneType) Difficulty;
 }

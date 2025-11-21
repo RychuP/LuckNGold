@@ -75,7 +75,7 @@ internal class SectionGenerator() : GenerationStep("Sections",
         double sidePathCountRequired = sidePathsPerSection;
 
         // Gemstone type of the current section.
-        Gemstone currentGemstone = Gemstone.None;
+        GemstoneType currentGemstone = GemstoneType.None;
 
         // Room from the main path.
         Room currentRoom = mainPath.FirstRoom;
@@ -121,7 +121,7 @@ internal class SectionGenerator() : GenerationStep("Sections",
 
             GameScreen.Print($"Paths: {sidePathCount}, " +
                 $"Req: {sidePathCountRequired:0.00}");
-            GameScreen.Print($"Section: {currentSection.Gemstone}, " +
+            GameScreen.Print($"Section: {currentSection.GemstoneType}, " +
                 $"Rooms: {currentSection.Rooms.Count}");
 
             // Increment path requirement for the next section.
@@ -136,7 +136,7 @@ internal class SectionGenerator() : GenerationStep("Sections",
     }
 
     /// <summary>
-    /// Creates flags with a <see cref="Gemstone"/> color placed in <see cref="Section"/> rooms.
+    /// Creates flags with a <see cref="GemstoneType"/> color placed in <see cref="Section"/> rooms.
     /// </summary>
     static void CreateSectionFlags(Section section)
     {
@@ -190,7 +190,7 @@ internal class SectionGenerator() : GenerationStep("Sections",
 
     static void CreateFlag(Point position, Room room)
     {
-        var banner = new Banner(position, room.Section!.Gemstone);
+        var banner = new Banner(position, room.Section!.GemstoneType);
         room.AddEntity(banner);
     }
 
@@ -198,8 +198,8 @@ internal class SectionGenerator() : GenerationStep("Sections",
     /// Creates locked door leading to the next dungeon <see cref="Section"/>.
     /// </summary>
     /// <param name="exit"><see cref="Exit"/> where door will be placed.</param>
-    /// <param name="gemstone"><see cref="Gemstone"/> of the curent section.</param>
-    static void CreateLockedDoor(Exit exit, Gemstone gemstone)
+    /// <param name="gemstone"><see cref="GemstoneType"/> of the curent section.</param>
+    static void CreateLockedDoor(Exit exit, GemstoneType gemstone)
     {
         var doorPosition = exit.Position;
         var isDouble = exit.IsDouble;

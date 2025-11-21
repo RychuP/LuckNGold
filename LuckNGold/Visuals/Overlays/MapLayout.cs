@@ -60,7 +60,7 @@ internal class MapLayout : ScreenSurface
 
     void DrawRoom(Room room)
     {
-        var color = Theme.GemstoneColors[room.Section?.Gemstone ?? Gemstone.None];
+        var color = Theme.GemstoneColors[room.Section?.GemstoneType ?? GemstoneType.None];
         var shapeParams = ShapeParameters.CreateStyledBoxThin(color);
         Surface.DrawBox(room.Bounds, shapeParams);
     }

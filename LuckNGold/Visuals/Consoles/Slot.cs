@@ -23,7 +23,7 @@ internal class Slot : ScreenSurface
         }
     }
 
-    public Slot(int size) : base(size, size)
+    public Slot(int size, Color? bgcolor = null) : base(size, size)
     {
         DrawBorder();
 
@@ -34,6 +34,12 @@ internal class Slot : ScreenSurface
             UsePixelPositioning = true
         };
         Children.Add(ItemSurface);
+
+        if (bgcolor != null)
+        {
+            ItemSurface.Surface.DefaultBackground = bgcolor.Value;
+            ItemSurface.Surface.Clear();
+        }
 
         // Specify the font size for the item.
         ItemSurface.FontSize *= size - 2;

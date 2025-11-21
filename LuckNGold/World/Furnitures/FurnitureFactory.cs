@@ -67,7 +67,7 @@ internal class FurnitureFactory
 
             // Add lock description.
             var lockDescription = Strings.DoorLockDescription;
-            string gemstone = $"#1{(Gemstone)lockDifficulty}".ToLower();
+            string gemstone = $"#1{(GemstoneType)lockDifficulty}".ToLower();
             lockDescription = lockDescription.Replace("xxx", gemstone);
             descriptionComponent.StateDescription = lockDescription;
 

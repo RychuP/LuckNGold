@@ -4,8 +4,12 @@ using GoRogue.MapGeneration.ContextComponents;
 using GoRogue.Random;
 using LuckNGold.Generation.Furnitures;
 using LuckNGold.Generation.Items;
+using LuckNGold.Generation.Items.Collectables;
+using LuckNGold.Generation.Items.Tools;
 using LuckNGold.Generation.Map;
 using LuckNGold.World.Items.Enums;
+using LuckNGold.World.Items.Materials;
+using LuckNGold.World.Items.Materials.Interfaces;
 using ShaiRandom.Generators;
 
 namespace LuckNGold.Generation;
@@ -73,10 +77,10 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
             room = section.Rooms[index];
         }
 
-        PlaceKeyInRoom(room, section.Gemstone);
+        PlaceKeyInRoom(room, section.GemstoneType);
     }
 
-    void PlaceKeyInRoom(Room room, Gemstone gemstone)
+    void PlaceKeyInRoom(Room room, GemstoneType gemstoneType)
     {
         // Find a random, free spot in the room not aligned with the room center.
         Point keyPosition;
@@ -86,7 +90,7 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
             keyPosition.Y == room.Area.Center.Y);
 
         // Create the key.
-        var key = new Key(keyPosition, gemstone);
+        var key = new Key(keyPosition, gemstoneType);
         room.AddEntity(key);
     }
 
@@ -125,7 +129,7 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
             // Put key in the chest.
             if (chestWithKeyIndex == i)
             {
-                var key = new Key(Point.None, section.Gemstone);
+                var key = new Key(Point.None, section.GemstoneType);
                 chest.Items.Add(key);
             }
 
@@ -144,7 +148,7 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
         if (section.IsFirst())
             return false;
 
-        var lowerSection = sections.Where(s => s.Gemstone == section.Gemstone - 1).First();
+        var lowerSection = sections.Where(s => s.GemstoneType == section.GemstoneType - 1).First();
 
         // Check section sizes are sufficient for the task.
         int smallSectionSize = 6;
@@ -153,7 +157,7 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
             // Try to go lower in sections but not too far.
             if (lowerSection.IsFirst()) 
                 return false;
-            lowerSection = sections.Where(s => s.Gemstone == section.Gemstone - 1).First();
+            lowerSection = sections.Where(s => s.GemstoneType == section.GemstoneType - 1).First();
             if (lowerSection.Rooms.Count <= smallSectionSize ) 
                 return false;
         }
@@ -167,7 +171,7 @@ internal class ObjectiveGenerator() : GenerationStep("Objectives",
         // Select a room for the key.
         int singleRoomIndex = _rnd.RandomIndex(freeSingleRooms);
         var room = freeSingleRooms[singleRoomIndex];
-        PlaceKeyInRoom(room, section.Gemstone);
+        PlaceKeyInRoom(room, section.GemstoneType);
 
         // Place a gate at the room's exit.
         var exit = room.Exits.First();
