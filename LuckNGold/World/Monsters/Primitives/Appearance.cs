@@ -6,7 +6,7 @@ namespace LuckNGold.World.Monsters.Primitives;
 record struct Appearance(
     Age Age = Age.Adult,
     Face Face = Face.VariantA,
-    EyeColor EyeColor = EyeColor.Normal,
+    EyeColor EyeColor = EyeColor.Default,
     HairStyle HairStyle = default,
     HairCut HairCut = default,
     HairColor HairColor = default,

@@ -6,7 +6,6 @@ namespace LuckNGold.World.Monsters.Components;
 
 partial class OnionComponent
 {
-
     /// <summary>
     /// Draws footwear - layer 4.
     /// </summary>

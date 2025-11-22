@@ -4,6 +4,7 @@ using LuckNGold.World.Monsters.Components;
 using LuckNGold.World.Monsters.Enums;
 using LuckNGold.World.Monsters.Primitives;
 using SadRogue.Integration;
+using ShaiRandom.Generators;
 
 namespace LuckNGold.World.Monsters;
 
@@ -12,6 +13,8 @@ namespace LuckNGold.World.Monsters;
 /// </summary>
 static class MonsterFactory
 {
+    static readonly IEnhancedRandom rnd = GlobalRandom.DefaultRNG;
+
     public static RogueLikeEntity Player()
     {
         var player = new RogueLikeEntity(2, false, layer: (int)GameMap.Layer.Monsters)
@@ -19,7 +22,6 @@ static class MonsterFactory
             Name = "Player",
         };
 
-        var rnd = GlobalRandom.DefaultRNG;
         var identityComponent = new IdentityComponent("Henry", Race.Human);
         var age = (Age)rnd.NextInt(3);
         var hairCut = (HairCut)rnd.NextInt(4);
@@ -73,5 +75,22 @@ static class MonsterFactory
         player.AllComponents.Add(new LevelComponent());
 
         return player;
+    }
+
+    public static RogueLikeEntity Skeleton()
+    {
+        var skeleton = new RogueLikeEntity(2, false, layer: (int)GameMap.Layer.Monsters)
+        {
+            Name = "Skeleton",
+        };
+
+        var identityComponent = new IdentityComponent("Skelly", Race.Skeleton);
+        skeleton.AllComponents.Add(identityComponent);
+        skeleton.AllComponents.Add(new OnionComponent());
+        skeleton.AllComponents.Add(new HealthComponent(50));
+        skeleton.AllComponents.Add(new StatsComponent(2, 3, 1));
+        skeleton.AllComponents.Add(new LevelComponent());
+
+        return skeleton;
     }
 }
