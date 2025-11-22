@@ -183,7 +183,7 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
 
         // Draw footwear.
         if (equipment.Feet is RogueLikeEntity footwear)
-            DrawFootwear(footwear);
+            DrawFootwear(footwear, equipment.Body);
 
         // Draw helmet and beard.
         Race race = IdentityComponent.Race;
@@ -320,7 +320,7 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
 
             case EquipSlot.Feet:
                 if (item == e.NewValue)
-                    DrawFootwear(item);
+                    DrawFootwear(item, EquipmentComponent.Body);
                 else
                     EraseFootwear();
                 break;
