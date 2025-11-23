@@ -329,12 +329,15 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
                 Race race = IdentityComponent.Race;
                 if (item == e.NewValue)
                 {
+                    UpdateBaseLayer(item);
                     DrawHeadwear(item);
                     if (race.CanGrowBeard)
                         DrawBeard(item);
                 }
                 else
                 {
+                    UpdateBaseLayer();
+
                     if (race.CanGrowHair)
                         DrawHair();
                     else

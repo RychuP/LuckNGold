@@ -28,57 +28,57 @@ partial class GameMap
         item is Footwear footwear ? CreateFootwear(footwear) :
         item is Helmet helmet ? CreateHelmet(helmet) :
         item is Collectable collectable ? CreateCollectable(collectable) :
-        throw new ArgumentException("Item not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateWeapon(Weapon weapon) =>
         weapon is Sword sword ? CreateSword(sword) :
-        throw new ArgumentException("Weapon is not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateSword(Sword sword) =>
         sword is ArmingSword arming ? WeaponFactory.ArmingSword(arming.Material, arming.Attacks) :
         sword is GladiusSword gladius ? WeaponFactory.GladiusSword(gladius.Material, gladius.Attacks) :
         sword is ScimitarSword scimitar ? WeaponFactory.ScimitarSword(scimitar.Material, scimitar.Attacks) :
-        throw new ArgumentException("Sword is not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateBodywear(Bodywear bodywear) =>
         bodywear is Clothing clothing ? CreateClothing(clothing) :
         bodywear is Armour armour ? CreateArmour(armour) :
-        throw new ArgumentException("Bodywear is not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateClothing(Clothing clothing) =>
         clothing is LinenClothing ? ClothingFactory.LinenClothing() :
-        throw new ArgumentException("Clothing is not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateArmour(Armour armour) =>
-        throw new ArgumentException("Armour is not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateFootwear(Footwear footwear) =>
         footwear is Shoe shoes ? CreateShoes(shoes) :
         footwear is Boot boots ? CreateBoots(boots) :
-        throw new ArgumentException("Footwear is not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateShoes(Shoe shoes) =>
         shoes is PeasantShoes ? FootwearFactory.PeasantShoes(shoes.Material) :
-        throw new ArgumentException("Shoes are not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateBoots(Boot boots) =>
-        throw new ArgumentException("Boots are not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateHelmet(Helmet helmet) =>
         helmet is BanditHelmet ? ArmourFactory.BanditHelmet(helmet.Material) :
-        throw new ArgumentException("Helmet is not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateShield(Shield shield) =>
         shield is BanditShield ? ArmourFactory.BanditShield(shield.Material) :
-        throw new ArgumentException("Shield is not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateTool(Tool tool) =>
         tool is Key key ? ToolFactory.Key((IGemstone)key.Material) :
-        throw new ArgumentException("Tool is not implemented.");
+        throw new NotImplementedException();
 
     static RogueLikeEntity CreateCollectable(Collectable collectable) =>
         collectable is Coin ? CollectableFactory.Coin() :
-        throw new ArgumentException("Collectable is not implemented.");
+        throw new NotImplementedException();
 
     public void PlaceItem(Item item)
     {

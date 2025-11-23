@@ -7,6 +7,7 @@ using LuckNGold.Generation.Decors;
 using LuckNGold.Generation.Furnitures;
 using LuckNGold.Generation.Items;
 using LuckNGold.Generation.Map;
+using LuckNGold.Generation.Monsters;
 using LuckNGold.World.Furnitures.Components;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
@@ -79,6 +80,8 @@ partial class GameScreen
                 }
                 else if (entity is Item item)
                     map.PlaceItem(item);
+                else if (entity is Monster monster)
+                    map.PlaceMonster(monster);
             }
         }
         if (GameSettings.DebugEnabled)
