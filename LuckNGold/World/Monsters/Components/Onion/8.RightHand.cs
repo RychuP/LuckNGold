@@ -12,20 +12,17 @@ partial class OnionComponent
     void DrawRightEmptyHand()
     {
         Race race = IdentityComponent.Race;
-        string fontName = "race-";
-        int row = 0, column = 0;
 
         string raceType = GetRaceTypeText(race);
         string skinTone = GetSkinToneText(race);
+        string fontName = $"race-{raceType}-base{skinTone}";
 
-        if (race == Race.Human)
-        {
-            fontName += $"{raceType}-base{skinTone}";
-            row = 17;
-            column = 2;
-        }
+        int row = race == Race.Human ? 17 :
+            race == Race.Skeleton ? 25 : 0;
 
-        SetLayerAppearance(OnionLayerName.RightHand, fontName, row * 4, column * 3);
+        int col = race == Race.Human ? 2 : 0;
+
+        SetLayerAppearance(OnionLayerName.RightHand, fontName, row * 4, col * 3);
     }
 
     /// <summary>

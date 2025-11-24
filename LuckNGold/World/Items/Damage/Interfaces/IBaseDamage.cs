@@ -4,4 +4,5 @@ internal interface IBaseDamage
 {
     int MinDamage { get; }
     int MaxDamage { get; }
+    int Resolve();
 }

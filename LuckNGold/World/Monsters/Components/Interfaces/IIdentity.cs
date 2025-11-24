@@ -1,6 +1,6 @@
 ﻿using LuckNGold.World.Monsters.Primitives;
 
-namespace LuckNGold.World.Monsters.Interfaces;
+namespace LuckNGold.World.Monsters.Components.Interfaces;
 
 /// <summary>
 /// It has a name, race and other identifying features.

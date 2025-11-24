@@ -9,6 +9,7 @@ using LuckNGold.Generation.Items.Helmets;
 using LuckNGold.Generation.Items.Shields;
 using LuckNGold.Generation.Items.Weapons.Swords;
 using LuckNGold.Generation.Map;
+using LuckNGold.Generation.Monsters.Skeletons;
 using LuckNGold.World.Items.Materials;
 
 namespace LuckNGold.Generation;
@@ -23,6 +24,7 @@ internal class FirstRoomGenerator() : GenerationStep("FirstRoom",
     {
         var sections = context.GetFirst<ItemList<Section>>("Sections").Items;
         var firstRoom = sections[0].Entrance;
+        var secondRoom = sections[0].Rooms[1];
         var exit = firstRoom.Exits.First();
 
         // Place gate.
@@ -52,7 +54,6 @@ internal class FirstRoomGenerator() : GenerationStep("FirstRoom",
             chest.Items.Add(coin);
         }
 
-        // Sample swords
         var swordPosition = firstRoom.Area.Center + Direction.UpLeft;
         var armingSword = new ArmingSword(swordPosition, Metal.MoonSteel);
         firstRoom.AddEntity(armingSword);
@@ -65,7 +66,6 @@ internal class FirstRoomGenerator() : GenerationStep("FirstRoom",
         var scimitarSword = new ScimitarSword(swordPosition, Metal.MoonSteel);
         firstRoom.AddEntity(scimitarSword);
 
-        // Clothing
         var clothingPosition = firstRoom.Area.Center + Direction.Down;
         var linenClothing = new LinenClothing(clothingPosition);
         firstRoom.AddEntity(linenClothing);
@@ -81,6 +81,10 @@ internal class FirstRoomGenerator() : GenerationStep("FirstRoom",
         var shoesPosition = firstRoom.Area.Center;
         var peasantShoes = new PeasantShoes(shoesPosition, Leather.BovineHide);
         firstRoom.AddEntity(peasantShoes);
+
+        var skeletonPosition = secondRoom.Area.Center;
+        var skeleton = new SkeletonWarrior(skeletonPosition);
+        secondRoom.AddEntity(skeleton);
 
         yield break;
     }

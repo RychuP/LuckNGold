@@ -1,6 +1,6 @@
 ﻿using LuckNGold.World.Items.Components.Interfaces;
+using LuckNGold.World.Monsters.Components.Interfaces;
 using LuckNGold.World.Monsters.Enums;
-using LuckNGold.World.Monsters.Interfaces;
 using SadRogue.Integration;
 
 namespace LuckNGold.Visuals.Consoles;

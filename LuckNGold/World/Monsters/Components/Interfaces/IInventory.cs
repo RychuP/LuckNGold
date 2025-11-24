@@ -2,7 +2,7 @@
 using SadRogue.Integration;
 using System.Collections.ObjectModel;
 
-namespace LuckNGold.World.Monsters.Interfaces;
+namespace LuckNGold.World.Monsters.Components.Interfaces;
 
 /// <summary>
 /// It can store entities with <see cref="ICarryable"/> component.

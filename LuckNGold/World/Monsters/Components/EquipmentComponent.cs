@@ -1,8 +1,7 @@
-﻿using LuckNGold.Visuals.Consoles;
-using LuckNGold.World.Items.Components.Interfaces;
+﻿using LuckNGold.World.Items.Components.Interfaces;
 using LuckNGold.World.Map;
+using LuckNGold.World.Monsters.Components.Interfaces;
 using LuckNGold.World.Monsters.Enums;
-using LuckNGold.World.Monsters.Interfaces;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
@@ -42,9 +41,6 @@ internal class EquipmentComponent : RogueLikeComponentBase<RogueLikeEntity>, IEq
     {
         if (Parent == null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
-
-        if (Parent.CurrentMap == null)
-            throw new InvalidOperationException("Parent needs to be on the map.");
 
         if (item.Layer != (int)GameMap.Layer.Items)
             throw new InvalidOperationException("Wearable entity is not an item.");

@@ -1,6 +1,6 @@
 ﻿using LuckNGold.World.Monsters.Enums;
 
-namespace LuckNGold.World.Monsters.Interfaces;
+namespace LuckNGold.World.Monsters.Primitives.Interfaces;
 
 /// <summary>
 /// It can be added as a layer to <see cref="ILayerStack"/>.

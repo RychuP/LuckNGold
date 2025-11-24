@@ -1,4 +1,4 @@
-﻿using LuckNGold.World.Monsters.Interfaces;
+﻿using LuckNGold.World.Monsters.Components.Interfaces;
 
 namespace LuckNGold.World.Items.Components.Interfaces;
 

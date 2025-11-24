@@ -1,6 +1,6 @@
 ﻿using LuckNGold.World.Monsters.Enums;
 
-namespace LuckNGold.World.Monsters.Interfaces;
+namespace LuckNGold.World.Monsters.Primitives.Interfaces;
 
 interface IRace
 {

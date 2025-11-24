@@ -9,8 +9,8 @@ namespace LuckNGold.World.Items.Components;
 /// <summary>
 /// Component for an item entity that can perform melee attacks.
 /// </summary>
-internal class MeleeAttackComponent(Dictionary<MeleeAttackType, IAttackDamage> attacks) :
+internal class MeleeAttackComponent(Dictionary<MeleeAttackType, IAttack> attacks) :
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IMeleeAttack
 {
-    public IReadOnlyDictionary<MeleeAttackType, IAttackDamage> Attacks { get; } = attacks;
+    public IReadOnlyDictionary<MeleeAttackType, IAttack> Attacks { get; } = attacks;
 }

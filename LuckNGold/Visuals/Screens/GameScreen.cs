@@ -5,7 +5,7 @@ using LuckNGold.Visuals.Overlays;
 using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
-using LuckNGold.World.Monsters.Interfaces;
+using LuckNGold.World.Monsters.Components.Interfaces;
 using SadConsole.UI.Controls;
 
 namespace LuckNGold.Visuals.Screens;

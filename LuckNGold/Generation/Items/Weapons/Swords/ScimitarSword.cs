@@ -8,19 +8,19 @@ namespace LuckNGold.Generation.Items.Weapons.Swords;
 record ScimitarSword : Sword
 {
     public ScimitarSword(Point position, IMetal material) : base(position, material,
-        new Dictionary<MeleeAttackType, IAttackDamage>
+        new Dictionary<MeleeAttackType, IAttack>
         {
             {
                 MeleeAttackType.OverheadSwing,
-                new AttackDamage(PhysicalDamage.Slashing(4, 7), ElementalDamage.None)
+                new Attack(PhysicalDamage.Slashing(4, 7), ElementalDamage.None)
             },
             {
                 MeleeAttackType.DiagonalSideSwing,
-                new AttackDamage(PhysicalDamage.Slashing(3, 6), ElementalDamage.None)
+                new Attack(PhysicalDamage.Slashing(3, 6), ElementalDamage.None)
             },
             {
                 MeleeAttackType.ForwardThrust,
-                new AttackDamage(PhysicalDamage.Piercing(1, 3), ElementalDamage.None)
+                new Attack(PhysicalDamage.Piercing(1, 3), ElementalDamage.None)
             }
         })
     { }

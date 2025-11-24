@@ -4,6 +4,6 @@ namespace LuckNGold.World.Items.Damage.Interfaces;
 
 internal interface IPhysicalDamage
 {
-    PhysicalDamageType DamageType { get; }
+    PhysicalEffectType EffectType { get; }
     IBaseDamage BaseDamage { get; }
 }

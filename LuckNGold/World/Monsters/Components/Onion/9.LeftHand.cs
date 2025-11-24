@@ -14,18 +14,15 @@ partial class OnionComponent
     void DrawLeftEmptyHand()
     {
         Race race = IdentityComponent.Race;
-        string fontName = "race-";
-        int row = 0, col = 0;
 
         string raceType = GetRaceTypeText(race);
         string skinTone = GetSkinToneText(race);
+        string fontName = $"race-{raceType}-base{skinTone}";
 
-        if (race == Race.Human)
-        {
-            fontName += $"{raceType}-base{skinTone}";
-            row = 17;
-            col = 0;
-        }
+        int row = race == Race.Human ? 17 :
+            race == Race.Skeleton ? 24 : 0;
+
+        int col = 0;
 
         SetLayerAppearance(OnionLayerName.LeftHand, fontName, row * 4, col * 3);
     }

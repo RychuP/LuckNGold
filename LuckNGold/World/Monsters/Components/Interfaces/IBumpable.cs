@@ -1,6 +1,6 @@
 ﻿using SadRogue.Integration;
 
-namespace LuckNGold.World.Monsters.Interfaces;
+namespace LuckNGold.World.Monsters.Components.Interfaces;
 
 /// <summary>
 /// It can react to bumps.
@@ -10,6 +10,5 @@ public interface IBumpable
     /// <summary>
     /// Does whatever bump action is needed, using the given entity as the source.
     /// </summary>
-    /// <returns>True if a bump action was taken, false otherwise.</returns>
-    bool OnBumped(RogueLikeEntity source);
+    void OnBumped(RogueLikeEntity source);
 }

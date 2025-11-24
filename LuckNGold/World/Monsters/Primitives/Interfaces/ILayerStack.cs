@@ -1,6 +1,6 @@
 ﻿using LuckNGold.World.Monsters.Enums;
 
-namespace LuckNGold.World.Monsters.Interfaces;
+namespace LuckNGold.World.Monsters.Primitives.Interfaces;
 
 /// <summary>
 /// It contains onion layers stacked on top of each other that form monster appearance.

@@ -1,6 +1,7 @@
 ﻿using LuckNGold.World.Monsters.Primitives;
+using LuckNGold.World.Monsters.Primitives.Interfaces;
 
-namespace LuckNGold.World.Monsters.Interfaces;
+namespace LuckNGold.World.Monsters.Components.Interfaces;
 
 /// <summary>
 /// It has layers that together form a monster appearance.

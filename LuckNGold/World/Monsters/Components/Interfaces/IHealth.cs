@@ -1,4 +1,4 @@
-﻿namespace LuckNGold.World.Monsters.Interfaces;
+﻿namespace LuckNGold.World.Monsters.Components.Interfaces;
 
 /// <summary>
 /// It has hit points, can die when they go below zero

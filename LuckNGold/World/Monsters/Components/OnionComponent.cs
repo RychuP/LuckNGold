@@ -1,7 +1,8 @@
 ﻿using LuckNGold.World.Items.Components.Interfaces;
+using LuckNGold.World.Monsters.Components.Interfaces;
 using LuckNGold.World.Monsters.Enums;
-using LuckNGold.World.Monsters.Interfaces;
 using LuckNGold.World.Monsters.Primitives;
+using LuckNGold.World.Monsters.Primitives.Interfaces;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
@@ -175,7 +176,7 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
         var equipment = EquipmentComponent;
 
         // Draw base.
-        UpdateBaseLayer();
+        UpdateBaseLayer(equipment.Head);
         
         // Draw bodywear.
         if (equipment.Body is RogueLikeEntity bodywear)

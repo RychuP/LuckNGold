@@ -9,7 +9,7 @@ namespace LuckNGold.World.Items.Components.Interfaces;
 internal interface IMeleeAttack
 {
     /// <summary>
-    /// Dictionary of available <see cref="MeleeAttackType"/>s with their <see cref="IAttackDamage"/>s.
+    /// Dictionary of available <see cref="MeleeAttackType"/>s with their <see cref="IAttack"/>s.
     /// </summary>
-    IReadOnlyDictionary<MeleeAttackType, IAttackDamage> Attacks { get; }
+    IReadOnlyDictionary<MeleeAttackType, IAttack> Attacks { get; }
 }

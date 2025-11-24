@@ -7,7 +7,7 @@ namespace LuckNGold.Generation.Items.Weapons.Swords;
 abstract record Sword : MeleeWeapon
 {
     public Sword (Point position, IMaterial material,
-        Dictionary<MeleeAttackType, IAttackDamage> attacks) : base(position, material, attacks)
+        Dictionary<MeleeAttackType, IAttack> attacks) : base(position, material, attacks)
     {
 
     }

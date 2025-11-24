@@ -1,6 +1,6 @@
 ﻿namespace LuckNGold.World.Items.Enums;
 
-internal enum PhysicalDamageType
+internal enum PhysicalEffectType
 {
     None,
     Slashing,

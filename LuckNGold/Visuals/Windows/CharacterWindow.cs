@@ -4,7 +4,7 @@ using LuckNGold.Visuals.Components;
 using LuckNGold.Visuals.Consoles;
 using LuckNGold.Visuals.Controls;
 using LuckNGold.Visuals.Screens;
-using LuckNGold.World.Monsters.Interfaces;
+using LuckNGold.World.Monsters.Components.Interfaces;
 using SadConsole.UI;
 using SadConsole.UI.Controls;
 using SadRogue.Integration;

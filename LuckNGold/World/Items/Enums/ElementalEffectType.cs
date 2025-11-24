@@ -1,6 +1,6 @@
 ﻿namespace LuckNGold.World.Items.Enums;
 
-internal enum ElementalDamageType
+internal enum ElementalEffectType
 {
     None,
     Fire,

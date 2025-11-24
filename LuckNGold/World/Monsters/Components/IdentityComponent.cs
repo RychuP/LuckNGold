@@ -1,10 +1,15 @@
-﻿using LuckNGold.World.Monsters.Interfaces;
+﻿using LuckNGold.World.Monsters.Components.Interfaces;
 using LuckNGold.World.Monsters.Primitives;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
 namespace LuckNGold.World.Monsters.Components;
 
+/// <summary>
+/// Component for monster entities that can be identified by their race, appearance and name.
+/// </summary>
+/// <param name="name">Unique name of the parent entity.</param>
+/// <param name="race">Race of the parent entity.</param>
 internal class IdentityComponent(string name, Race race) : 
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IIdentity
 {

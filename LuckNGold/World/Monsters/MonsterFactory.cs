@@ -17,7 +17,7 @@ static class MonsterFactory
 
     public static RogueLikeEntity Player()
     {
-        var player = new RogueLikeEntity(2, false, layer: (int)GameMap.Layer.Monsters)
+        var player = new RogueLikeEntity(4, false, layer: (int)GameMap.Layer.Monsters)
         {
             Name = "Player",
         };
@@ -79,17 +79,16 @@ static class MonsterFactory
 
     public static RogueLikeEntity Skeleton()
     {
-        var skeleton = new RogueLikeEntity(2, false, layer: (int)GameMap.Layer.Monsters)
+        var skeleton = new RogueLikeEntity(4, false, layer: (int)GameMap.Layer.Monsters)
         {
             Name = "Skeleton",
         };
 
-        var identityComponent = new IdentityComponent("Skelly", Race.Skeleton);
-        skeleton.AllComponents.Add(identityComponent);
+        skeleton.AllComponents.Add(new IdentityComponent("Skelly", Race.Skeleton));
+        skeleton.AllComponents.Add(new EquipmentComponent());
         skeleton.AllComponents.Add(new OnionComponent());
         skeleton.AllComponents.Add(new HealthComponent(50));
         skeleton.AllComponents.Add(new StatsComponent(2, 3, 1));
-        skeleton.AllComponents.Add(new LevelComponent());
 
         return skeleton;
     }

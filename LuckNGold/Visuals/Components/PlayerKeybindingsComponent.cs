@@ -2,7 +2,9 @@
 using LuckNGold.Config;
 using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Furnitures.Interfaces;
+using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
+using LuckNGold.World.Monsters.Components.Interfaces;
 using SadConsole.Input;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
@@ -65,7 +67,24 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
     // Motion handler for the player movement.
     protected override void MotionHandler(Direction direction)
     {
-        if (MotionTarget.CanMoveIn(direction))
-            MotionTarget.Position += direction;
+        var destination = MotionTarget.Position + direction;
+
+        // Try moving player in the given direction.
+        if (MotionTarget.CanMove(destination))
+        {
+            MotionTarget.Position = destination;
+        }
+
+        // Check if there is a monster that can be bumped.
+        else
+        {
+            var monster = GameScreen.Map.GetEntityAt<RogueLikeEntity>(destination,
+                (int)GameMap.Layer.Monsters);
+            if (monster != null && monster.AllComponents.GetFirstOrDefault<IBumpable>()
+                is IBumpable bumpable)
+            {
+                bumpable.OnBumped(MotionTarget);
+            }
+        }
     }
 }

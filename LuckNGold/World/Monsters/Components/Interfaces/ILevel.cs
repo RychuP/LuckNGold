@@ -1,4 +1,4 @@
-﻿namespace LuckNGold.World.Monsters.Interfaces;
+﻿namespace LuckNGold.World.Monsters.Components.Interfaces;
 
 /// <summary>
 /// It can gain experience and improve its level.

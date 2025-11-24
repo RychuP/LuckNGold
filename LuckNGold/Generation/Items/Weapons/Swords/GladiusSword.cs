@@ -8,19 +8,19 @@ namespace LuckNGold.Generation.Items.Weapons.Swords;
 record GladiusSword : Sword
 {
     public GladiusSword(Point position, IMetal material) : base(position, material,
-        new Dictionary<MeleeAttackType, IAttackDamage>
+        new Dictionary<MeleeAttackType, IAttack>
         {
             {
                 MeleeAttackType.OverheadSwing,
-                new AttackDamage(PhysicalDamage.Slashing(2, 5), ElementalDamage.None)
+                new Attack(PhysicalDamage.Slashing(2, 5), ElementalDamage.None)
             },
             {
                 MeleeAttackType.DiagonalSideSwing,
-                new AttackDamage(PhysicalDamage.Slashing(2, 5), ElementalDamage.None)
+                new Attack(PhysicalDamage.Slashing(2, 5), ElementalDamage.None)
             },
             {
                 MeleeAttackType.ForwardThrust,
-                new AttackDamage(PhysicalDamage.Piercing(3, 6), ElementalDamage.None)
+                new Attack(PhysicalDamage.Piercing(3, 6), ElementalDamage.None)
             }
         })
     { }

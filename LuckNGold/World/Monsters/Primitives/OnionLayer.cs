@@ -1,5 +1,5 @@
 ﻿using LuckNGold.World.Monsters.Enums;
-using LuckNGold.World.Monsters.Interfaces;
+using LuckNGold.World.Monsters.Primitives.Interfaces;
 
 namespace LuckNGold.World.Monsters.Primitives;
 

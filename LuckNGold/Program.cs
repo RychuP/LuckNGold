@@ -8,7 +8,7 @@ namespace LuckNGold;
 static class Program
 {
     public static RootScreen RootScreen { get; } = new();
-    public static IFont Font => Game.Instance.Fonts["PixelDungeon"];
+    public static IFont Font => Game.Instance.Fonts["Dungeon"];
     public static Color RandomColor => Color.White.GetRandomColor(Game.Instance.Random);
     public static Color RandomBrightColor
     {
@@ -47,10 +47,10 @@ static class Program
 
     static void FontLoader(FontConfig fontConfig, GameHost host)
     {
-        string C64Path = Path.Combine("Resources", "Fonts", "C64.font");
-        string PixelDungeonPath = Path.Combine("Resources", "Fonts", "PixelDungeon.font");
-        fontConfig.UseCustomFont(C64Path);
-        fontConfig.AddExtraFonts([PixelDungeonPath]);
+        string C64FontPath = Path.Combine("Resources", "Fonts", "C64.font");
+        string DungeonFontPath = Path.Combine("Resources", "Fonts", "Dungeon.font");
+        fontConfig.UseCustomFont(C64FontPath);
+        fontConfig.AddExtraFonts([DungeonFontPath]);
         LoadChibiFonts(host);
     }
 

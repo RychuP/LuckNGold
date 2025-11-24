@@ -1,6 +1,6 @@
 ﻿using LuckNGold.Config;
 using LuckNGold.Visuals.Controls;
-using LuckNGold.World.Monsters.Interfaces;
+using LuckNGold.World.Monsters.Components.Interfaces;
 
 namespace LuckNGold.Visuals.Consoles;
 

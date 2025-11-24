@@ -4,6 +4,6 @@ namespace LuckNGold.World.Items.Damage.Interfaces;
 
 internal interface IElementalDamage
 {
-    ElementalDamageType DamageType { get; }
+    ElementalEffectType EffectType { get; }
     IBaseDamage BaseDamage { get; }
 }

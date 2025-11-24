@@ -2,7 +2,7 @@
 using LuckNGold.World.Monsters.Enums;
 using SadRogue.Integration;
 
-namespace LuckNGold.World.Monsters.Interfaces;
+namespace LuckNGold.World.Monsters.Components.Interfaces;
 
 /// <summary>
 /// It can hold entities with <see cref="IEquippable"/> in <see cref="EquipSlot"/> slots.
