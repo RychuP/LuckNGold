@@ -17,11 +17,6 @@ static class MonsterFactory
 
     public static RogueLikeEntity Player()
     {
-        var player = new RogueLikeEntity(4, false, layer: (int)GameMap.Layer.Monsters)
-        {
-            Name = "Player",
-        };
-
         var identityComponent = new IdentityComponent("Henry", Race.Human);
         var age = (Age)rnd.NextInt(3);
         var hairCut = (HairCut)rnd.NextInt(4);
@@ -44,52 +39,37 @@ static class MonsterFactory
             BeardStyle = beardStyle
         };
 
-        // Add component that holds identity information.
+        var player = GetMonster("Player");
         player.AllComponents.Add(identityComponent);
-
-        // Add component that represents worn and wielded equipment.
         player.AllComponents.Add(new EquipmentComponent());
-
-        // Add component that assembles appearance of several layers.
         player.AllComponents.Add(new OnionComponent());
-
-        // Add inventory component.
         //player.AllComponents.Add(new InventoryComponent(20));
-
-        // Add wallet to hold coins.
         player.AllComponents.Add(new WalletComponent());
-
-        // Add quick access inventory component (displayed at the bottom of the screen).
         player.AllComponents.Add(new QuickAccessComponent());
-
-        // Add component for updating map's player FOV as they move.
         player.AllComponents.Add(new PlayerFOVController());
-
-        // Add component that tracks health and transient effects placed on the player.
         player.AllComponents.Add(new HealthComponent(50));
-
-        // Add component that tracks stats of the player.
         player.AllComponents.Add(new StatsComponent(2, 3, 1));
-
-        // Add component that tracks experience and level of the player.
         player.AllComponents.Add(new LevelComponent());
+        player.AllComponents.Add(new BumpableComponent());
+        player.AllComponents.Add(new CombatantComponent());
 
         return player;
     }
 
     public static RogueLikeEntity Skeleton()
     {
-        var skeleton = new RogueLikeEntity(4, false, layer: (int)GameMap.Layer.Monsters)
-        {
-            Name = "Skeleton",
-        };
-
+        var skeleton = GetMonster("Skeleton");
         skeleton.AllComponents.Add(new IdentityComponent("Skelly", Race.Skeleton));
         skeleton.AllComponents.Add(new EquipmentComponent());
         skeleton.AllComponents.Add(new OnionComponent());
-        skeleton.AllComponents.Add(new HealthComponent(50));
+        skeleton.AllComponents.Add(new HealthComponent(20));
         skeleton.AllComponents.Add(new StatsComponent(2, 3, 1));
+        skeleton.AllComponents.Add(new BumpableComponent());
+        skeleton.AllComponents.Add(new CombatantComponent());
 
         return skeleton;
     }
+
+    static RogueLikeEntity GetMonster(string name) =>
+        new(4, false, layer: (int)GameMap.Layer.Monsters) { Name = name };
 }

@@ -2,8 +2,9 @@
 
 namespace LuckNGold.World.Items.Damage.Interfaces;
 
-internal interface IPhysicalDamage
+internal interface IPotentialPhysicalDamage
 {
     PhysicalEffectType EffectType { get; }
-    int Amount { get; }
+    IPotentialDamage PotentialDamage { get; }
+    PhysicalDamage Resolve();
 }

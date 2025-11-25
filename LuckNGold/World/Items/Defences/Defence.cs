@@ -2,6 +2,8 @@
 
 namespace LuckNGold.World.Items.Defences;
 
-record struct Defence(IList<IPhysicalProtection> PhysicalProtections,
-    IList<IElementalProtection> ElementalProtections) : IDefence
-{ }
+record struct Defence(IList<IPotentialPhysicalProtection> PotentialPhysicalProtections,
+    IList<IPotentialElementalProtection> PotentialElementalProtections) : IDefence
+{
+    public static readonly Defence None = new([], []);
+}

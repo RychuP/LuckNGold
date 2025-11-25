@@ -28,6 +28,9 @@ partial class GameScreen : ScreenObject
     // Layer that displays monster onion appearances.
     readonly MonsterLayer _monsterLayer;
 
+    // Layer that displays damage notifications.
+    readonly DamageNotificationsLayer _damageNotificationsLayer;
+
     // Component that keeps the screen centered on either player or pointer.
     readonly FollowTargetComponent _followTargetComponent;
 
@@ -44,6 +47,10 @@ partial class GameScreen : ScreenObject
         // Add monster layer above the map.
         _monsterLayer = new MonsterLayer(Map);
         Children.Add(_monsterLayer);
+
+        // Create damage notifications layer.
+        _damageNotificationsLayer = new();
+        Children.Add(_damageNotificationsLayer);
 
         // Create the player and place it in the first room of the main path.
         Player = GeneratePlayer();

@@ -12,15 +12,15 @@ record ScimitarSword : Sword
         {
             {
                 MeleeAttackType.OverheadSwing,
-                new Attack(PhysicalDamage.Slashing(4, 7), ElementalDamage.None)
+                new Attack(PotentialPhysicalDamage.Slashing(4, 7), PotentialElementalDamage.None)
             },
             {
                 MeleeAttackType.DiagonalSideSwing,
-                new Attack(PhysicalDamage.Slashing(3, 6), ElementalDamage.None)
+                new Attack(PotentialPhysicalDamage.Slashing(3, 6), PotentialElementalDamage.None)
             },
             {
                 MeleeAttackType.ForwardThrust,
-                new Attack(PhysicalDamage.Piercing(1, 3), ElementalDamage.None)
+                new Attack(PotentialPhysicalDamage.Piercing(1, 3), PotentialElementalDamage.None)
             }
         })
     { }

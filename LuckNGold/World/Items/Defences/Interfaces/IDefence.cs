@@ -2,6 +2,6 @@
 
 interface IDefence
 {
-    IList<IPhysicalProtection> PhysicalProtections { get; }
-    IList<IElementalProtection> ElementalProtections { get; }
+    IList<IPotentialPhysicalProtection> PotentialPhysicalProtections { get; }
+    IList<IPotentialElementalProtection> PotentialElementalProtections { get; }
 }

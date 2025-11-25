@@ -10,5 +10,5 @@ internal interface ICombatant
 {
     IAttack GetAttack();
     IDefence GetDefence();
-    void Resolve(IAttack attack, IDefence defence, IHealth health);
+    void Resolve(IAttack attack);
 }

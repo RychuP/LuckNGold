@@ -12,15 +12,15 @@ record ArmingSword : Sword
         {
             { 
                 MeleeAttackType.OverheadSwing,
-                new Attack(PhysicalDamage.Slashing(3, 6), ElementalDamage.None)
+                new Attack(PotentialPhysicalDamage.Slashing(3, 6), PotentialElementalDamage.None)
             },
             { 
                 MeleeAttackType.DiagonalSideSwing,
-                new Attack(PhysicalDamage.Slashing(2, 5), ElementalDamage.None)
+                new Attack(PotentialPhysicalDamage.Slashing(2, 5), PotentialElementalDamage.None)
             },
             { 
                 MeleeAttackType.ForwardThrust,
-                new Attack(PhysicalDamage.Piercing(1, 4), ElementalDamage.None)
+                new Attack(PotentialPhysicalDamage.Piercing(1, 4), PotentialElementalDamage.None)
             }
         })
     { }

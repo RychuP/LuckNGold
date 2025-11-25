@@ -19,7 +19,7 @@ internal class BumpableComponent() :
             source.AllComponents.GetFirstOrDefault<ICombatant>() is ICombatant sourceCombatant)
         {
             var attack = sourceCombatant.GetAttack();
-            var defence = parentCombatant.GetDefence();
+            parentCombatant.Resolve(attack);
         }
     }
 }

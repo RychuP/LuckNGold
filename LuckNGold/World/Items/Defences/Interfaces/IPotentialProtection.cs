@@ -1,6 +1,6 @@
 ﻿namespace LuckNGold.World.Items.Defences.Interfaces;
 
-interface IBaseProtection
+interface IPotentialProtection
 {
     int MinProtection { get; }
     int MaxProtection { get; }

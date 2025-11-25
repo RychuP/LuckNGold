@@ -1,18 +1,20 @@
-﻿using LuckNGold.World.Monsters.Components.Interfaces;
+﻿using LuckNGold.World.Items.Damage.Interfaces;
+using LuckNGold.World.Monsters.Components.Interfaces;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
 namespace LuckNGold.World.Monsters.Components;
 
 /// <summary>
-/// Component for monster entities that have hit points, can die when they go below zero
-/// and can suffer or benefit from transient conditions (like confused or hastened).
+/// Component for monster entities that have hit points and can receive buffs and damage.
 /// </summary>
-/// <param name="health"></param>
+/// <param name="health">Initial hit points.</param>
 internal class HealthComponent(int health) :
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IHealth
 {
     public event EventHandler<ValueChangedEventArgs<int>>? HPChanged;
+    public event EventHandler<IPhysicalDamage>? PhysicalDamageReceived;
+    public event EventHandler<IElementalDamage>? ElementalDamageReceived;
 
     int _hp = health;
     public int HP
@@ -31,5 +33,27 @@ internal class HealthComponent(int health) :
     {
         var args = new ValueChangedEventArgs<int>(prevHP, newHP);
         HPChanged?.Invoke(this, args);
+    }
+
+    public void ReceiveDamage(IPhysicalDamage physicalDamage)
+    {
+        HP -= physicalDamage.Amount;
+        OnReceivedPhysicalDamage(physicalDamage);
+    }
+
+    public void ReceiveDamage(IElementalDamage elementalDamage)
+    {
+        HP -= elementalDamage.Amount;
+        OnReceivedElementalDamage(elementalDamage);
+    }
+
+    void OnReceivedPhysicalDamage(IPhysicalDamage physicalDamage)
+    {
+        PhysicalDamageReceived?.Invoke(this, physicalDamage);
+    }
+
+    void OnReceivedElementalDamage(IElementalDamage elementalDamage)
+    {
+        ElementalDamageReceived?.Invoke(this, elementalDamage);
     }
 }

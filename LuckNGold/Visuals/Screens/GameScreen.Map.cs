@@ -9,6 +9,7 @@ using LuckNGold.Generation.Items;
 using LuckNGold.Generation.Map;
 using LuckNGold.Generation.Monsters;
 using LuckNGold.World.Furnitures.Components;
+using LuckNGold.World.Items.Damage.Interfaces;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
 using LuckNGold.World.Monsters.Components.Interfaces;
@@ -98,24 +99,36 @@ partial class GameScreen
     {
         if (e.Item is not RogueLikeEntity entity) return;
 
-        if (entity.Name.Contains("Door"))
+        // Furniture event handlers.
+        if (entity.Layer == (int)GameMap.Layer.Furniture)
         {
-            // Recalculate FOV when transparency of the door changes.
-            entity.TransparencyChanged += RogueLikeEntity_OnTransparencyChanged;
+            if (entity.Name.Contains("Door"))
+            {
+                // Recalculate FOV when transparency of the door changes.
+                entity.TransparencyChanged += RogueLikeEntity_OnTransparencyChanged;
+            }
+            else if (entity.Name.Contains("Chest"))
+            {
+                // Save the opening component to the list of openings that need to be closed.
+                var openingComponent = entity.AllComponents.GetFirst<OpeningComponent>();
+                _openings.Add(openingComponent);
+            }
         }
-        else if (entity.Name.Contains("Chest"))
+        
+        // Monster event handlers.
+        else if (entity.Layer == (int)GameMap.Layer.Monsters)
         {
-            // Save the opening component to the list of openings that need to be closed.
-            var openingComponent = entity.AllComponents.GetFirst<OpeningComponent>();
-            _openings.Add(openingComponent);
-        }
-
-        // Monitor visibility of the monster to show its onion appearance in monster layer.
-        if (entity.Layer == (int)GameMap.Layer.Monsters &&
-            entity.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
-        {
-            entity.IsVisibleChanged += Monster_OnIsVisibleChanged;
-            onionComponent.CurrentFrameChanged += OnionComponent_OnCurrentFrameChanged;
+            // Monitor visibility of the monster to show its onion appearance in monster layer.
+            if (entity.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
+            {
+                entity.IsVisibleChanged += Monster_OnIsVisibleChanged;
+                onionComponent.CurrentFrameChanged += OnionComponent_OnCurrentFrameChanged;
+            }
+            
+            if (entity.AllComponents.GetFirstOrDefault<IHealth>() is IHealth healthComponent)
+            {
+                healthComponent.PhysicalDamageReceived += HealthComponent_OnPhysicalDamageReceived;
+            }
         }
     }
 
@@ -126,21 +139,31 @@ partial class GameScreen
     {
         if (e.Item is not RogueLikeEntity entity) return;
 
-        if (entity.Name.Contains("Door"))
+        if (entity.Layer == (int)GameMap.Layer.Furniture)
         {
-            entity.TransparencyChanged -= RogueLikeEntity_OnTransparencyChanged;
-        }
-        else if (entity.Name.Contains("Chest"))
-        {
-            var openingComponent = entity.AllComponents.GetFirst<OpeningComponent>();
-            _openings.Remove(openingComponent);
+            if (entity.Name.Contains("Door"))
+            {
+                entity.TransparencyChanged -= RogueLikeEntity_OnTransparencyChanged;
+            }
+            else if (entity.Name.Contains("Chest"))
+            {
+                var openingComponent = entity.AllComponents.GetFirst<OpeningComponent>();
+                _openings.Remove(openingComponent);
+            }
         }
 
-        if (entity.Layer == (int)GameMap.Layer.Monsters &&
-            entity.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
+        if (entity.Layer == (int)GameMap.Layer.Monsters)
         {
-            entity.IsVisibleChanged -= Monster_OnIsVisibleChanged;
-            onionComponent.CurrentFrameChanged -= OnionComponent_OnCurrentFrameChanged;
+            if (entity.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
+            {
+                entity.IsVisibleChanged -= Monster_OnIsVisibleChanged;
+                onionComponent.CurrentFrameChanged -= OnionComponent_OnCurrentFrameChanged;
+            }
+
+            if (entity.AllComponents.GetFirstOrDefault<IHealth>() is IHealth healthComponent)
+            {
+                healthComponent.PhysicalDamageReceived -= HealthComponent_OnPhysicalDamageReceived;
+            }
         }
     }
 
@@ -206,8 +229,7 @@ partial class GameScreen
     /// </summary>
     void OnionComponent_OnCurrentFrameChanged(object? o, ValueChangedEventArgs<ILayerStack> e)
     {
-        if (o is not OnionComponent onionComponent) return;
-        if (onionComponent.Parent is null) return;
+        if (o is not OnionComponent onionComponent || onionComponent.Parent is null) return;
 
         _monsterLayer.Children.Remove(e.OldValue);
         _monsterLayer.Children.Add(e.NewValue);
@@ -215,9 +237,11 @@ partial class GameScreen
         e.NewValue.Position = onionComponent.Parent.Position - viewPosition;
     }
 
-    // Unused for now.
-    void Monster_OnPositionChanged(object? o, ValueChangedEventArgs<Point> e)
+    void HealthComponent_OnPhysicalDamageReceived(object? o, IPhysicalDamage physicalDamage)
     {
-        if (o is not RogueLikeEntity monster) return;
+        if (o is not HealthComponent healthComponent || healthComponent.Parent is null) return;
+
+        _damageNotificationsLayer.DisplayDamageNotification(physicalDamage.Amount,
+            healthComponent.Parent.Position, Color.DarkSlateBlue);
     }
 }

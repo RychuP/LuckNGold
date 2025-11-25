@@ -2,6 +2,6 @@
 
 internal interface IAttack
 {
-    IPhysicalDamage PhysicalDamage { get; }
-    IElementalDamage ElementalDamage { get; }
+    PotentialPhysicalDamage PotentialPhysicalDamage { get; }
+    PotentialElementalDamage PotentialElementalDamage { get; }
 }

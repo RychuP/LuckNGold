@@ -2,8 +2,9 @@
 
 namespace LuckNGold.World.Items.Defences.Interfaces;
 
-interface IElementalProtection
+internal interface IPotentialElementalProtection
 {
     ElementalEffectType EffectType { get; }
-    int Amount { get; }
+    IPotentialProtection PotentialProtection { get; }
+    ElementalProtection Resolve();
 }

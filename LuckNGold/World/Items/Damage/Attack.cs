@@ -1,8 +1,10 @@
 ﻿using LuckNGold.World.Items.Damage.Interfaces;
-using LuckNGold.World.Items.Defences;
 
 namespace LuckNGold.World.Items.Damage;
 
-record struct Attack(IPhysicalDamage PhysicalDamage,
-    IElementalDamage ElementalDamage) : IAttack
-{ }
+record struct Attack(PotentialPhysicalDamage PotentialPhysicalDamage,
+    PotentialElementalDamage PotentialElementalDamage) : IAttack
+{
+    public static readonly Attack None = 
+        new(PotentialPhysicalDamage.None, PotentialElementalDamage.None);
+}

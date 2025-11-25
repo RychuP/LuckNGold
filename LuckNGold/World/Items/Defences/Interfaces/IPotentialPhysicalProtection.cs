@@ -2,8 +2,9 @@
 
 namespace LuckNGold.World.Items.Defences.Interfaces;
 
-internal interface IPhysicalProtection
+internal interface IPotentialPhysicalProtection
 {
     PhysicalEffectType EffectType { get; }
-    int Amount { get; }
+    IPotentialProtection PotentialProtection { get; }
+    PhysicalProtection Resolve();
 }

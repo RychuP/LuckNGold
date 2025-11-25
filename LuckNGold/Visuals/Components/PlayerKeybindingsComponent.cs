@@ -78,8 +78,7 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
         // Check if there is a monster that can be bumped.
         else
         {
-            var monster = GameScreen.Map.GetEntityAt<RogueLikeEntity>(destination,
-                (int)GameMap.Layer.Monsters);
+            var monster = GameScreen.Map.GetEntityAt<RogueLikeEntity>(destination);
             if (monster != null && monster.AllComponents.GetFirstOrDefault<IBumpable>()
                 is IBumpable bumpable)
             {
