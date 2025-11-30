@@ -7,17 +7,19 @@ namespace LuckNGold.Visuals.Consoles;
 
 internal class DamageNotification : ScreenSurface
 {
-    public DamageNotification(string text, Color color) : base(text.Length, 1)
+    public DamageNotification(int length) : base(length, 1)
     {
         Surface.DefaultBackground = Theme.Floor;
         Surface.Clear();
-        Surface.Print(0, 0, text, Color.White);
-        AnimateOpacity();
+        IsVisible = false;
     }
 
-    void AnimateOpacity()
+    public void Show(string text, Color color)
     {
-        var animatedOpacity = new AnimatedValue(TimeSpan.FromSeconds(1.2d), 255, 0, new Linear())
+        Surface.Clear();
+        Surface.Print(0, 0, text, color);
+
+        var animatedOpacity = new AnimatedValue(TimeSpan.FromSeconds(1d), 255, 0, new Linear())
         {
             RemoveOnFinished = true
         };
@@ -29,9 +31,10 @@ internal class DamageNotification : ScreenSurface
 
         animatedOpacity.Finished += (o, e) =>
         {
-            Parent!.Children.Remove(this);
+            IsVisible = false;
         };
 
         SadComponents.Add(animatedOpacity);
+        IsVisible = true;
     }
 }

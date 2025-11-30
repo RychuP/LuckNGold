@@ -241,7 +241,7 @@ partial class GameScreen
     {
         if (o is not HealthComponent healthComponent || healthComponent.Parent is null) return;
 
-        _damageNotificationsLayer.DisplayDamageNotification(physicalDamage.Amount,
-            healthComponent.Parent.Position, Color.DarkSlateBlue);
+        _damageNotificationsLayer.DisplayNotification(physicalDamage.Amount,
+            healthComponent.Parent.Position, Color.White);
     }
 }

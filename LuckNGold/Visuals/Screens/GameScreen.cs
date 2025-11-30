@@ -6,7 +6,9 @@ using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
 using LuckNGold.World.Monsters.Components.Interfaces;
+using LuckNGold.World.Turns;
 using SadConsole.UI.Controls;
+using SadRogue.Integration;
 
 namespace LuckNGold.Visuals.Screens;
 
@@ -33,6 +35,8 @@ partial class GameScreen : ScreenObject
 
     // Component that keeps the screen centered on either player or pointer.
     readonly FollowTargetComponent _followTargetComponent;
+
+    public TurnManager TurnManager { get; }
 
     /// <summary>
     /// Initializes an instance of <see cref="GameScreen"/> class with default parameters.
@@ -99,7 +103,14 @@ partial class GameScreen : ScreenObject
 
         // Add visibility changed event handler to character window.
         _characterWindow.IsVisibleChanged += CharacterWindow_OnIsVisibleChanged;
+
+        TurnManager = new(Map);
+        TurnManager.CurrentEntityChanged += TurnManager_OnCurrentEntityChanged;
+        TurnManager.PassTime();
     }
+
+    public bool IsPlayerTurn() =>
+        TurnManager.CurrentEntity == Player;
     
     /// <summary>
     /// Updates keybindings based on the control from the settings page.
@@ -114,7 +125,7 @@ partial class GameScreen : ScreenObject
     /// <summary>
     /// Updates onion appearance position in the monster layer after the position change of the view.
     /// </summary>
-    void FollowTargetComponent_OnViewChanged(object? sender, EventArgs e)
+    void FollowTargetComponent_OnViewChanged(object? sender, ValueChangedEventArgs<Rectangle> e)
     {
         var visibleMonsters = Map.Monsters
             .Where(m => m.IsVisible);
@@ -127,6 +138,36 @@ partial class GameScreen : ScreenObject
                 var viewPosition = Map.DefaultRenderer!.Surface.ViewPosition;
                 onionComponent.CurrentFrame.Position = monster.Position - viewPosition;
             }
+        }
+
+        // Check view size has not changed.
+        if (e.NewValue.Size == e.OldValue.Size)
+        {
+            // Update damage notifications positions.
+            var deltaChange = e.OldValue.Position - e.NewValue.Position;
+            var direction = Direction.GetDirection(deltaChange);
+            _damageNotificationsLayer.UpdateNotificationsPosition(direction);
+        }
+    }
+
+    void TurnManager_OnCurrentEntityChanged(object? o, ValueChangedEventArgs<RogueLikeEntity?> e)
+    {
+        if (e.NewValue is RogueLikeEntity monster)
+        {
+            if (monster.AllComponents.GetFirstOrDefault<IEnemyAI>() is IEnemyAI enemyAI)
+            {
+                var timeTracker = monster.AllComponents.GetFirst<ITimeTracker>();
+
+                while (timeTracker.Time > 0)
+                {
+                    var action = enemyAI.TakeTurn();
+                    TurnManager.Add(action);
+                }
+            }
+        }
+        else
+        {
+            TurnManager.PassTime();
         }
     }
 }

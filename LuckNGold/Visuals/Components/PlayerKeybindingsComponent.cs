@@ -5,6 +5,7 @@ using LuckNGold.World.Furnitures.Interfaces;
 using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
 using LuckNGold.World.Monsters.Components.Interfaces;
+using LuckNGold.World.Turns.Actions;
 using SadConsole.Input;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
@@ -32,12 +33,21 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
     // Keyboard shortcuts relating to player interaction with environment.
     void AddInteractionControls()
     {
-        SetAction(Keybindings.PickUp, () => _quickAccess.PickUp());
+        SetAction(Keybindings.PickUp, PickUp);
         SetAction(Keybindings.Interact, Interact);
+    }
+
+    void PickUp()
+    {
+        //if (!GameScreen.IsPlayerTurn()) return;
+
+        _quickAccess.PickUp();
     }
 
     void Interact()
     {
+        //if (!GameScreen.IsPlayerTurn()) return;
+
         var neighbours = GameSettings.Adjacency.Neighbors(GameScreen.Player.Position);
 
         // TODO: collect all interactable components and make the player choose one.
@@ -67,22 +77,34 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
     // Motion handler for the player movement.
     protected override void MotionHandler(Direction direction)
     {
+        if (!GameScreen.IsPlayerTurn()) return;
+
         var destination = MotionTarget.Position + direction;
+        var onionComponent = MotionTarget.AllComponents.GetFirst<IOnion>();
 
         // Try moving player in the given direction.
-        if (MotionTarget.CanMove(destination))
+        if (MotionTarget.CanMove(destination) && !onionComponent.IsBumping)
         {
-            MotionTarget.Position = destination;
+            var motionComponent = MotionTarget.AllComponents.GetFirst<IMotion>();
+            var walk = new WalkAction(motionComponent.GetMoveCost(), MotionTarget, destination);
+            GameScreen.TurnManager.Add(walk);
         }
 
         // Check if there is a monster that can be bumped.
         else
         {
-            var monster = GameScreen.Map.GetEntityAt<RogueLikeEntity>(destination);
-            if (monster != null && monster.AllComponents.GetFirstOrDefault<IBumpable>()
-                is IBumpable bumpable)
+            if (GameScreen.Map.GetEntityAt<RogueLikeEntity>(destination)
+                is not RogueLikeEntity monster) return;
+
+            if (MotionTarget.AllComponents.GetFirstOrDefault<IBumpable>() is IBumpable sourceBumpable &&
+                monster.AllComponents.GetFirstOrDefault<IBumpable>() is IBumpable targetBumpable)
             {
-                bumpable.OnBumped(MotionTarget);
+                
+                if (!onionComponent.IsBumping)
+                {
+                    targetBumpable.OnBumped(MotionTarget);
+                    sourceBumpable.OnBumping(monster);
+                }
             }
         }
     }

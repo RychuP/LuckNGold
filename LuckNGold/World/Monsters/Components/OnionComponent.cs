@@ -5,6 +5,7 @@ using LuckNGold.World.Monsters.Primitives;
 using LuckNGold.World.Monsters.Primitives.Interfaces;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
+using SadRogue.Primitives;
 
 namespace LuckNGold.World.Monsters.Components;
 
@@ -67,6 +68,13 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
             Frames[i] = new LayerStack();
 
         _currentFrame = Frames[1];
+        FaceDirection(Direction.Down);
+    }
+
+    public void FaceDirection(Direction direction)
+    {
+        int frameIndex = GetMotionIndex(direction) + 1;
+        CurrentFrame = Frames[frameIndex];
     }
 
     public void SetFontSize(int fontSizeMultiplier)
@@ -76,14 +84,32 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
         FontSizeMultiplier = fontSizeMultiplier;
     }
 
-    public void UpdateCurrentFrame(Direction direction)
+    /// <summary>
+    /// Initial index in the row of motion appearances.
+    /// </summary>
+    static int GetMotionIndex(Direction direction)
     {
-        direction =
-            direction.DeltaX < 0 ? Direction.Left :
+        return direction.Type switch
+        {
+            Direction.Types.Left => 3,
+            Direction.Types.Right => 6,
+            Direction.Types.Up => 9,
+            _ => 0,
+        };
+    }
+
+    public static Direction GetCardinalDirection(Direction direction)
+    {
+        return direction.DeltaX < 0 ? Direction.Left :
             direction.DeltaX > 0 ? Direction.Right :
             direction.DeltaY < 0 ? Direction.Up :
             direction.DeltaY > 0 ? Direction.Down :
             Direction.None;
+    }
+
+    public void UpdateCurrentFrame(Direction direction)
+    {
+        direction = GetCardinalDirection(direction);
 
         if (_currentDirection != direction)
         {
@@ -106,15 +132,7 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
             }
         }
 
-        // Initial index in the row of motion appearances.
-        int motionIndex = _currentDirection.Type switch
-        {
-            Direction.Types.Left => 3,
-            Direction.Types.Right => 6,
-            Direction.Types.Up => 9,
-            _ => 0,
-        };
-
+        int motionIndex = GetMotionIndex(_currentDirection);
         int frameIndex = motionIndex + _currentMotionStep;
         CurrentFrame = Frames[frameIndex];
     }

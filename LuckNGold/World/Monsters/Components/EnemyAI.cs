@@ -1,4 +1,5 @@
-﻿using GoRogue.GameFramework;
+﻿using LuckNGold.World.Monsters.Components.Interfaces;
+using LuckNGold.World.Turns.Actions;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
@@ -8,16 +9,23 @@ namespace LuckNGold.World.Monsters.Components;
 /// Simple component that moves its parent toward the player if the player is visible. It demonstrates the basic
 /// usage of the integration library's component system, as well as basic AStar pathfinding.
 /// </summary>
-internal class EnemyAI() : RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false)
+internal class EnemyAI() : 
+    RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IEnemyAI
 {
-    public void TakeTurn()
+    public IAction TakeTurn()
     {
-        if (Parent == null) return;
+        if (Parent == null)
+            throw new InvalidOperationException("Component needs to be attached to an entity.");
 
-        var map = Parent.CurrentMap;
-        if (map == null) return;
+        var timeTracker = Parent.AllComponents.GetFirst<ITimeTracker>();
+        return new PassTurn(Parent, timeTracker.Time);
 
-        if (!map.PlayerFOV.CurrentFOV.Contains(Parent.Position)) return;
+        //if (Parent == null) return;
+
+        //var map = Parent.CurrentMap;
+        //if (map == null) return;
+
+        //if (!map.PlayerFOV.CurrentFOV.Contains(Parent.Position)) return;
 
         //var path = map.AStar.ShortestPath(Parent.Position, Program.RootScreen!.Player.Position);
         //if (path == null) return;

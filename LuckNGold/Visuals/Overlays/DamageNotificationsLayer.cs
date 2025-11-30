@@ -1,4 +1,5 @@
-﻿using LuckNGold.Visuals.Consoles;
+﻿using LuckNGold.Config;
+using LuckNGold.Visuals.Consoles;
 using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Map;
 
@@ -9,22 +10,63 @@ namespace LuckNGold.Visuals.Overlays;
 /// </summary>
 internal class DamageNotificationsLayer : ScreenObject
 {
-    public void DisplayDamageNotification(int amount, Point startPosition, Color color)
+    public DamageNotificationsLayer()
+    {
+        for (int i = 0; i < 20; i++)
+            Children.Add(new DamageNotification(2));
+    }
+
+    public void DisplayNotification(int amount, Point startPosition, Color color)
     {
         if (Parent is not GameScreen gameScreen || gameScreen.Map is not GameMap gameMap) return;
 
-        // Create a new damage notification.
-        var damageNotification = new DamageNotification($"{amount}", color);
+        // Normalize amount to a 2 digit number.
+        string text = $"{amount:D2}";
+        if (text.Length > 2)
+            text = text[..2];
 
-        // Check font size is the same as the one currently set in map default renderer.
-        if (damageNotification.FontSize != gameMap.DefaultRenderer!.FontSize)
-            damageNotification.FontSize = gameMap.DefaultRenderer!.FontSize;
+        // Get a free damage notification.
+        var damageNotification = Children
+            .Cast<DamageNotification>()
+            .Where(c => !c.IsVisible && c.Width == text.Length)
+            .FirstOrDefault();
 
-        // Set position for the notification.
+        // Skip when too many notifications are being displayed.
+        if (damageNotification is null) return;
+
+        var targetFontSize = gameMap.DefaultRenderer!.FontSize / 2;
+        if (targetFontSize.X < GameSettings.FontSize.X)
+            targetFontSize = GameSettings.FontSize;
+        damageNotification.FontSize = targetFontSize;
+
+        // Calculate screen position of the source entity.
         startPosition -= gameMap.DefaultRenderer!.Surface.ViewPosition;
+        
+        // Translate position to default font size.
+        startPosition = startPosition.TranslateFont(gameMap.DefaultRenderer!.FontSize, targetFontSize);
+
+        // Set damage notification position.
         damageNotification.Position = startPosition;
 
         // Display notification.
-        Children.Add(damageNotification);
+        damageNotification.Show(text, color);
+    }
+
+    public void UpdateNotificationsPosition(Direction direction)
+    {
+        if (Parent is not GameScreen gameScreen || gameScreen.Map is not GameMap gameMap) return;
+
+        var visibleNotifications = Children
+            .Cast<DamageNotification>()
+            .Where(c => c.IsVisible);
+
+        foreach (var notification in visibleNotifications)
+        {
+            var position = notification.Position.TranslateFont(notification.FontSize,
+                gameMap.DefaultRenderer!.FontSize);
+            position += direction;
+            notification.Position = position.TranslateFont(gameMap.DefaultRenderer!.FontSize,
+                notification.FontSize);
+        }
     }
 }

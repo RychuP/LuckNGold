@@ -9,7 +9,7 @@ namespace LuckNGold.Visuals.Components;
 /// <param name="target"></param>
 internal class FollowTargetComponent(IScreenObject target) : UpdateComponent
 {
-    public event EventHandler? ViewChanged;
+    public event EventHandler<ValueChangedEventArgs<Rectangle>>? ViewChanged;
 
     Point _targetPosition = Point.None;
     Rectangle _view = Rectangle.Empty;
@@ -66,9 +66,12 @@ internal class FollowTargetComponent(IScreenObject target) : UpdateComponent
         _host.Surface.View = _host.Surface.View.WithCenter(_targetPosition);
         if (_host.Surface.View != _view)
         {
+            var prevView = _view;
+
             // Update cached view.
             _view = _host.Surface.View;
-            OnViewChanged();
+
+            OnViewChanged(prevView, _view);
         }
     }
 
@@ -77,8 +80,9 @@ internal class FollowTargetComponent(IScreenObject target) : UpdateComponent
         _targetPosition = newTarget.Position;
     }
 
-    void OnViewChanged()
+    void OnViewChanged(Rectangle prevView, Rectangle newView)
     {
-        ViewChanged?.Invoke(this, EventArgs.Empty);
+        var args = new ValueChangedEventArgs<Rectangle>(prevView, newView);
+        ViewChanged?.Invoke(this, args);
     }
 }

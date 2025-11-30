@@ -36,4 +36,19 @@ internal interface IOnion
     /// </summary>
     /// <param name="direction">Direction of the monster entity movement.</param>
     void UpdateCurrentFrame(Direction direction);
+
+    void FaceDirection(Direction direction);
+
+    /// <summary>
+    /// Moves current frame a few pixels back and forth to visually show the bump action.
+    /// </summary>
+    /// <param name="pixelCount">Number of pixels to move current frame back and forth.</param>
+    /// <param name="direction">Direction of the bump.</param>
+    void Bump(int pixelCount, Direction direction);
+
+    /// <summary>
+    /// Checks if the bump animation is currently being played.
+    /// </summary>
+    /// <returns>True if the bump animation is being played, false otherwise.</returns>
+    bool IsBumping { get; }
 }

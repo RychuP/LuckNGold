@@ -52,6 +52,8 @@ static class MonsterFactory
         player.AllComponents.Add(new LevelComponent());
         player.AllComponents.Add(new BumpableComponent());
         player.AllComponents.Add(new CombatantComponent());
+        player.AllComponents.Add(new MotionComponent());
+        player.AllComponents.Add(new TimeTrackerComponent());
 
         return player;
     }
@@ -66,10 +68,13 @@ static class MonsterFactory
         skeleton.AllComponents.Add(new StatsComponent(2, 3, 1));
         skeleton.AllComponents.Add(new BumpableComponent());
         skeleton.AllComponents.Add(new CombatantComponent());
+        skeleton.AllComponents.Add(new MotionComponent());
+        skeleton.AllComponents.Add(new TimeTrackerComponent());
+        skeleton.AllComponents.Add(new EnemyAI());
 
         return skeleton;
     }
 
     static RogueLikeEntity GetMonster(string name) =>
-        new(4, false, layer: (int)GameMap.Layer.Monsters) { Name = name };
+        new(0, false, layer: (int)GameMap.Layer.Monsters) { Name = name };
 }
