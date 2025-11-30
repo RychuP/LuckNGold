@@ -36,6 +36,9 @@ partial class GameScreen : ScreenObject
     // Component that keeps the screen centered on either player or pointer.
     readonly FollowTargetComponent _followTargetComponent;
 
+    /// <summary>
+    /// Manager that oversees passage of time and order of turns.
+    /// </summary>
     public TurnManager TurnManager { get; }
 
     /// <summary>
@@ -104,7 +107,8 @@ partial class GameScreen : ScreenObject
         // Add visibility changed event handler to character window.
         _characterWindow.IsVisibleChanged += CharacterWindow_OnIsVisibleChanged;
 
-        TurnManager = new(Map);
+        // Create turn manager and start turns.
+        TurnManager = new(this);
         TurnManager.CurrentEntityChanged += TurnManager_OnCurrentEntityChanged;
         TurnManager.PassTime();
     }

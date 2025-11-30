@@ -1,4 +1,5 @@
-﻿using LuckNGold.World.Map;
+﻿using LuckNGold.Visuals.Screens;
+using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components.Interfaces;
 using LuckNGold.World.Turns.Actions;
 using SadRogue.Integration;
@@ -13,9 +14,7 @@ internal class TurnManager
     public event EventHandler<ValueChangedEventArgs<RogueLikeEntity?>>? CurrentEntityChanged;
     public event EventHandler? TickEncountered;
 
-    readonly GameMap _map;
     readonly Queue<IEvent> _events = [];
-    readonly RogueLikeEntity _player;
 
     RogueLikeEntity? _currentEntity;
     public RogueLikeEntity? CurrentEntity
@@ -30,17 +29,12 @@ internal class TurnManager
         }
     }
 
-    public TurnManager(GameMap map)
+    public TurnManager(GameScreen gameScreen)
     {
-        _map = map;
+        _events.Enqueue(new Marker(gameScreen.Player));
+        _currentEntity = gameScreen.Player;
 
-        _player = map.Monsters
-            .Where(e => e.Name == "Player")
-            .First();
-        _events.Enqueue(new Marker(_player));
-        _currentEntity = _player;
-
-        foreach (var monster in map.Monsters)
+        foreach (var monster in gameScreen.Map.Monsters)
         {
             if (monster.Name != "Player")
             {
@@ -48,7 +42,7 @@ internal class TurnManager
             }
         }
 
-        _events.Enqueue(new Tick(map));
+        _events.Enqueue(new Tick(gameScreen.Map));
     }
 
     public void Add(IAction action)
