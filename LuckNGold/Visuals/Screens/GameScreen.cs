@@ -1,6 +1,7 @@
 ﻿using LuckNGold.Config;
 using LuckNGold.Visuals.Components;
 using LuckNGold.Visuals.Consoles;
+using LuckNGold.Visuals.Consoles.InfoBoxes;
 using LuckNGold.Visuals.Overlays;
 using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Map;
@@ -94,7 +95,7 @@ partial class GameScreen : ScreenObject
 
         // Create a window to display player status.
         var wallet = Player.AllComponents.GetFirst<WalletComponent>();
-        _statusWindow = new StatusSurface(wallet) { Position = (0, 1) };
+        _statusWindow = new StatusSurface();
         Children.Add(_statusWindow);
 
         // Add entity info window to Children.
@@ -111,6 +112,12 @@ partial class GameScreen : ScreenObject
         TurnManager = new(this);
         TurnManager.CurrentEntityChanged += TurnManager_OnCurrentEntityChanged;
         TurnManager.PassTime();
+
+        // Create status info boxes.
+        _statusWindow.Children.Add(new CoinCounter(Player.AllComponents.GetFirst<IWallet>()));
+        _statusWindow.Children.Add(new ActionCost(TurnManager));
+        _statusWindow.Children.Add(new SpeedBox());
+        _statusWindow.Children.Add(new TurnCounter(TurnManager));
     }
 
     public bool IsPlayerTurn() =>

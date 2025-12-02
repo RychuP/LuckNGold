@@ -258,4 +258,16 @@
   <data name="PeasantTag" xml:space="preserve">
     <value>Peasant</value>
   </data>
+  <data name="ActionCostDescription" xml:space="preserve">
+    <value>Time cost of the last action taken</value>
+  </data>
+  <data name="CoinCounterDescription" xml:space="preserve">
+    <value>Coins collected so far</value>
+  </data>
+  <data name="SpeedBoxDescription" xml:space="preserve">
+    <value>Amount of time points gained each turn</value>
+  </data>
+  <data name="TurnCounterDescription" xml:space="preserve">
+    <value>Number of turns taken so far</value>
+  </data>
 </root>

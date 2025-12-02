@@ -10,9 +10,6 @@ namespace LuckNGold.World.Monsters.Components;
 internal class WalletComponent() :
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IWallet
 {
-    /// <summary>
-    /// Fired when number of <see cref="Coins"/> held changes.
-    /// </summary>
     public event EventHandler<ValueChangedEventArgs<int>>? CoinsChanged;
 
     int _coins;

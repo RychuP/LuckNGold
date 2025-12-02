@@ -1,5 +1,4 @@
 ﻿using LuckNGold.Visuals.Screens;
-using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components.Interfaces;
 using LuckNGold.World.Turns.Actions;
 using SadRogue.Integration;
@@ -12,15 +11,30 @@ namespace LuckNGold.World.Turns;
 internal class TurnManager
 {
     public event EventHandler<ValueChangedEventArgs<RogueLikeEntity?>>? CurrentEntityChanged;
-    public event EventHandler? TickEncountered;
+    public event EventHandler? TurnCounterChanged;
+    public event EventHandler<IAction>? ActionAdded;
 
     readonly Queue<IEvent> _events = [];
+
+    int _turnCounter = 0;
+    public int TurnCounter
+    {
+        get => _turnCounter;
+        private set
+        {
+            if (_turnCounter == value) return;
+            if (value < _turnCounter || value > _turnCounter + 1)
+                throw new ArgumentException("Value should only increase in 1 increments.");
+            _turnCounter = value;
+            OnTurnCounterChanged();
+        }
+    }
 
     RogueLikeEntity? _currentEntity;
     public RogueLikeEntity? CurrentEntity
     {
         get => _currentEntity;
-        protected set
+        private set
         {
             if (value == _currentEntity) return;
             var prevEntity = _currentEntity;
@@ -49,6 +63,7 @@ internal class TurnManager
     {
         var timeTracker = action.Entity.AllComponents.GetFirst<ITimeTracker>();
         Evaluate(action, timeTracker);
+        OnActionAdded(action);
     }
 
     void Evaluate(IAction action, ITimeTracker timeTracker)
@@ -95,7 +110,7 @@ internal class TurnManager
         if (@event is ITick tick)
         {
             tick.Reset();
-            OnTickEncountered();
+            TurnCounter++;
             _events.Enqueue(tick);
             CurrentEntity = null;
         }
@@ -115,14 +130,19 @@ internal class TurnManager
         }
     }
 
-    void OnTickEncountered()
-    {
-        TickEncountered?.Invoke(this, EventArgs.Empty);
-    }
-
     void OnCurrentEntityChanged(RogueLikeEntity? prevEntity, RogueLikeEntity? newEntity)
     {
         var args = new ValueChangedEventArgs<RogueLikeEntity?>(prevEntity, newEntity);
         CurrentEntityChanged?.Invoke(this, args);
+    }
+
+    void OnTurnCounterChanged()
+    {
+        TurnCounterChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    void OnActionAdded(IAction action)
+    {
+        ActionAdded?.Invoke(this, action);
     }
 }

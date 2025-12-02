@@ -61,6 +61,15 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time cost of the last action taken.
+        /// </summary>
+        internal static string ActionCostDescription {
+            get {
+                return ResourceManager.GetString("ActionCostDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A vibrant field of #1amber occupies the middle, its color suggesting something precious like solidified sunlight or ancient resin..
         /// </summary>
         internal static string AmberBannerDescription {
@@ -192,6 +201,15 @@ namespace LuckNGold.Resources {
         internal static string ClothingTag {
             get {
                 return ResourceManager.GetString("ClothingTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Coins collected so far.
+        /// </summary>
+        internal static string CoinCounterDescription {
+            get {
+                return ResourceManager.GetString("CoinCounterDescription", resourceCulture);
             }
         }
         
@@ -439,6 +457,15 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount of time points gained each turn.
+        /// </summary>
+        internal static string SpeedBoxDescription {
+            get {
+                return ResourceManager.GetString("SpeedBoxDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Thick, gray sheets of #0web hanging from the walls, catching the dim light in a way that suggests a sinister shimmer. Some webs are ancient and dusty, like tattered curtains. Others are freshly spun, glistening with sticky dew and ominously strong..
         /// </summary>
         internal static string SpiderWebDescription {
@@ -471,6 +498,15 @@ namespace LuckNGold.Resources {
         internal static string TorchDescription {
             get {
                 return ResourceManager.GetString("TorchDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of turns taken so far.
+        /// </summary>
+        internal static string TurnCounterDescription {
+            get {
+                return ResourceManager.GetString("TurnCounterDescription", resourceCulture);
             }
         }
         
