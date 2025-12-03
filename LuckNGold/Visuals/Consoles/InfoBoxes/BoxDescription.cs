@@ -8,7 +8,7 @@ internal class BoxDescription : ScreenSurface
     {
         Hide();
         if (string.IsNullOrEmpty(text)) return;
-        Surface.Print(1, 1, text, Theme.Colors.ControlForegroundDisabled);
+        Surface.Print(1, 1, text, Theme.Colors.Gray);
         var shapeParams = ShapeParameters.CreateStyledBoxThin(Theme.Colors.Lines);
         Surface.DrawBox(Surface.Area, shapeParams);
     }

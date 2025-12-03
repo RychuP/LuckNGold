@@ -313,6 +313,15 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Health points remaining.
+        /// </summary>
+        internal static string HealthBoxDescription {
+            get {
+                return ResourceManager.GetString("HealthBoxDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Helmet.
         /// </summary>
         internal static string HelmetTag {

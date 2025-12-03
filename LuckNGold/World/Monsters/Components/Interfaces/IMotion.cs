@@ -1,12 +1,11 @@
-﻿namespace LuckNGold.World.Monsters.Components.Interfaces;
+﻿using LuckNGold.World.Turns.Actions;
+
+namespace LuckNGold.World.Monsters.Components.Interfaces;
 
 /// <summary>
 /// It can move (change position).
 /// </summary>
 internal interface IMotion
 {
-    /// <summary>
-    /// Evaluates motion cost in time units.
-    /// </summary>
-    int GetMoveCost();
+    WalkAction GetWalkAction(Point destination);
 }

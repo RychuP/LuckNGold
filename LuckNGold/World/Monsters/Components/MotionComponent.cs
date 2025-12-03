@@ -1,5 +1,6 @@
 ﻿using LuckNGold.Config;
 using LuckNGold.World.Monsters.Components.Interfaces;
+using LuckNGold.World.Turns.Actions;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 
@@ -8,14 +9,15 @@ namespace LuckNGold.World.Monsters.Components;
 internal class MotionComponent() :
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IMotion
 {
-    public int GetMoveCost()
+    public WalkAction GetWalkAction(Point destination)
     {
         if (Parent == null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
-        var equipment = Parent.AllComponents.GetFirst<IEquipment>();
+        // Calculate move cost.
+        int moveCost = GameSettings.TurnTime;
 
-        // Return simplified move cost for now.
-        return GameSettings.TurnTime;
+        // Create the walk action.
+        return new WalkAction(moveCost, Parent, destination);
     }
 }

@@ -12,7 +12,7 @@ internal class ActionCost : InfoBox
     {
         turnManager.ActionAdded += (o, a) =>
         {
-            if (a.Entity.Name == "Player")
+            if (a.Source.Name == "Player")
                 Print(a.Time);
         };
 

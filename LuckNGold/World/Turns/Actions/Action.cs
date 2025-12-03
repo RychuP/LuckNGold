@@ -2,9 +2,9 @@
 
 namespace LuckNGold.World.Turns.Actions;
 
-abstract class Action(RogueLikeEntity entity, int time) : IAction
+abstract class Action(RogueLikeEntity source, int time) : IAction
 {
-    public RogueLikeEntity Entity { get; } = entity;
+    public RogueLikeEntity Source { get; } = source;
     public int Time { get; set; } = time;
     public virtual bool Execute() => false;
 }

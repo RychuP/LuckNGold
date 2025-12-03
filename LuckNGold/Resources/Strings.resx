@@ -270,4 +270,7 @@
   <data name="TurnCounterDescription" xml:space="preserve">
     <value>Number of turns taken so far</value>
   </data>
+  <data name="HealthBoxDescription" xml:space="preserve">
+    <value>Health points remaining</value>
+  </data>
 </root>

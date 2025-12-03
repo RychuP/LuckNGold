@@ -1,10 +1,12 @@
 ﻿using GoRogue.Random;
+using LuckNGold.Config;
 using LuckNGold.World.Items.Components.Interfaces;
 using LuckNGold.World.Items.Damage;
 using LuckNGold.World.Items.Damage.Interfaces;
 using LuckNGold.World.Items.Defences;
 using LuckNGold.World.Items.Defences.Interfaces;
 using LuckNGold.World.Monsters.Components.Interfaces;
+using LuckNGold.World.Turns.Actions;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 using ShaiRandom.Generators;
@@ -38,6 +40,21 @@ internal class CombatantComponent() :
         }
         else
             return Attack.None;
+    }
+
+    public AttackAction GetAttackAction(RogueLikeEntity target)
+    {
+        if (Parent == null)
+            throw new InvalidOperationException("Component needs to be attached to an entity.");
+
+        if (target.AllComponents.GetFirstOrDefault<ICombatant>() is null)
+            throw new InvalidOperationException("Target is not a combatant.");
+
+        // Calculate attack time cost.
+        int timeCost = GameSettings.TurnTime;
+
+        // Create attack action.
+        return new AttackAction(Parent, target, timeCost);
     }
 
     /// <summary>

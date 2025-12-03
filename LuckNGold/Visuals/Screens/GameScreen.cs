@@ -114,6 +114,7 @@ partial class GameScreen : ScreenObject
         TurnManager.PassTime();
 
         // Create status info boxes.
+        _statusWindow.Children.Add(new HealthBox(Player.AllComponents.GetFirst<IHealth>()));
         _statusWindow.Children.Add(new CoinCounter(Player.AllComponents.GetFirst<IWallet>()));
         _statusWindow.Children.Add(new ActionCost(TurnManager));
         _statusWindow.Children.Add(new SpeedBox());

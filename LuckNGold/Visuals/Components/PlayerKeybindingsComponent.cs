@@ -79,32 +79,28 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
     {
         if (!GameScreen.IsPlayerTurn()) return;
 
-        var destination = MotionTarget.Position + direction;
+        // Check if the bumping animation is playing.
         var onionComponent = MotionTarget.AllComponents.GetFirst<IOnion>();
+        if (onionComponent.IsBumping) return;
 
         // Try moving player in the given direction.
-        if (MotionTarget.CanMove(destination) && !onionComponent.IsBumping)
+        var destination = MotionTarget.Position + direction;
+        if (MotionTarget.CanMove(destination))
         {
             var motionComponent = MotionTarget.AllComponents.GetFirst<IMotion>();
-            var walk = new WalkAction(motionComponent.GetMoveCost(), MotionTarget, destination);
-            GameScreen.TurnManager.Add(walk);
+            var walkAction = motionComponent.GetWalkAction(destination);
+            GameScreen.TurnManager.Add(walkAction);
         }
-
-        // Check if there is a monster that can be bumped.
+        // Something is blocking the way.
         else
         {
-            if (GameScreen.Map.GetEntityAt<RogueLikeEntity>(destination)
-                is not RogueLikeEntity monster) return;
-
-            if (MotionTarget.AllComponents.GetFirstOrDefault<IBumpable>() is IBumpable sourceBumpable &&
-                monster.AllComponents.GetFirstOrDefault<IBumpable>() is IBumpable targetBumpable)
+            // Check if there is a monster that can be bumped.
+            if (GameScreen.Map.GetEntityAt<RogueLikeEntity>(destination) is RogueLikeEntity entity &&
+                entity.AllComponents.GetFirstOrDefault<IBumpable>() is not null)
             {
-                
-                if (!onionComponent.IsBumping)
-                {
-                    targetBumpable.OnBumped(MotionTarget);
-                    sourceBumpable.OnBumping(monster);
-                }
+                var combatant = MotionTarget.AllComponents.GetFirst<ICombatant>();
+                var attackAction = combatant.GetAttackAction(entity);
+                GameScreen.TurnManager.Add(attackAction);
             }
         }
     }

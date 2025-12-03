@@ -61,7 +61,7 @@ internal class TurnManager
 
     public void Add(IAction action)
     {
-        var timeTracker = action.Entity.AllComponents.GetFirst<ITimeTracker>();
+        var timeTracker = action.Source.AllComponents.GetFirst<ITimeTracker>();
         Evaluate(action, timeTracker);
         OnActionAdded(action);
     }
@@ -80,7 +80,7 @@ internal class TurnManager
                 if (timeTracker.Time == 0)
                 {
                     // Add marker to the stack and complete entity's turn.
-                    _events.Enqueue(new Marker(action.Entity));
+                    _events.Enqueue(new Marker(action.Source));
 
                     // Move on with the turn.
                     PassTime();
@@ -118,7 +118,7 @@ internal class TurnManager
         // Evaluate actions.
         else if (@event is IAction action)
         {
-            var entity = action.Entity;
+            var entity = action.Source;
             var timeTracker = entity.AllComponents.GetFirst<ITimeTracker>();
             Evaluate(action, timeTracker);
 

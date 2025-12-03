@@ -10,7 +10,7 @@ internal interface IAction : IEvent
     /// <summary>
     /// Entity taking the <see cref="IAction"/>.
     /// </summary>
-    RogueLikeEntity Entity { get; }
+    RogueLikeEntity Source { get; }
 
     /// <summary>
     /// Executes <see cref="IAction"/> when <see cref="IEvent.Time"/> has passed.

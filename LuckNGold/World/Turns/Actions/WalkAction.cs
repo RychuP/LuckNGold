@@ -3,14 +3,14 @@ using SadRogue.Integration;
 
 namespace LuckNGold.World.Turns.Actions;
 
-internal class WalkAction(int time, RogueLikeEntity entity, Point destination) : 
-    Action(entity, time)
+internal class WalkAction(int time, RogueLikeEntity source, Point destination) : 
+    Action(source, time)
 {
     public override bool Execute()
     {
-        if (Entity.CanMove(destination))
+        if (Source.CanMove(destination))
         {
-            Entity.Position = destination;
+            Source.Position = destination;
             return true;
         }
         else

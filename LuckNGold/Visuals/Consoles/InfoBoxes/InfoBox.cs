@@ -1,5 +1,4 @@
-﻿using LuckNGold.Config;
-using SadConsole.Input;
+﻿using SadConsole.Input;
 
 namespace LuckNGold.Visuals.Consoles.InfoBoxes;
 
