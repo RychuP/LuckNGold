@@ -9,6 +9,7 @@ namespace LuckNGold.World.Monsters.Components.Interfaces;
 internal interface IOnion
 {
     event EventHandler<ValueChangedEventArgs<ILayerStack>>? CurrentFrameChanged;
+    event EventHandler? IsBumpingChanged;
 
     /// <summary>
     /// Twelve <see cref="LayerStack"/>s that cover all frames of monster appearance.
@@ -37,7 +38,17 @@ internal interface IOnion
     /// <param name="direction">Direction of the monster entity movement.</param>
     void UpdateCurrentFrame(Direction direction);
 
+    /// <summary>
+    /// Sets current frame to match the facing direction.
+    /// </summary>
+    /// <param name="direction"></param>
     void FaceDirection(Direction direction);
+
+    /// <summary>
+    /// Sets position to all frames.
+    /// </summary>
+    /// <param name="position"></param>
+    void SetPositions(Point position);
 
     /// <summary>
     /// Moves current frame a few pixels back and forth to visually show the bump action.
@@ -51,4 +62,9 @@ internal interface IOnion
     /// </summary>
     /// <returns>True if the bump animation is being played, false otherwise.</returns>
     bool IsBumping { get; }
+
+    /// <summary>
+    /// Frame start position in pixels while bumping.
+    /// </summary>
+    Point BumpPosition { get; set; }
 }

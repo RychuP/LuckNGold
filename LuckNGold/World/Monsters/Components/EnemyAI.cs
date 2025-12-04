@@ -1,4 +1,6 @@
-﻿using LuckNGold.World.Monsters.Components.Interfaces;
+﻿using GoRogue.GameFramework;
+using LuckNGold.World.Map;
+using LuckNGold.World.Monsters.Components.Interfaces;
 using LuckNGold.World.Turns.Actions;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
@@ -12,29 +14,156 @@ namespace LuckNGold.World.Monsters.Components;
 internal class EnemyAI() : 
     RogueLikeComponentBase<RogueLikeEntity>(false, false, false, false), IEnemyAI
 {
+    Point _initialPosition = Point.None;
+    Point _lastKnownPlayerPosition = Point.None;
+
     public IAction TakeTurn()
     {
-        if (Parent == null)
+        if (Parent is not RogueLikeEntity parent)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
+        if (parent.CurrentMap is not GameMap map)
+            throw new InvalidOperationException("Parent needs to be on the map.");
+
         var timeTracker = Parent.AllComponents.GetFirst<ITimeTracker>();
-        return new PassTurn(Parent, timeTracker.Time);
 
-        //if (Parent == null) return;
+        // Check if parent is inside player FOV.
+        if (Parent.IsVisible)
+        {
+            // Get player.
+            var player = map.Monsters
+                .Where(m => m.Name == "Player")
+                .First();
 
-        //var map = Parent.CurrentMap;
-        //if (map == null) return;
+            // Save current player position.
+            _lastKnownPlayerPosition = player.Position;
 
-        //if (!map.PlayerFOV.CurrentFOV.Contains(Parent.Position)) return;
+            // Get if the player position is reachable.
+            if (map.AStar.ShortestPath(Parent.Position, player.Position)
+                is GoRogue.Pathing.Path path && path.Length > 0)
+            {
+                var firstPoint = path.GetStep(0);
+                if (Parent.CanMove(firstPoint))
+                {
+                    // Go towards player position.
+                    var motionComponent = Parent.AllComponents.GetFirst<IMotion>();
+                    return motionComponent.GetWalkAction(firstPoint);
+                }
+                else
+                {
+                    // Check if player is within attack reach.
+                    if (player.Position == firstPoint)
+                    {
+                        if (Parent.AllComponents.GetFirstOrDefault<ICombatant>() 
+                            is ICombatant combatant)
+                        {
+                            return combatant.GetAttackAction(player);
+                        }
+                        else
+                        {
+                            return new PassTurn(Parent, timeTracker.Time);
+                        }
+                    }
+                    else
+                    {
+                        return new PassTurn(Parent, timeTracker.Time);
+                    }
+                }
+            }
+            else
+            {
+                return new PassTurn(Parent, timeTracker.Time);
+            }
+        }
+        // Parent is outside player FOV.
+        else
+        {
+            // Check if last known player position is set.
+            if (_lastKnownPlayerPosition != Point.None)
+            {
+                // Check if the last known player position is reachable.
+                if (map.AStar.ShortestPath(Parent.Position, _lastKnownPlayerPosition)
+                    is GoRogue.Pathing.Path path && path.Length > 0)
+                {
+                    var firstPoint = path.GetStep(0);
+                    if (Parent.CanMove(firstPoint))
+                    {
+                        // Go towards last known player position.
+                        var motionComponent = Parent.AllComponents.GetFirst<IMotion>();
+                        return motionComponent.GetWalkAction(firstPoint);
+                    }
+                    // Try going back to initial position.
+                    else
+                    {
+                        return GetWalkActionHomeOrPassTurn();
+                    }
+                }
+                // LKPP is not reachable.
+                else
+                {
+                    // Forget LKPP and go back home.
+                    _lastKnownPlayerPosition = Point.None;
+                    return GetWalkActionHomeOrPassTurn();
+                }
+            }
+            // LKPP is not set.
+            else
+            {
+                // Check if parent is at home position.
+                if (Parent.Position != _initialPosition)
+                {
+                    return GetWalkActionHomeOrPassTurn();
+                }
+                // Parent is back at home position.
+                else
+                {
+                    return new PassTurn(Parent, timeTracker.Time);
+                }
+            }
+        }
 
-        //var path = map.AStar.ShortestPath(Parent.Position, Program.RootScreen!.Player.Position);
-        //if (path == null) return;
-        //var firstPoint = path.GetStep(0);
-        //if (Parent.CanMove(firstPoint))
-        //{
-        //    var direction = Direction.GetDirection(Parent.Position, firstPoint);
-        //    Program.RootScreen.MessageLog.AddMessage($"An enemy moves {direction}!");
-        //    Parent.Position = firstPoint;
-        //}
+        IAction GetWalkActionHomeOrPassTurn()
+        {
+            // Try to get path home.
+            if (map.AStar.ShortestPath(parent.Position, _initialPosition)
+                is GoRogue.Pathing.Path path && path.Length > 0)
+            {
+                var firstPoint = path.GetStep(0);
+                if (parent.CanMove(firstPoint))
+                {
+                    // Go towards home position.
+                    var motionComponent = parent.AllComponents.GetFirst<IMotion>();
+                    return motionComponent.GetWalkAction(firstPoint);
+                }
+                // Seems stuck. Wait.
+                else
+                {
+                    return new PassTurn(parent, timeTracker.Time);
+                }
+            }
+            // Path is not valid. Wait.
+            else
+            {
+                return new PassTurn(parent, timeTracker.Time);
+            }
+        }
+    }
+
+    public override void OnAdded(IScreenObject host)
+    {
+        if (host is RogueLikeEntity entity)
+        {
+            entity.AddedToMap += RogueLikeEntity_OnAddedToMap;
+        }
+
+        base.OnAdded(host);
+    }
+
+    void RogueLikeEntity_OnAddedToMap(object? o, GameObjectCurrentMapChanged e)
+    {
+        if (o is not RogueLikeEntity entity)
+            throw new InvalidOperationException();
+
+        _initialPosition = entity.Position;
     }
 }

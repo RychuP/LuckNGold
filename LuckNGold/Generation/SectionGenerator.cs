@@ -100,7 +100,8 @@ internal class SectionGenerator() : GenerationStep("Sections",
                 if (currentRoom.IsPathStartRoom())
                     sidePathCount += currentRoom.SidePathExits.Count();
 
-                GameScreen.Print($"- Room: {roomIndex++}, Paths: {sidePathCount}");
+                roomIndex++;
+                GameScreen.Print($"- Room: {roomIndex}, Paths: {sidePathCount}");
             }
 
             var nextRoom = mainPath.Rooms[roomIndex];

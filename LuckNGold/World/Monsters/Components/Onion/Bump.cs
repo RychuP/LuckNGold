@@ -5,7 +5,21 @@ namespace LuckNGold.World.Monsters.Components;
 
 partial class OnionComponent
 {
-    public bool IsBumping { get; private set; }
+    public event EventHandler? IsBumpingChanged;
+
+    public Point BumpPosition { get; set; } = Point.None;
+
+    bool _isBumping = false;
+    public bool IsBumping
+    {
+        get => _isBumping;
+        private set
+        {
+            if (_isBumping == value) return;
+            _isBumping = value;
+            OnIsBumpingChanged();
+        }
+    }
 
     public void Bump(int pixelCount, Direction direction)
     {
@@ -61,7 +75,7 @@ partial class OnionComponent
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
         var duration = TimeSpan.FromMilliseconds(200);
-        var position = CurrentFrame.Position;
+        BumpPosition = CurrentFrame.Position;
 
         var animatedValue = new AnimatedValue(duration, 0, pixelCount, new Quad())
         {
@@ -70,12 +84,17 @@ partial class OnionComponent
 
         animatedValue.ValueChanged += (o, d) =>
         {
-            int x = position.X + direction.DeltaX * (int)d;
-            int y = position.Y + direction.DeltaY * (int)d;
+            int x = BumpPosition.X + direction.DeltaX * (int)d;
+            int y = BumpPosition.Y + direction.DeltaY * (int)d;
             CurrentFrame.Position = (x, y);
         };
 
         Parent.AllComponents.Add(animatedValue);
         return animatedValue;
+    }
+
+    void OnIsBumpingChanged()
+    {
+        IsBumpingChanged?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -32,8 +32,7 @@ internal class BumpableComponent() :
         {
             var deltaChange = two.Position - one.Position;
             var direction = Direction.GetDirection(deltaChange);
-            var faceDirection = OnionComponent.GetCardinalDirection(direction);
-            onionComponent.FaceDirection(faceDirection);
+            onionComponent.FaceDirection(direction);
         }
     }
 
@@ -43,7 +42,7 @@ internal class BumpableComponent() :
             throw new InvalidOperationException("Component needs to be attached to an entity.");
 
         FaceOponent(Parent, target);
-
+        
         if (Parent.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
         {
             var direction = Direction.GetDirection(Parent.Position, target.Position);

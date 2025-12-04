@@ -159,24 +159,24 @@ internal class OpeningComponent(string openAnimation = "", string closedAnimatio
             && actuatorComponent.State != ActuatorState.Retracted) return;
 
         // Checks specific to walkable parents.
-        //if (Parent.IsWalkable)
-        //{
-        //    var map = Parent.CurrentMap;
+        if (Parent.IsWalkable)
+        {
+            var map = Parent.CurrentMap;
 
-        //    // Walkable parent will most likely want to change walkability to false when closed.
-        //    if (map.GetEntitiesAt<RogueLikeEntity>(Parent.Position).Count() > 1)
-        //        // Can't close if there is another entity on top of the parent.
-        //        return;
+            // Walkable parent will most likely want to change walkability to false when closed.
+            if (map.GetEntitiesAt<RogueLikeEntity>(Parent.Position).Count() > 1)
+                // Can't close if there is another entity on top of the parent.
+                return;
 
-        //    // Checks specific to double doors and gates.
-        //    if (Parent.Name == "Door" || Parent.Name == "Gate")
-        //    {
-        //        var leftEntity = map.GetEntityAt<RogueLikeEntity>(Parent.Position + Direction.Left);
-        //        var rightEntity = map.GetEntityAt<RogueLikeEntity> (Parent.Position + Direction.Right);
+            // Checks specific to double doors and gates.
+            if (Parent.Name == "Door" || Parent.Name == "Gate")
+            {
+                var leftEntity = map.GetEntityAt<RogueLikeEntity>(Parent.Position + Direction.Left);
+                var rightEntity = map.GetEntityAt<RogueLikeEntity>(Parent.Position + Direction.Right);
 
-        //        if (leftEntity.
-        //    }
-        //}
+                //if (leftEntity.Name 
+            }
+        }
 
         // Check if parent is animated.
         if (Parent is AnimatedRogueLikeEntity animated)

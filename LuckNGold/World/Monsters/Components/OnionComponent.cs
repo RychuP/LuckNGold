@@ -5,7 +5,6 @@ using LuckNGold.World.Monsters.Primitives;
 using LuckNGold.World.Monsters.Primitives.Interfaces;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
-using SadRogue.Primitives;
 
 namespace LuckNGold.World.Monsters.Components;
 
@@ -58,9 +57,6 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
         }
     }
     
-    /// <summary>
-    /// Initializes an instance of <see cref="OnionComponent"/> class.
-    /// </summary>
     public OnionComponent() : base(false, false, false, false)
     {
         // Create layer stacks.
@@ -71,10 +67,30 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
         FaceDirection(Direction.Down);
     }
 
+    public void SetPositions(Point position)
+    {
+        foreach (var frame in Frames) 
+            frame.Position = position;
+    }
+
     public void FaceDirection(Direction direction)
     {
-        int frameIndex = GetMotionIndex(direction) + 1;
-        CurrentFrame = Frames[frameIndex];
+        if (!direction.IsCardinal())
+            direction = GetCardinalDirection(direction);
+
+        if (_currentDirection != direction)
+        {
+            UpdateCurrentFrame(direction);
+        }
+        else if (_currentMotionStep != 1)
+        {
+            _currentMotionStep = 1;
+            _frameChangeDelta = 1;
+
+            int motionIndex = GetMotionIndex(_currentDirection);
+            int frameIndex = motionIndex + _currentMotionStep;
+            CurrentFrame = Frames[frameIndex];
+        }
     }
 
     public void SetFontSize(int fontSizeMultiplier)
@@ -109,7 +125,8 @@ partial class OnionComponent : RogueLikeComponentBase<RogueLikeEntity>, IOnion
 
     public void UpdateCurrentFrame(Direction direction)
     {
-        direction = GetCardinalDirection(direction);
+        if (!direction.IsCardinal())
+            direction = GetCardinalDirection(direction);
 
         if (_currentDirection != direction)
         {

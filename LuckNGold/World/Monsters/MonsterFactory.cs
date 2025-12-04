@@ -77,4 +77,5 @@ static class MonsterFactory
 
     static RogueLikeEntity GetMonster(string name) =>
         new(0, false, layer: (int)GameMap.Layer.Monsters) { Name = name };
+    // name == "Player" ? 5 : 4
 }

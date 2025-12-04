@@ -2,6 +2,7 @@
 using LuckNGold.Visuals.Screens;
 using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Monsters.Components;
+using LuckNGold.World.Monsters.Components.Interfaces;
 using SadConsole.Input;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
@@ -47,8 +48,32 @@ abstract class GameScreenKeybindingsComponent : KeybindingsComponentBase
     /// </summary>
     protected void AddMapZoomControls()
     {
-        SetAction(Keybindings.ZoomIn, GameScreen.Map.ZoomViewIn);
-        SetAction(Keybindings.ZoomOut, GameScreen.Map.ZoomViewOut);
+        SetAction(Keybindings.ZoomIn, ZoomIn);
+        SetAction(Keybindings.ZoomOut, ZoomOut);
+    }
+
+    void ZoomIn()
+    {
+        if (GameScreen.TurnManager.CurrentEntity is RogueLikeEntity entity &&
+            entity.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent &&
+            onionComponent.IsBumping)
+        {
+            return;
+        }
+
+        GameScreen.Map.ZoomViewIn();
+    }
+
+    void ZoomOut()
+    {
+        if (GameScreen.TurnManager.CurrentEntity is RogueLikeEntity entity &&
+            entity.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent &&
+            onionComponent.IsBumping)
+        {
+            return;
+        }
+
+        GameScreen.Map.ZoomViewOut();
     }
 
     /// <summary>

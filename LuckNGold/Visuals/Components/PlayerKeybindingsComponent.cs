@@ -39,14 +39,14 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
 
     void PickUp()
     {
-        //if (!GameScreen.IsPlayerTurn()) return;
+        if (!GameScreen.IsPlayerTurn()) return;
 
         _quickAccess.PickUp();
     }
 
     void Interact()
     {
-        //if (!GameScreen.IsPlayerTurn()) return;
+        if (!GameScreen.IsPlayerTurn()) return;
 
         var neighbours = GameSettings.Adjacency.Neighbors(GameScreen.Player.Position);
 
@@ -94,9 +94,9 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
         // Something is blocking the way.
         else
         {
-            // Check if there is a monster that can be bumped.
+            // Check if there is a monster that can be attacked.
             if (GameScreen.Map.GetEntityAt<RogueLikeEntity>(destination) is RogueLikeEntity entity &&
-                entity.AllComponents.GetFirstOrDefault<IBumpable>() is not null)
+                entity.AllComponents.GetFirstOrDefault<ICombatant>() is not null)
             {
                 var combatant = MotionTarget.AllComponents.GetFirst<ICombatant>();
                 var attackAction = combatant.GetAttackAction(entity);

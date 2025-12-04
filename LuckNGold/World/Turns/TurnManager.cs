@@ -14,6 +14,9 @@ internal class TurnManager
     public event EventHandler? TurnCounterChanged;
     public event EventHandler<IAction>? ActionAdded;
 
+    /// <summary>
+    /// Queue of events happenning in the game (pretty much a turn queue for all monster entities)
+    /// </summary>
     readonly Queue<IEvent> _events = [];
 
     int _turnCounter = 0;
@@ -45,20 +48,26 @@ internal class TurnManager
 
     public TurnManager(GameScreen gameScreen)
     {
+        // Mark player as the first to move.
         _events.Enqueue(new Marker(gameScreen.Player));
         _currentEntity = gameScreen.Player;
 
+        // Add empty actions for all monster entities 
         foreach (var monster in gameScreen.Map.Monsters)
         {
             if (monster.Name != "Player")
-            {
                 _events.Enqueue(new Marker(monster));
-            }
         }
 
+        // Add tick event that marks the end of turn.
         _events.Enqueue(new Tick(gameScreen.Map));
     }
 
+    /// <summary>
+    /// Tries to complete the action if there is enough time points
+    /// or adds it to the queue of events to complete it later in the future.
+    /// </summary>
+    /// <param name="action">Action to be evaluated.</param>
     public void Add(IAction action)
     {
         var timeTracker = action.Source.AllComponents.GetFirst<ITimeTracker>();
@@ -102,8 +111,22 @@ internal class TurnManager
         }
     }
 
+    /// <summary>
+    /// Passes time by moving to the next queued event.
+    /// </summary>
     public void PassTime()
     {
+        // Check onion component of the current entity is not playing a bump animation.
+        if (CurrentEntity is not null &&
+            CurrentEntity.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent &&
+            onionComponent.IsBumping)
+        {
+            // Delay passing time until bump animation is complete.
+            onionComponent.IsBumpingChanged += IOnion_OnIsBumpingChanged;
+            return;
+        }
+
+        // Get next event queued.
         var @event = _events.Dequeue();
         
         // End of turn. Replenish time.
@@ -144,5 +167,17 @@ internal class TurnManager
     void OnActionAdded(IAction action)
     {
         ActionAdded?.Invoke(this, action);
+    }
+
+    void IOnion_OnIsBumpingChanged(object? o, EventArgs e)
+    {
+        if (o is not IOnion onionComponent)
+            throw new InvalidOperationException("Handler attached to a wrong component.");
+
+        if (!onionComponent.IsBumping)
+        {
+            onionComponent.IsBumpingChanged -= IOnion_OnIsBumpingChanged;
+            PassTime();
+        }
     }
 }

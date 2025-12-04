@@ -148,7 +148,18 @@ partial class GameScreen : ScreenObject
             if (monster.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
             {
                 var viewPosition = Map.DefaultRenderer!.Surface.ViewPosition;
-                onionComponent.CurrentFrame.Position = monster.Position - viewPosition;
+                var framePosition = monster.Position - viewPosition;
+
+                if (!onionComponent.IsBumping)
+                {
+                    onionComponent.CurrentFrame.Position = framePosition;
+                }
+                else
+                {
+                    int x = onionComponent.CurrentFrame.FontSize.X * framePosition.X;
+                    int y = onionComponent.CurrentFrame.FontSize.Y * framePosition.Y;
+                    onionComponent.BumpPosition = (x, y);
+                }
             }
         }
 

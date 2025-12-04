@@ -62,8 +62,8 @@ partial class GameScreen
 
         // Place entities on the map.
         var rooms = generator.Context.GetFirst<ItemList<Room>>("Rooms").Items;
-        int gateCount = 0;
-        int doubleGateCount = 0;
+        //int gateCount = 0;
+        //int doubleGateCount = 0;
         foreach (var room in rooms)
         {
             foreach (var entity in room.Contents)
@@ -73,12 +73,12 @@ partial class GameScreen
                 else if (entity is Furniture furniture)
                 {
                     map.PlaceFurniture(furniture);
-                    if (GameSettings.DebugEnabled && furniture is Gate gate)
-                    {
-                        gateCount++;
-                        if (gate.IsDouble)
-                            doubleGateCount++;
-                    }
+                    //if (GameSettings.DebugEnabled && furniture is Gate gate)
+                    //{
+                    //    gateCount++;
+                    //    if (gate.IsDouble)
+                    //        doubleGateCount++;
+                    //}
                 }
                 else if (entity is Item item)
                     map.PlaceItem(item);
@@ -86,8 +86,8 @@ partial class GameScreen
                     map.PlaceMonster(monster);
             }
         }
-        if (GameSettings.DebugEnabled)
-            Print($"Gate count: {gateCount}, of which double: {doubleGateCount}");
+        //if (GameSettings.DebugEnabled)
+        //    Print($"Gate count: {gateCount}, of which double: {doubleGateCount}");
 
         return map;
     }
@@ -207,7 +207,8 @@ partial class GameScreen
     {
         if (o is not RogueLikeEntity monster) return;
 
-        if (monster.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent)
+        if (monster.AllComponents.GetFirstOrDefault<IOnion>() is OnionComponent onionComponent &&
+            onionComponent.Parent != null)
         {
             if (monster.IsVisible)
             {
@@ -216,6 +217,11 @@ partial class GameScreen
                 // Update font size if necessary.
                 if (onionComponent.FontSizeMultiplier != Map.FontSizeMultiplier)
                     onionComponent.SetFontSize(Map.FontSizeMultiplier);
+
+                // Update positions.
+                var viewPosition = Map.DefaultRenderer!.Surface.ViewPosition;
+                var monsterPosition = onionComponent.Parent.Position - viewPosition;
+                onionComponent.SetPositions(monsterPosition);
             }
             else
             {
@@ -229,12 +235,23 @@ partial class GameScreen
     /// </summary>
     void OnionComponent_OnCurrentFrameChanged(object? o, ValueChangedEventArgs<ILayerStack> e)
     {
-        if (o is not OnionComponent onionComponent || onionComponent.Parent is null) return;
+        if (o is not OnionComponent onionComponent || 
+            onionComponent.Parent is null ||
+            !onionComponent.Parent.IsVisible)
+        {
+            return;
+        }
 
+        var currentFrame = e.NewValue;
+
+        // Replace frame in the monster layer.
         _monsterLayer.Children.Remove(e.OldValue);
-        _monsterLayer.Children.Add(e.NewValue);
+        _monsterLayer.Children.Add(currentFrame);
+
+        // Set positions.
         var viewPosition = Map.DefaultRenderer!.Surface.ViewPosition;
-        e.NewValue.Position = onionComponent.Parent.Position - viewPosition;
+        var monsterPosition = onionComponent.Parent.Position - viewPosition;
+        currentFrame.Position = monsterPosition;
     }
 
     void HealthComponent_OnPhysicalDamageReceived(object? o, IPhysicalDamage physicalDamage)
