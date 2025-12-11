@@ -55,10 +55,6 @@ internal class SectionGenerator() : GenerationStep("Sections",
             }
         }
 
-        GameScreen.Print($"Sections req: {sectionsRequired}");
-        GameScreen.Print($"Side paths: {sidePathTotalCount}");
-        GameScreen.Print($"Paths per sec: {sidePathsPerSection:0.00}");
-
         // Index of the main path room currently being checked and added to a section.
         int roomIndex = 0;
 
@@ -83,9 +79,10 @@ internal class SectionGenerator() : GenerationStep("Sections",
         // Create sections, locked doors in the section exit rooms and associated keys.
         while (sectionCount < sectionsRequired)
         {
-            // Create a new section.
             sectionCount++;
             currentGemstone++;
+
+            // Create a new section.
             Section currentSection = new(currentGemstone);
             sections.Add(currentSection, Name);
 
@@ -101,7 +98,6 @@ internal class SectionGenerator() : GenerationStep("Sections",
                     sidePathCount += currentRoom.SidePathExits.Count();
 
                 roomIndex++;
-                GameScreen.Print($"- Room: {roomIndex}, Paths: {sidePathCount}");
             }
 
             var nextRoom = mainPath.Rooms[roomIndex];
@@ -119,11 +115,6 @@ internal class SectionGenerator() : GenerationStep("Sections",
             // Save distance to exit for each room.
             foreach (Room room in currentSection.Rooms)
                 room.DistanceToSectionExit = currentSection.GetDistance(room);
-
-            GameScreen.Print($"Paths: {sidePathCount}, " +
-                $"Req: {sidePathCountRequired:0.00}");
-            GameScreen.Print($"Section: {currentSection.GemstoneType}, " +
-                $"Rooms: {currentSection.Rooms.Count}");
 
             // Increment path requirement for the next section.
             if (sidePathCount < sidePathTotalCount)

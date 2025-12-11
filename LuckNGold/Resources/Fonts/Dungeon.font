@@ -253,6 +253,15 @@
 "Ring": {"Glyph": 175, "Mirror": 0},
 "Necklace": {"Glyph": 176, "Mirror": 0},
 
+"Clock1": {"Glyph": 177, "Mirror": 0},
+"Clock2": {"Glyph": 179, "Mirror": 0},
+"Clock3": {"Glyph": 178, "Mirror": 0},
+"Clock4": {"Glyph": 179, "Mirror": 1},
+"Clock5": {"Glyph": 177, "Mirror": 1},
+"Clock6": {"Glyph": 179, "Mirror": 3},
+"Clock7": {"Glyph": 178, "Mirror": 2},
+"Clock8": {"Glyph": 179, "Mirror": 2},
+
 "MoonSteel Arming Sword": {"Glyph": 180, "Mirror": 0},
 "MoonSteel Gladius Sword": {"Glyph": 181, "Mirror": 0},
 "MoonSteel Scimitar Sword": {"Glyph": 182, "Mirror": 0},

@@ -11,6 +11,7 @@ static class Keybindings
 
     public static Keys Interact = Keys.F;
     public static Keys PickUp = Keys.G;
+    public static Keys Wait = Keys.Space;
 
     public static Keys Look = Keys.X;
     public static Keys ZoomIn = Keys.C;

@@ -110,15 +110,14 @@ partial class GameScreen : ScreenObject
 
         // Create turn manager and start turns.
         TurnManager = new(this);
-        TurnManager.CurrentEntityChanged += TurnManager_OnCurrentEntityChanged;
-        TurnManager.PassTime();
+        SadComponents.Add(TurnManager);
 
         // Create status info boxes.
         _statusWindow.Children.Add(new HealthBox(Player.AllComponents.GetFirst<IHealth>()));
         _statusWindow.Children.Add(new CoinCounter(Player.AllComponents.GetFirst<IWallet>()));
         _statusWindow.Children.Add(new ActionCost(TurnManager));
         _statusWindow.Children.Add(new SpeedBox());
-        _statusWindow.Children.Add(new TurnCounter(TurnManager));
+        _statusWindow.Children.Add(new TurnTrackerBox(TurnManager));
     }
 
     public bool IsPlayerTurn() =>
@@ -170,27 +169,6 @@ partial class GameScreen : ScreenObject
             var deltaChange = e.OldValue.Position - e.NewValue.Position;
             var direction = Direction.GetDirection(deltaChange);
             _damageNotificationsLayer.UpdateNotificationsPosition(direction);
-        }
-    }
-
-    void TurnManager_OnCurrentEntityChanged(object? o, ValueChangedEventArgs<RogueLikeEntity?> e)
-    {
-        if (e.NewValue is RogueLikeEntity monster)
-        {
-            if (monster.AllComponents.GetFirstOrDefault<IEnemyAI>() is IEnemyAI enemyAI)
-            {
-                var timeTracker = monster.AllComponents.GetFirst<ITimeTracker>();
-
-                while (timeTracker.Time > 0)
-                {
-                    var action = enemyAI.TakeTurn();
-                    TurnManager.Add(action);
-                }
-            }
-        }
-        else
-        {
-            TurnManager.PassTime();
         }
     }
 }

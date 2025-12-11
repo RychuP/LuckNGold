@@ -17,7 +17,7 @@ internal class EnemyAI() :
     Point _initialPosition = Point.None;
     Point _lastKnownPlayerPosition = Point.None;
 
-    public IAction TakeTurn()
+    public IAction GetAction()
     {
         if (Parent is not RogueLikeEntity parent)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
@@ -61,18 +61,18 @@ internal class EnemyAI() :
                         }
                         else
                         {
-                            return new PassTurn(Parent, timeTracker.Time);
+                            return timeTracker.GetWaitAction();
                         }
                     }
                     else
                     {
-                        return new PassTurn(Parent, timeTracker.Time);
+                        return timeTracker.GetWaitAction();
                     }
                 }
             }
             else
             {
-                return new PassTurn(Parent, timeTracker.Time);
+                return timeTracker.GetWaitAction();
             }
         }
         // Parent is outside player FOV.
@@ -95,7 +95,7 @@ internal class EnemyAI() :
                     // Try going back to initial position.
                     else
                     {
-                        return GetWalkActionHomeOrPassTurn();
+                        return GetWalkHomeOrWaitAction();
                     }
                 }
                 // LKPP is not reachable.
@@ -103,7 +103,7 @@ internal class EnemyAI() :
                 {
                     // Forget LKPP and go back home.
                     _lastKnownPlayerPosition = Point.None;
-                    return GetWalkActionHomeOrPassTurn();
+                    return GetWalkHomeOrWaitAction();
                 }
             }
             // LKPP is not set.
@@ -112,17 +112,17 @@ internal class EnemyAI() :
                 // Check if parent is at home position.
                 if (Parent.Position != _initialPosition)
                 {
-                    return GetWalkActionHomeOrPassTurn();
+                    return GetWalkHomeOrWaitAction();
                 }
                 // Parent is back at home position.
                 else
                 {
-                    return new PassTurn(Parent, timeTracker.Time);
+                    return timeTracker.GetWaitAction();
                 }
             }
         }
 
-        IAction GetWalkActionHomeOrPassTurn()
+        IAction GetWalkHomeOrWaitAction()
         {
             // Try to get path home.
             if (map.AStar.ShortestPath(parent.Position, _initialPosition)
@@ -138,13 +138,13 @@ internal class EnemyAI() :
                 // Seems stuck. Wait.
                 else
                 {
-                    return new PassTurn(parent, timeTracker.Time);
+                    return timeTracker.GetWaitAction();
                 }
             }
             // Path is not valid. Wait.
             else
             {
-                return new PassTurn(parent, timeTracker.Time);
+                return timeTracker.GetWaitAction();
             }
         }
     }

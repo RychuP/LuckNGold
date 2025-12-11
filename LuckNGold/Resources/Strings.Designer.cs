@@ -520,6 +520,15 @@ namespace LuckNGold.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tracks player and enemy turns.
+        /// </summary>
+        internal static string TurnTrackerBoxDescription {
+            get {
+                return ResourceManager.GetString("TurnTrackerBoxDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A tall, #0stone #0urn, its surface worn smooth by the passage of centuries. Though it has the rounded body and flared pedestal of a ceremonial vessel, any ornate details have long since been scrubbed away by time and neglect. It is not merely a pot, but a sentinel to a story that has lost its voice..
         /// </summary>
         internal static string UrnDescription {

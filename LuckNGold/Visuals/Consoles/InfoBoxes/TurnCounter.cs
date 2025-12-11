@@ -10,7 +10,7 @@ internal class TurnCounter : InfoBox
 {
     public TurnCounter(TurnManager turnManager) : base("Turns", Strings.TurnCounterDescription)
     {
-        turnManager.TurnCounterChanged += (o, e) => Print(turnManager.TurnCounter);
+        turnManager.TurnCounterChanged += (o, c) => Print(c);
         Print(turnManager.TurnCounter);
     }
 }

@@ -50,10 +50,6 @@ internal class MainPathGenerator(int roomCount) : PathGenerator("MainPath")
         // the main path is elongated rather than crammed in one part of the map.
         while (mainPath.Count < roomCount || distance < minDistance);
 
-        GameScreen.Print($"Min distance: {minDistance:0.00}");
-        GameScreen.Print($"Actual distance: {distance:0.00}");
-        GameScreen.Print($"Main path dead end ration: {GetDeadEndRatio(mainPath):0.00}");
-
         // Add dead ends to first and last room, so that they won't
         // accept any further connections.
         AddDeadEnds(mainPath.FirstRoom);

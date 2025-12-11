@@ -5,6 +5,7 @@ Dungeon exploration game in early stages of development. I don't think this will
 - Arrow keys, numerical, wasd or vi = move
 - G = pick up
 - F = interact
+- Space = wait
 
 ## Quick Access Inventory Controls:
 - 1 to 0 = use item

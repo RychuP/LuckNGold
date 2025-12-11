@@ -63,4 +63,26 @@ static class Theme
     /// Color of the digit on the bottom line of the <see cref="Slot"/> border.
     /// </summary>
     public static readonly Color SlotDigit = Color.LightBlue;
+
+    /// <summary>
+    /// Colors used to represent player turns in the turn tracker.
+    /// </summary>
+    public static readonly Color[] PlayerTurnColors =
+    [
+        Color.Yellow,
+        Color.Orange,
+        Color.PaleGoldenrod,
+        Color.Goldenrod,
+    ];
+
+    /// <summary>
+    /// Colors used to represent enemy turns in the turn tracker.
+    /// </summary>
+    public static readonly Color[] EnemyTurnColors =
+    [
+        Color.Turquoise,
+        Color.HotPink,
+        Color.CornflowerBlue,
+        Color.Orchid
+    ];
 }

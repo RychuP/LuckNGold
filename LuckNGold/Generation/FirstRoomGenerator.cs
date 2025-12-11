@@ -86,6 +86,10 @@ internal class FirstRoomGenerator() : GenerationStep("FirstRoom",
         var skeleton = new SkeletonWarrior(skeletonPosition);
         secondRoom.AddEntity(skeleton);
 
+        skeletonPosition = skeleton.Position + Direction.Right;
+        skeleton = new SkeletonWarrior(skeletonPosition);
+        secondRoom.AddEntity(skeleton);
+
         yield break;
     }
 }

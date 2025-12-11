@@ -1,4 +1,5 @@
 ﻿using LuckNGold.Config;
+using LuckNGold.Visuals.Overlays;
 using LuckNGold.Visuals.Screens;
 using LuckNGold.Visuals.Windows;
 using LuckNGold.World.Monsters.Components;
@@ -83,8 +84,8 @@ abstract class GameScreenKeybindingsComponent : KeybindingsComponentBase
     {
         // Debug console on and off
         var inputKey = new InputKey(Keys.OemTilde, KeyModifiers.LeftShift);
-        SetAction(inputKey, () => GameScreen.DebugConsole.IsVisible
-            = !GameScreen.DebugConsole.IsVisible);
+        SetAction(inputKey, () => DebugConsole.Instance.IsVisible
+            = !DebugConsole.Instance.IsVisible);
 
         // Map layout on and off
         inputKey = new InputKey(Keys.OemTilde, KeyModifiers.LeftCtrl);

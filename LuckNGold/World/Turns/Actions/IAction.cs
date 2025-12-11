@@ -13,7 +13,7 @@ internal interface IAction : IEvent
     RogueLikeEntity Source { get; }
 
     /// <summary>
-    /// Executes <see cref="IAction"/> when <see cref="IEvent.Time"/> has passed.
+    /// Executes <see cref="IAction"/>.
     /// </summary>
     /// <returns>True if <see cref="IAction"/> executed successfully, false otherwise.</returns>
     bool Execute();

@@ -1,6 +1,7 @@
 ﻿using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Monsters.Components.Interfaces;
 using LuckNGold.World.Turns.Actions;
+using SadConsole.Components;
 using SadRogue.Integration;
 
 namespace LuckNGold.World.Turns;
@@ -8,11 +9,13 @@ namespace LuckNGold.World.Turns;
 /// <summary>
 /// Manages passage of time and turn taking by monster entities.
 /// </summary>
-internal class TurnManager
+internal class TurnManager : UpdateComponent
 {
     public event EventHandler<ValueChangedEventArgs<RogueLikeEntity?>>? CurrentEntityChanged;
-    public event EventHandler? TurnCounterChanged;
+    public event EventHandler<int>? TurnCounterChanged;
     public event EventHandler<IAction>? ActionAdded;
+
+    const int TurnCounterMax = 100000000;
 
     /// <summary>
     /// Queue of events happenning in the game (pretty much a turn queue for all monster entities)
@@ -26,14 +29,26 @@ internal class TurnManager
         private set
         {
             if (_turnCounter == value) return;
+
+            // Check that value only increases in increments of 1.
             if (value < _turnCounter || value > _turnCounter + 1)
                 throw new ArgumentException("Value should only increase in 1 increments.");
+
+            // Roll over the counter if max is reached.
+            if (value >= TurnCounterMax)
+                value = 0;
+
             _turnCounter = value;
             OnTurnCounterChanged();
         }
     }
 
     RogueLikeEntity? _currentEntity;
+    /// <summary>
+    /// Entity is marked as current when its scheduled action did not completely deplete its time.
+    /// GameScreen than responds by either waiting for input (player) or getting an enemyAI
+    /// to take action.
+    /// </summary>
     public RogueLikeEntity? CurrentEntity
     {
         get => _currentEntity;
@@ -63,20 +78,70 @@ internal class TurnManager
         _events.Enqueue(new Tick(gameScreen.Map));
     }
 
-    /// <summary>
-    /// Tries to complete the action if there is enough time points
-    /// or adds it to the queue of events to complete it later in the future.
-    /// </summary>
-    /// <param name="action">Action to be evaluated.</param>
-    public void Add(IAction action)
+    public override void Update(IScreenObject host, TimeSpan delta)
     {
-        var timeTracker = action.Source.AllComponents.GetFirst<ITimeTracker>();
-        Evaluate(action, timeTracker);
-        OnActionAdded(action);
+        if (CurrentEntity is null)
+        {
+            PassTime();
+        }
+
+        while (CurrentEntity is not null)
+        {
+            var onionComponent = CurrentEntity.AllComponents.GetFirst<IOnion>();
+            if (onionComponent.IsBumping) 
+                return;
+
+            var timeTracker = CurrentEntity.AllComponents.GetFirst<ITimeTracker>();
+            if (timeTracker.Time <= 0)
+                PassTime();
+            else 
+            {
+                // Enemy's turn.
+                if (CurrentEntity.Name != "Player")
+                {
+                    var enemyAI = CurrentEntity.AllComponents.GetFirst<IEnemyAI>();
+
+                    // Keep getting actions until there is time left or bumping starts.
+                    while (timeTracker.Time > 0)
+                    {
+                        var action = enemyAI.GetAction();
+                        Add(action);
+
+                        // Check if the action initiated bumping.
+                        if (onionComponent.IsBumping)
+                            return;
+                    }
+
+                    // No more time left. Move on to next event.
+                    PassTime();
+                }
+                // Player's turn.
+                else
+                {
+                    // Not much we can do here. Waiting for input.
+                    return;
+                }
+            }
+        }
     }
 
-    void Evaluate(IAction action, ITimeTracker timeTracker)
+    /// <summary>
+    /// Triggers ActionAdded event and either executes or enqueues the action depending on time available.
+    /// </summary>
+    /// <param name="action">Action to be executed or enqueud.</param>
+    public void Add(IAction action)
     {
+        OnActionAdded(action);
+        Evaluate(action);
+    }
+
+    void Evaluate(IAction action)
+    {
+        if (CurrentEntity != action.Source)
+            throw new InvalidOperationException("Action source entity is not Current Entity.");
+
+        var timeTracker = CurrentEntity.AllComponents.GetFirst<ITimeTracker>();
+
         // Check if there is enough time to execute the action immediately.
         if (action.Time - timeTracker.Time <= 0)
         {
@@ -85,51 +150,44 @@ internal class TurnManager
             {
                 // Reduce available time by the amount of time it took to execute the action.
                 timeTracker.Time -= action.Time;
+            }
+            // EnemyAI should not produce actions that fail but in case they do, pass their turn.
+            else if (CurrentEntity.Name != "Player")
+            {
+                timeTracker.GetWaitAction().Execute();
+            }
 
-                if (timeTracker.Time == 0)
-                {
-                    // Add marker to the stack and complete entity's turn.
-                    _events.Enqueue(new Marker(action.Source));
+            if (timeTracker.Time == 0)
+            {
+                // Create a marker for the next entity's turn.
+                var marker = new Marker(action.Source);
 
-                    // Move on with the turn.
-                    PassTime();
-                }
+                // Add marker to the stack and finish entity's turn.
+                _events.Enqueue(marker);
             }
         }
 
         // Not enough time to execute selected action.
         else
         {
+            // Reduce action time cost by whatever time the entity has left.
             action.Time -= timeTracker.Time;
             timeTracker.Time = 0;
 
             // Schedule the action to be taken later on.
             _events.Enqueue(action);
-
-            // Move on with the turn.
-            PassTime();
         }
     }
 
     /// <summary>
     /// Passes time by moving to the next queued event.
     /// </summary>
-    public void PassTime()
+    void PassTime()
     {
-        // Check onion component of the current entity is not playing a bump animation.
-        if (CurrentEntity is not null &&
-            CurrentEntity.AllComponents.GetFirstOrDefault<IOnion>() is IOnion onionComponent &&
-            onionComponent.IsBumping)
-        {
-            // Delay passing time until bump animation is complete.
-            onionComponent.IsBumpingChanged += IOnion_OnIsBumpingChanged;
-            return;
-        }
-
         // Get next event queued.
         var @event = _events.Dequeue();
         
-        // End of turn. Replenish time.
+        // End of turn. 
         if (@event is ITick tick)
         {
             tick.Reset();
@@ -141,15 +199,8 @@ internal class TurnManager
         // Evaluate actions.
         else if (@event is IAction action)
         {
-            var entity = action.Source;
-            var timeTracker = entity.AllComponents.GetFirst<ITimeTracker>();
-            Evaluate(action, timeTracker);
-
-            // If the entity has time left, mark it as current entity taking turn.
-            if (timeTracker.Time > 0)
-            {
-                CurrentEntity = entity;
-            }
+            CurrentEntity = action.Source;
+            Evaluate(action);
         }
     }
 
@@ -158,26 +209,14 @@ internal class TurnManager
         var args = new ValueChangedEventArgs<RogueLikeEntity?>(prevEntity, newEntity);
         CurrentEntityChanged?.Invoke(this, args);
     }
-
+    
     void OnTurnCounterChanged()
     {
-        TurnCounterChanged?.Invoke(this, EventArgs.Empty);
+        TurnCounterChanged?.Invoke(this, TurnCounter);
     }
 
     void OnActionAdded(IAction action)
     {
         ActionAdded?.Invoke(this, action);
-    }
-
-    void IOnion_OnIsBumpingChanged(object? o, EventArgs e)
-    {
-        if (o is not IOnion onionComponent)
-            throw new InvalidOperationException("Handler attached to a wrong component.");
-
-        if (!onionComponent.IsBumping)
-        {
-            onionComponent.IsBumpingChanged -= IOnion_OnIsBumpingChanged;
-            PassTime();
-        }
     }
 }

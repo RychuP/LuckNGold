@@ -2,13 +2,10 @@
 using LuckNGold.Config;
 using LuckNGold.Visuals.Screens;
 using LuckNGold.World.Furnitures.Interfaces;
-using LuckNGold.World.Map;
 using LuckNGold.World.Monsters.Components;
 using LuckNGold.World.Monsters.Components.Interfaces;
 using LuckNGold.World.Turns.Actions;
-using SadConsole.Input;
 using SadRogue.Integration;
-using SadRogue.Integration.Keybindings;
 
 namespace LuckNGold.Visuals.Components;
 
@@ -35,18 +32,53 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
     {
         SetAction(Keybindings.PickUp, PickUp);
         SetAction(Keybindings.Interact, Interact);
+        SetAction(Keybindings.Wait, Wait);
+    }
+
+    /// <summary>
+    /// Keyboard shortcut that shows the pointer.
+    /// </summary>
+    void AddPointerControls()
+    {
+        SetAction(Keybindings.Look, GameScreen.ShowPointer);
+    }
+
+    bool CanAct()
+    {
+        if (!GameScreen.IsPlayerTurn()) 
+            return false;
+
+        // Check if the bumping animation is playing.
+        var onionComponent = MotionTarget.AllComponents.GetFirst<IOnion>();
+        if (onionComponent.IsBumping) 
+            return false;
+
+        var timeTracker = MotionTarget.AllComponents.GetFirst<ITimeTracker>();
+        if (timeTracker.Time <= 0)
+            return false;
+
+        return true;
+    }
+
+    void Wait()
+    {
+        if (!CanAct()) return;
+
+        var timeTracker = MotionTarget.AllComponents.GetFirst<ITimeTracker>();
+        var waitAction = timeTracker.GetWaitAction();
+        GameScreen.TurnManager.Add(waitAction);
     }
 
     void PickUp()
     {
-        if (!GameScreen.IsPlayerTurn()) return;
+        if (!CanAct()) return;
 
         _quickAccess.PickUp();
     }
 
     void Interact()
     {
-        if (!GameScreen.IsPlayerTurn()) return;
+        if (!CanAct()) return;
 
         var neighbours = GameSettings.Adjacency.Neighbors(GameScreen.Player.Position);
 
@@ -66,22 +98,10 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
         }
     }
 
-    /// <summary>
-    /// Keyboard shortcut that shows the pointer.
-    /// </summary>
-    void AddPointerControls()
-    {
-        SetAction(Keybindings.Look, GameScreen.ShowPointer);
-    }
-
     // Motion handler for the player movement.
     protected override void MotionHandler(Direction direction)
     {
-        if (!GameScreen.IsPlayerTurn()) return;
-
-        // Check if the bumping animation is playing.
-        var onionComponent = MotionTarget.AllComponents.GetFirst<IOnion>();
-        if (onionComponent.IsBumping) return;
+        if (!CanAct()) return;
 
         // Try moving player in the given direction.
         var destination = MotionTarget.Position + direction;

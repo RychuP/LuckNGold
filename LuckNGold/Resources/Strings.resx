@@ -273,4 +273,7 @@
   <data name="HealthBoxDescription" xml:space="preserve">
     <value>Health points remaining</value>
   </data>
+  <data name="TurnTrackerBoxDescription" xml:space="preserve">
+    <value>Tracks player and enemy turns</value>
+  </data>
 </root>
