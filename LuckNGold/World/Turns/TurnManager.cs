@@ -45,9 +45,7 @@ internal class TurnManager : UpdateComponent
 
     RogueLikeEntity? _currentEntity;
     /// <summary>
-    /// Entity is marked as current when its scheduled action did not completely deplete its time.
-    /// GameScreen than responds by either waiting for input (player) or getting an enemyAI
-    /// to take action.
+    /// Entity currently taking turn.
     /// </summary>
     public RogueLikeEntity? CurrentEntity
     {
@@ -80,46 +78,50 @@ internal class TurnManager : UpdateComponent
 
     public override void Update(IScreenObject host, TimeSpan delta)
     {
-        if (CurrentEntity is null)
+        while (true)
         {
-            PassTime();
-        }
-
-        while (CurrentEntity is not null)
-        {
-            var onionComponent = CurrentEntity.AllComponents.GetFirst<IOnion>();
-            if (onionComponent.IsBumping) 
-                return;
-
-            var timeTracker = CurrentEntity.AllComponents.GetFirst<ITimeTracker>();
-            if (timeTracker.Time <= 0)
-                PassTime();
-            else 
+            if (CurrentEntity is null)
             {
-                // Enemy's turn.
-                if (CurrentEntity.Name != "Player")
+                PassTime();
+            }
+            else
+            {
+                var onionComponent = CurrentEntity.AllComponents.GetFirst<IOnion>();
+                if (onionComponent.IsBumping)
+                    return;
+
+                var timeTracker = CurrentEntity.AllComponents.GetFirst<ITimeTracker>();
+                if (timeTracker.Time <= 0)
                 {
-                    var enemyAI = CurrentEntity.AllComponents.GetFirst<IEnemyAI>();
-
-                    // Keep getting actions until there is time left or bumping starts.
-                    while (timeTracker.Time > 0)
-                    {
-                        var action = enemyAI.GetAction();
-                        Add(action);
-
-                        // Check if the action initiated bumping.
-                        if (onionComponent.IsBumping)
-                            return;
-                    }
-
-                    // No more time left. Move on to next event.
                     PassTime();
                 }
-                // Player's turn.
                 else
                 {
-                    // Not much we can do here. Waiting for input.
-                    return;
+                    // Enemy's turn.
+                    if (CurrentEntity.Name != "Player")
+                    {
+                        var enemyAI = CurrentEntity.AllComponents.GetFirst<IEnemyAI>();
+
+                        // Keep getting actions until there is time left or bumping starts.
+                        while (timeTracker.Time > 0)
+                        {
+                            var action = enemyAI.GetAction();
+                            Add(action);
+
+                            // Check if the action initiated bumping.
+                            if (onionComponent.IsBumping)
+                                return;
+                        }
+
+                        // No more time left. Move on to next event.
+                        PassTime();
+                    }
+                    // Player's turn.
+                    else
+                    {
+                        // Not much we can do here. Waiting for input.
+                        return;
+                    }
                 }
             }
         }

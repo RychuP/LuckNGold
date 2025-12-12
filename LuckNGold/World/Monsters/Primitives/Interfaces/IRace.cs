@@ -11,4 +11,5 @@ interface IRace
     bool CanChangeEyeColor { get; init; }
     bool CanGlow { get; init; }
     bool HasFlying { get; init; }
+    int BaseMoveCost { get; init; }
 }

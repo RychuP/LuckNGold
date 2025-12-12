@@ -6,6 +6,7 @@ using LuckNGold.World.Items.Damage.Interfaces;
 using LuckNGold.World.Items.Defences;
 using LuckNGold.World.Items.Defences.Interfaces;
 using LuckNGold.World.Monsters.Components.Interfaces;
+using LuckNGold.World.Turns;
 using LuckNGold.World.Turns.Actions;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
@@ -42,7 +43,13 @@ internal class CombatantComponent() :
             return Attack.None;
     }
 
-    public AttackAction GetAttackAction(RogueLikeEntity target)
+    /// <summary>
+    /// Gets a <see cref="MeleeAttackAction"/> that can be scheduled 
+    /// and executed by the <see cref="TurnManager"/>.
+    /// </summary>
+    /// <param name="target">Target of the <see cref="MeleeAttackAction"/>.</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    public MeleeAttackAction GetMeleeAttackAction(RogueLikeEntity target)
     {
         if (Parent == null)
             throw new InvalidOperationException("Component needs to be attached to an entity.");
@@ -50,11 +57,14 @@ internal class CombatantComponent() :
         if (target.AllComponents.GetFirstOrDefault<ICombatant>() is null)
             throw new InvalidOperationException("Target is not a combatant.");
 
+        if (GameSettings.Distance.Calculate(Parent.Position, target.Position) > 1)
+            throw new InvalidOperationException("Melee attack is out of range.");
+
         // Calculate attack time cost.
         int timeCost = GameSettings.TurnTime;
 
         // Create attack action.
-        return new AttackAction(Parent, target, timeCost);
+        return new MeleeAttackAction(Parent, target, timeCost);
     }
 
     /// <summary>

@@ -13,5 +13,5 @@ internal interface ICombatant
     IAttack GetAttack();
     IDefence GetDefence();
     void Resolve(IAttack attack);
-    AttackAction GetAttackAction(RogueLikeEntity target);
+    MeleeAttackAction GetMeleeAttackAction(RogueLikeEntity target);
 }

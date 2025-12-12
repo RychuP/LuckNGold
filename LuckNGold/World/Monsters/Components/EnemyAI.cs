@@ -57,7 +57,7 @@ internal class EnemyAI() :
                         if (Parent.AllComponents.GetFirstOrDefault<ICombatant>() 
                             is ICombatant combatant)
                         {
-                            return combatant.GetAttackAction(player);
+                            return combatant.GetMeleeAttackAction(player);
                         }
                         else
                         {

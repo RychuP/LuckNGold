@@ -23,7 +23,11 @@ partial class OnionComponent
 
     public void Bump(int pixelCount, Direction direction)
     {
+        if (CurrentFrame.Parent is null)
+            throw new InvalidOperationException("Current frame is not added to monster layer.");
+
         IsBumping = true;
+        var monsterLayer = CurrentFrame.Parent;
 
         // Change cell positioning to pixel positioning.
         int pixelX = CurrentFrame.Position.X * CurrentFrame.FontSize.X;
@@ -31,9 +35,11 @@ partial class OnionComponent
         CurrentFrame.UsePixelPositioning = true;
         CurrentFrame.Position = (pixelX, pixelY);
 
-        // Make sure the frame is on top of other entities.
-        var parent = CurrentFrame.Parent!;
-        parent.Children.Add(CurrentFrame);
+        // Make sure the current frame is properly layered depending on the direction of the bump.
+        if (direction.DeltaY <= 0)
+            monsterLayer.Children.MoveToTop(CurrentFrame);
+        else
+            monsterLayer.Children.MoveToBottom(CurrentFrame);
 
         // Create an animated value component that manages the bump.
         var animatedValue = BumpBase(pixelCount, direction);

@@ -119,7 +119,7 @@ internal class PlayerKeybindingsComponent : GameScreenKeybindingsComponent
                 entity.AllComponents.GetFirstOrDefault<ICombatant>() is not null)
             {
                 var combatant = MotionTarget.AllComponents.GetFirst<ICombatant>();
-                var attackAction = combatant.GetAttackAction(entity);
+                var attackAction = combatant.GetMeleeAttackAction(entity);
                 GameScreen.TurnManager.Add(attackAction);
             }
         }

@@ -1,4 +1,5 @@
-﻿using LuckNGold.World.Monsters.Enums;
+﻿using LuckNGold.Config;
+using LuckNGold.World.Monsters.Enums;
 using LuckNGold.World.Monsters.Primitives.Interfaces;
 
 namespace LuckNGold.World.Monsters.Primitives;
@@ -13,6 +14,7 @@ record Race : IRace
     public bool CanChangeEyeColor { get; init; } = false;
     public bool CanGlow { get; init; } = false;
     public bool HasFlying { get; init; } = false;
+    public int BaseMoveCost { get; init; } = GameSettings.TurnTime;
 
     // Predefined types.
     public static Race Human { get; }
@@ -34,6 +36,7 @@ record Race : IRace
             CanGrowHair = true,
             CanGrowBeard = true,
             SkinTone = SkinTone.Pale,
+            BaseMoveCost = GameSettings.TurnTime - 5,
         };
 
         DarkHuman = Human with
@@ -46,6 +49,7 @@ record Race : IRace
             RaceType = RaceType.Elf,
             SkinTone = SkinTone.Pale,
             CanGrowHair = true,
+            BaseMoveCost = GameSettings.TurnTime - 20,
         };
 
         DarkElf = Elf with
@@ -57,11 +61,13 @@ record Race : IRace
         {
             RaceType = RaceType.Skeleton,
             CanGlow = true,
+            BaseMoveCost = GameSettings.TurnTime + 20,
         };
 
         Ogre = new Race()
         {
             RaceType = RaceType.Ogre,
+            BaseMoveCost = GameSettings.TurnTime + 10,
         };
     }
 }

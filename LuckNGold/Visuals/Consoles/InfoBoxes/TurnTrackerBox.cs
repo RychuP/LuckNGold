@@ -70,6 +70,7 @@ internal class TurnTrackerBox : InfoBox
         PrintTurnTracker();
     }
 
+    // Displays turn counter.
     void TurnManager_OnTurnCounterChanged(object? o, int counter)
     {
         ShowTurnEnd();
